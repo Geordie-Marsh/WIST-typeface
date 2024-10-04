@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 401">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <path id="out-se-inv" class="cls-1" d="M200.5,400.5c-55.228,0-100-44.772-100-100"/>
+  <path id="out-se-arc" class="cls-1" d="M200.5,300.5c0,55.228-44.772,100-100,100"/>
+  <line id="out-se-h" class="cls-1" x1="200.5" y1="400.5" x2="100.5" y2="400.5"/>
+  <line id="out-se-v" class="cls-1" x1="200.5" y1="300.5" x2="200.5" y2="400.5"/>
+  <line id="out-s-v" class="cls-1" x1="100.5" y1="300.5" x2="100.5" y2="400.5"/>
+  <path id="out-sw-inv" class="cls-1" d="M100.5,300.5c0,55.228-44.772,100-100,100"/>
+  <path id="out-sw-arc" class="cls-1" d="M100.5,400.5c-55.228,0-100-44.772-100-100"/>
+  <line id="out-sw-h" class="cls-1" x1="100.5" y1="400.5" x2=".5" y2="400.5"/>
+  <line id="out-sw-v" class="cls-1" x1=".5" y1="400.5" x2=".5" y2="300.5"/>
+  <path id="in-se-arc" class="cls-1" d="M100.5,200.5c55.228,0,100,44.772,100,100"/>
+  <line id="in-se-v" class="cls-1" x1="200.5" y1="200.5" x2="200.5" y2="300.5"/>
+  <line id="in-s-v" class="cls-1" x1="100.5" y1="200.5" x2="100.5" y2="300.5"/>
+  <path id="in-sw-arc" class="cls-1" d="M.5,300.5c0-55.228,44.772-100,100-100"/>
+  <line id="in-sw-v" class="cls-1" x1=".5" y1="300.5" x2=".5" y2="200.5"/>
+  <line id="in-e-h" class="cls-1" x1="200.5" y1="200.5" x2="100.5" y2="200.5"/>
+  <line id="in-w-h" class="cls-1" x1="100.5" y1="200.5" x2=".5" y2="200.5"/>
+  <path id="in-ne-arc" class="cls-1" d="M200.5,100.5c0,55.228-44.772,100-100,100"/>
+  <line id="in-ne-v" class="cls-1" x1="200.5" y1="100.5" x2="200.5" y2="200.5"/>
+  <line id="in-n-v" class="cls-1" x1="100.5" y1="100.5" x2="100.5" y2="200.5"/>
+  <path id="in-nw-arc" class="cls-1" d="M100.5,200.5C45.272,200.5.5,155.728.5,100.5"/>
+  <line id="in-nw-v" class="cls-1" x1=".5" y1="200.5" x2=".5" y2="100.5"/>
+  <path id="out-ne-inv" class="cls-1" d="M100.5,100.5C100.5,45.272,145.272.5,200.5.5"/>
+  <path id="out-ne-arc" class="cls-1" d="M100.5.5c55.228,0,100,44.772,100,100"/>
+  <line id="out-ne-v" class="cls-1" x1="200.5" y1=".5" x2="200.5" y2="100.5"/>
+  <line id="out-ne-h" class="cls-1" x1="100.5" y1=".5" x2="200.5" y2=".5"/>
+  <line id="out-n-v" class="cls-1" x1="100.5" y1=".5" x2="100.5" y2="100.5"/>
+  <path id="out-nw-inv" class="cls-1" d="M.5.5c55.228,0,100,44.772,100,100"/>
+  <path id="out-nw-arc" class="cls-1" d="M.5,100.5C.5,45.272,45.272.5,100.5.5"/>
+  <line id="out-nw-v" class="cls-1" x1=".5" y1="100.5" x2=".5" y2=".5"/>
+  <line id="out-nw-h" class="cls-1" x1=".5" y1=".5" x2="100.5" y2=".5"/>
+</svg>

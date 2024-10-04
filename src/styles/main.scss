@@ -1,0 +1,17 @@
+// Importing page stylesheets
+@import '../pages/Home';
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.LetterGrid {
+	overflow: visible;
+
+	* {
+		fill: none;
+		stroke: #000;
+		stroke-width: 3;
+	}
+}

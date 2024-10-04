@@ -1,7 +1,13 @@
+// Imports
+	// Importing components
+	import LetterGrid from '../components/LetterGrid';
+
+
+
 export default function Home() {
 	return (
-		<div>
-			<h1>Home</h1>
+		<div className='Home'>
+			<LetterGrid />
 		</div>
 	);
 }
