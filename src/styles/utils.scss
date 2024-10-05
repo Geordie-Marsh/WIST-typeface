@@ -1,0 +1,114 @@
+// Basic layout properties
+.p-fxd {
+	position: fixed;
+}
+.p-abs {
+	position: absolute;
+}
+.p-rel {
+	position: relative;
+}
+
+.screen-width {
+	min-width: 100vw;
+}
+.screen-height {
+	min-height: 100vh;
+}
+.cont-width {
+	width: 100%;
+}
+.cont-height {
+	height: 100%;
+}
+
+
+// Flex properties
+.d-flex {
+	display: flex;
+}
+.flex-v {
+	flex-direction: column;
+}
+.flex-h {
+	flex-direction: row;
+}
+.flex-grow-1 {
+	flex-grow: 1;
+}
+
+
+
+// No display
+.d-none {
+	display: none;
+}
+.hidden {
+	visibility: hidden;
+}
+.visible {
+	visibility: visible;
+}
+.opacity-0 {
+	opacity: 0;
+}
+.opacity-1 {
+	opacity: 1;
+}
+
+
+// Alignment properties
+.jc-btwn {
+	justify-content: space-between;
+}
+.jc-start {
+	justify-content: start;
+}
+.jc-c {
+	justify-content: center;
+}
+.jc-end {
+	justify-content: end;
+}
+
+.ac-btwn {
+	align-content: space-between;
+}
+.ac-start {
+	align-content: start;
+}
+.ac-c {
+	align-content: center;
+}
+.ac-end {
+	align-content: end;
+}
+
+.ai-c {
+	align-items: center;
+}
+.ai-end {
+	align-items: end;
+}
+.as-stretch {
+	align-self: stretch;
+}
+
+
+// Text properties
+.text-l {
+	text-align: left;
+}
+.text-c {
+	text-align: center;
+}
+.text-r {
+	text-align: right;
+}
+
+
+
+// Preventing scrolling
+.no-scroll {
+	overflow: hidden;
+}
