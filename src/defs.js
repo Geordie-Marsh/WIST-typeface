@@ -57,3 +57,7 @@ export const searchParams = () => new URLSearchParams(window.location.search);
 export const show = element => classRemove(element, 'hidden');
 // Hide an element
 export const hide = element => classAdd(element, 'hidden');
+
+
+// To randomly choose between a set of values
+export const randomlyChoose = (...values) => values[roundDown(Math.random() * values.length)];

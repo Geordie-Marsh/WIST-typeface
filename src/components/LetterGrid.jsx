@@ -3,7 +3,7 @@
 	import { useEffect, useRef } from 'react';
 
 	// Importing defs
-	import { hide, show } from '../defs';
+	import { hide, show, randomlyChoose } from '../defs';
 
 
 export default function LetterGrid() {
@@ -111,9 +111,9 @@ export default function LetterGrid() {
 		};
 
 		class letterMaker {
-			constructor(letter, previousPerm = null) {
+			constructor(letter, prevPerm = null) {
 				this.letter = letter;
-				this.previousPerm = previousPerm;
+				this.prevPerm = prevPerm;
 
 				// Calculating the new permutation based on the previous permutation
 				this.newPerm = this.calculateNewPerm();
@@ -128,6 +128,112 @@ export default function LetterGrid() {
 				let cornerNW, cornerNE, cornerSE, cornerSW, centreE, centreW;
 
 				switch (this.letter) {
+					case "a":
+					case "A":
+						// A has 4 variables: the top-left and top-right corners, centre-left and centre-right
+
+						// Adding the constant segments
+						newPerm.push(
+							"oSwV",
+							"iSwV",
+							"iNwV",
+							"oSeV",
+							"iSeV",
+							"iNeV"
+						);
+
+						// TOP-LEFT CORNER is variable: Square or Round
+						if ((this.prevPerm.oNwV || this.prevPerm.oNwH) && !this.prevPerm.oNwArc) {
+							// If already only Square
+							cornerNW = "Square";
+						} else if (this.prevPerm.oNwArc && !(this.prevPerm.oNwV || this.prevPerm.oNwH)) {
+							// If already only Round
+							cornerNW = "Round";
+						} else {
+							// Otherwise, randomly assign it
+							cornerNW = randomlyChoose("Square", "Round");
+						}
+
+						// TOP-RIGHT CORNER is variable: Square or Round
+						if ((this.prevPerm.oNeV || this.prevPerm.oNeH) && !this.prevPerm.oNeArc) {
+							// If already only Square
+							cornerNE = "Square";
+						} else if (this.prevPerm.oNeArc && !(this.prevPerm.oNeV || this.prevPerm.oNeH)) {
+							// If already only Round
+							cornerNE = "Round";
+						} else {
+							// Otherwise, randomly assign it
+							cornerNE = randomlyChoose("Square", "Round");
+						}
+
+						// CENTRE-LEFT is variable: Up, Down or Horizontal
+						if (this.prevPerm.iNwArc && !(this.prevPerm.iWH || this.prevPerm.iSwArc)) {
+							// If already only Up
+							centreW = "Up";
+						} else if (this.prevPerm.iSwArc && !(this.prevPerm.iWH || this.prevPerm.iNwArc)) {
+							// If already only Down
+							centreW = "Down";
+						} else if (this.prevPerm.iWH && !(this.prevPerm.iNwArc || this.prevPerm.iSwArc)) {
+							// If already only Horizontal
+							centreW = "Horizontal";
+						} else {
+							// Otherwise, randomly assign it
+							centreW = randomlyChoose("Up", "Down", "Horizontal");
+						}
+
+						// CENTRE-RIGHT is variable: Up, Down or Horizontal
+						if (this.prevPerm.iNeArc && !(this.prevPerm.iEH || this.prevPerm.iSeArc)) {
+							// If already only Up
+							centreE = "Up";
+						} else if (this.prevPerm.iSeArc && !(this.prevPerm.iEH || this.prevPerm.iNeArc)) {
+							// If already only Down
+							centreE = "Down";
+						} else if (this.prevPerm.iEH && !(this.prevPerm.iNeArc || this.prevPerm.iSeArc)) {
+							// If already only Horizontal
+							centreE = "Horizontal";
+						} else {
+							// Otherwise, randomly assign it
+							centreE = randomlyChoose("Up", "Down", "Horizontal");
+						}
+
+						break;
+					case "c":
+					case "C":
+						// C has 2 variables: the top-right and bottom-right corners
+
+						// Adding the constant segments
+						newPerm.push(
+							"oNwArc",
+							"iNwV",
+							"iSwV",
+							"oSwArc"
+						);
+
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						if (this.prevPerm.oNeH && !this.prevPerm.oNeArc) {
+							// If already only Horizontal
+							cornerNE = "Horizontal";
+						} else if (this.prevPerm.oNeArc && !this.prevPerm.oNeH) {
+							// If already only Round
+							cornerNE = "Round";
+						} else {
+							// Otherwise, randomly assign it
+							cornerNE = randomlyChoose("Horizontal", "Round");
+						}
+
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						if (this.prevPerm.oSeH && !this.prevPerm.oSeArc) {
+							// If already only Horizontal
+							cornerSE = "Horizontal";
+						} else if (this.prevPerm.oSeArc && !this.prevPerm.oSeH) {
+							// If already only Round
+							cornerSE = "Round";
+						} else {
+							// Otherwise, randomly assign it
+							cornerSE = randomlyChoose("Horizontal", "Round");
+						}
+
+						break;
 					case "d":
 					case "D":
 						// D is a fixed letter - no calculations needed
@@ -146,9 +252,45 @@ export default function LetterGrid() {
 						);
 						
 						break;
+					case "l":
+					case "L":
+						// L has 2 variables: the bottom-left and bottom-right corners
+
+						// Adding the constant segments
+						newPerm.push(
+							"oNwV",
+							"iNwV",
+							"iSwV"
+						);
+
+						// BOTTOM-LEFT CORNER is variable: Square or Round
+						if ((this.prevPerm.oSwV || this.prevPerm.oSwH) && !this.prevPerm.oSwArc) {
+							// If already only Square
+							cornerSW = "Square";
+						} else if (this.prevPerm.oSwArc && !(this.prevPerm.oSwV || this.prevPerm.oSwH)) {
+							// If already only Round
+							cornerSW = "Round";
+						} else {
+							// Otherwise, randomly assign it
+							cornerSW = randomlyChoose("Square", "Round");
+						}
+
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						if (this.prevPerm.oSeH && !this.prevPerm.oSeArc) {
+							// If already only Horizontal
+							cornerSE = "Horizontal";
+						} else if (this.prevPerm.oSeArc && !this.prevPerm.oSeH) {
+							// If already only Round
+							cornerSE = "Round";
+						} else {
+							// Otherwise, randomly assign it
+							cornerSE = randomlyChoose("Horizontal", "Round");
+						}
+
+						break;
 					case "q":
 					case "Q":
-						// Q has one variable in the bottom-right corner
+						// Q has 1 variable: the bottom-left corner
 
 						// Adding the constant segments
 						newPerm.push(
@@ -162,33 +304,160 @@ export default function LetterGrid() {
 							"iNwV"
 						);
 
-						// BOTTOM-RIGHT CORNER is variable: Square or Round
-						if (this.previousPerm.oSwV || this.previousPerm.oSwH) {
-							// If already Square
+						// BOTTOM-LEFT CORNER is variable: Square or Round
+						if ((this.prevPerm.oSwV || this.prevPerm.oSwH) && !this.prevPerm.oSwArc) {
+							// If already only Square
 							cornerSW = "Square";
-						} else if (this.previousPerm.oSwArc) {
-							// If already Round
+						} else if (this.prevPerm.oSwArc && !(this.prevPerm.oSwV || this.prevPerm.oSwH)) {
+							// If already only Round
 							cornerSW = "Round";
 						} else {
 							// Otherwise, randomly assign it
-							cornerSW = Math.random() < 0.5 ? "Square" : "Round";
+							cornerSW = randomlyChoose("Square", "Round");
 						}
 
 						break;
 					default:
-						// Handle default case if necessary
+						// For now, add all the segments to show the full grid
+
+						newPerm.push(
+							"oNwH",
+							"oNwV",
+							"oNwArc",
+							"oNwInv",
+							"oNV",
+							"oNeH",
+							"oNeV",
+							"oNeArc",
+							"oNeInv",
+							"iNwV",
+							"iNwArc",
+							"iNV",
+							"iNeV",
+							"iNeArc",
+							"iWH",
+							"iEH",
+							"iSwV",
+							"iSwArc",
+							"iSV",
+							"iSeV",
+							"iSeArc",
+							"oSwV",
+							"oSwH",
+							"oSwArc",
+							"oSwInv",
+							"oSV",
+							"oSeV",
+							"oSeH",
+							"oSeArc",
+							"oSeInv"
+						);
+
 						break;
 				}
 
 				// Presets
-				if (cornerSW === "Square") {
-					newPerm.push(
-						"oSwH",
-						"oSwV"
-					);
+				switch (cornerNW) {
+					case "Square":
+						newPerm.push(
+							"oNwH",
+							"oNwV"
+						);
+						break;
+					case "Horizontal":
+						newPerm.push("oNwH");
+						break;
+					case "Vertical":
+						newPerm.push("oNwV");
+						break;
+					case "Round":
+						newPerm.push("oNwArc");
+						break;
+					default:
+						break;
 				}
-				if (cornerSW === "Round") {
-					newPerm.push("oSwArc");
+				switch (cornerNE) {
+					case "Square":
+						newPerm.push(
+							"oNeH",
+							"oNeV"
+						);
+						break;
+					case "Horizontal":
+						newPerm.push("oNeH");
+						break;
+					case "Vertical":
+						newPerm.push("oNeV");
+						break;
+					case "Round":
+						newPerm.push("oNeArc");
+						break;
+					default:
+						break;
+				}
+				switch (cornerSE) {
+					case "Square":
+						newPerm.push(
+							"oSeH",
+							"oSeV"
+						);
+						break;
+					case "Horizontal":
+						newPerm.push("oSeH");
+						break;
+					case "Vertical":
+						newPerm.push("oSeV");
+						break;
+					case "Round":
+						newPerm.push("oSeArc");
+						break;
+					default:
+						break;
+				}
+				switch (cornerSW) {
+					case "Square":
+						newPerm.push(
+							"oSwH",
+							"oSwV"
+						);
+						break;
+					case "Horizontal":
+						newPerm.push("oSwH");
+						break;
+					case "Vertical":
+						newPerm.push("oSwV");
+						break;
+					case "Round":
+						newPerm.push("oSwArc");
+						break;
+					default:
+						break;
+				}
+				switch (centreE) {
+					case "Up":
+						newPerm.push("iNeArc");
+						break;
+					case "Down":
+						newPerm.push("iSeArc");
+						break;
+					case "Horizontal":
+						newPerm.push("iEH");
+						break;
+					default:
+						break;
+				}
+				switch (centreW) {
+					case "Up":
+						newPerm.push("iNwArc");
+						break;
+					case "Down":
+						newPerm.push("iSwArc");
+						break;
+					case "Horizontal":
+						newPerm.push("iWH");
+						break;
+					default:
+						break;
 				}
 
 				
@@ -206,6 +475,7 @@ export default function LetterGrid() {
 			// Changing the permutation to be the new letter
 			// Getting the array of segments that should be visible for the new letter
 			let visibleSegments = new letterMaker(letter, existingPerm);
+			console.log(visibleSegments.newPerm);
 			// Updating the permutation object to reflect the new letter
 			for (let segment in perm) {
 				// If the segment is in the new letter's array of visible segments
@@ -227,7 +497,13 @@ export default function LetterGrid() {
 			}
 		}
 
-		changeToLetter("Q")
+
+		// A keypress event listener is added to the window to allow the user to change the letter
+		window.addEventListener("keypress", (e) => {
+			// The key that was pressed is stored in the variable 'key'
+			let key = e.key;
+			changeToLetter(key);
+		});
 	}, []);
 
 
