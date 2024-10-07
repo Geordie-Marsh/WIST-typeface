@@ -61,3 +61,20 @@ export const hide = element => classAdd(element, 'hidden');
 
 // To randomly choose between a set of values
 export const randomlyChoose = (...values) => values[roundDown(Math.random() * values.length)];
+
+
+// To check if an array only contains exactly the same values
+export function containsExactSet(array, values) {
+	// Check if lengths match first
+	if (array.length !== values.length) return false;
+	
+	// Sort both arrays and check if they are identical
+	const sortedArray = array.slice().sort();
+	const sortedValues = values.slice().sort();
+  
+	return sortedArray.every((value, index) => value === sortedValues[index]);
+}
+// To check if an array contains all but not necessarily just those values
+export function containsSet(array, values) {
+	return values.every(value => array.includes(value));
+}
