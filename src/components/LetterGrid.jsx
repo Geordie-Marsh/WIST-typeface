@@ -147,7 +147,177 @@ export default function LetterGrid() {
 		function letterMaker(letter, prevPerm = null) {
 			// The new permutation will be stored in this array, which be updated as the function progresses and then returned at the end
 			let newPerm = [];
+<<<<<<< HEAD
 			
+=======
+
+			// There are some common variable parts of letters, like the corners or the centres; these have presets
+			// These presets will get assigned in the letter calculations, but to save repeating code, the segments won't get pushed to newPerm until after the switch
+			let cornerNW, cornerNE, cornerSE, cornerSW, centreE, centreW;
+
+			// This function is used to choose which state a variable segment end up as
+			// function stateChooser(prevPerm, type, segments = [], location) {
+			// 	// Type is the type of segment: corner, centre, etc.
+
+			// 	// Segments is an object that contains the combinations of segments to choose between
+			// 		// For corners:
+			// 			// ["Square", "Round"]: Square or Round
+			// 			// ["Horizontal", "Round"]: Horizontal or Round
+			// 			// ["Vertical", "Round"]: Vertical or Round
+			// 			// ["Horizontal", "Square", "Round"]: Horizontal, Square or Round
+			// 			// ["Square", "Round", "VStem"]: Square, Round or VStem (a vertical stem, i.e., a Vertical and Round segment)
+			// 		// For centres:
+			// 			// ["Up", "Down", "Horizontal"]: Up, Down or Horizontal
+
+			// 	// Location is the location of the segment: Ne, Se, Sw, Nw, E, W
+
+			// 	if (type === "corner") {
+			// 		if (containsExactSet(segments, ["Square", "Round"])) {
+			// 			// If the segment is a square or round corner
+			// 			// Conditions: 
+			// 				// already only Vertical, only Horizontal or only Square = Square
+			// 				// already only Round = Round
+			// 				// otherwise random
+			// 			if ((prevPerm[`o${location}V`] || prevPerm[`o${location}H`]) && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Square
+			// 				return "Square";
+			// 			} else if (prevPerm[`o${location}Arc`] && !(prevPerm[`o${location}V`] || prevPerm[`o${location}H`])) {
+			// 				// If already only Round
+			// 				return "Round";
+			// 			} else {
+			// 				// Otherwise, randomly assign it
+			// 				return randomlyChoose("Square", "Round");
+			// 			}
+			// 		} else if (containsExactSet(segments, ["Horizontal", "Round"])) {
+			// 			// If the segment is a horizontal or round corner
+			// 			// Conditions: 
+			// 				// already only Horizontal = Horizontal
+			// 				// already only Round = Round
+			// 				// otherwise random
+			// 			if (prevPerm[`o${location}H`] && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Horizontal
+			// 				return "Horizontal";
+			// 			} else if (prevPerm[`o${location}Arc`] && !prevPerm[`o${location}H`]) {
+			// 				// If already only Round
+			// 				return "Round";
+			// 			} else {
+			// 				// Otherwise, randomly assign it
+			// 				return randomlyChoose("Horizontal", "Round");
+			// 			}
+			// 		} else if (containsExactSet(segments, ["Vertical", "Round"])) {
+			// 			// If the segment is a vertical or round corner
+			// 			// Conditions: 
+			// 				// aleady only Vertical = Vertical
+			// 				// already only Round = Round
+			// 				// otherwise random
+			// 			if (prevPerm[`o${location}V`] && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Vertical
+			// 				return "Vertical";
+			// 			} else if (prevPerm[`o${location}Arc`] && !prevPerm[`o${location}V`]) {
+			// 				// If already only Round
+			// 				return "Round";
+			// 			} else {
+			// 				// Otherwise, randomly assign it
+			// 				return randomlyChoose("Vertical", "Round");
+			// 			}
+			// 		} else if (containsExactSet(segments, ["Horizontal", "Square", "Round"])) {
+			// 			// If the segment is a horizontal, square or round corner
+			// 			// Conditions: 
+			// 				// already only Horizontal (inc. no Vertical) = Horizontal or Square
+			// 				// already only Vertical or only Square = Square
+			// 				// already only Round = Round
+			// 				// otherwise random
+			// 			if (prevPerm[`o${location}H`] && !prevPerm[`o${location}V`] && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Horizontal
+			// 				return randomlyChoose("Horizontal", "Square");
+			// 			} else if ((prevPerm[`o${location}V`] || prevPerm[`o${location}H`]) && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Square
+			// 				return "Square";
+			// 			} else if (prevPerm[`o${location}Arc`] && !(prevPerm[`o${location}V`] || prevPerm[`o${location}H`])) {
+			// 				// If already only Round
+			// 				return "Round";
+			// 			} else {
+			// 				// Otherwise, randomly assign it
+			// 				return randomlyChoose("Horizontal", "Square", "Round");
+			// 			}
+			// 		} else if (containsExactSet(segments, ["Square", "Round", "VStem"])) {
+			// 			// If the segment is a square, round or vertical stem corner
+			// 			// Conditions: 
+			// 				// already only Vertical (inc. no Horizontal) = Square or VStem
+			// 				// already only Round (inc. no Horizontal) = Round or VStem
+			// 				// already only VStem = VStem
+			// 				// already Horizontal and no Round (Vertical irrelevant) = Square
+			// 				// otherwise random
+			// 			if (prevPerm[`o${location}V`] && !prevPerm[`o${location}H`] && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Vertical
+			// 				return randomlyChoose("Square", "VStem");
+			// 			} else if (prevPerm[`o${location}Arc`] && !prevPerm[`o${location}H`] && !prevPerm[`o${location}V`]) {
+			// 				// If already only Round
+			// 				return randomlyChoose("Round", "VStem");
+			// 			} else if (prevPerm[`o${location}V`] && prevPerm[`o${location}Arc`] && !prevPerm[`o${location}H`]) {
+			// 				// If already only VStem
+			// 				return "VStem";
+			// 			} else if (prevPerm[`o${location}H`] && !prevPerm[`o${location}Arc`]) {
+			// 				// If already only Horizontal
+			// 				return "Square";
+			// 			} else {
+			// 				// Otherwise, randomly assign it
+			// 				return randomlyChoose("Square", "Round", "VStem");
+			// 			}
+			// 		}
+			// 	}
+			// 	if (type === "centre") {
+			// 		let north;
+			// 		let south;
+			// 		if (location === "W") {
+			// 			north = "Nw";
+			// 			south = "Sw";
+			// 		} else {
+			// 			north = "Ne";
+			// 			south = "Se";
+			// 		}
+			// 		if (containsExactSet(segments, ["Up", "Down", "Horizontal"])) {
+			// 			// If the segment is a centre segment
+			// 			// Conditions: 
+			// 				// already only Up = Up
+			// 				// already only Down = Down
+			// 				// already only Horizontal = Horizontal
+			// 				// already Up and Down = Up or Down
+			// 				// already Up and Horizontal = Up or Horizontal
+			// 				// already Horizontal and Down = Horizontal or Down
+			// 				// otherwise random
+			// 			if (prevPerm[`i${north}Arc`] && !prevPerm[`i${location}H`] && !prevPerm[`i${south}Arc`]) {
+			// 				// If already only Up
+			// 				return "Up";
+			// 			} else if (prevPerm[`i${south}Arc`] && !prevPerm[`i${location}H`] && !prevPerm[`i${north}Arc`]) {
+			// 				// If already only Down
+			// 				return "Down";
+			// 			} else if (prevPerm[`i${location}H`] && !prevPerm[`i${north}Arc`] && !prevPerm[`i${south}Arc`]) {
+			// 				// If already only Horizontal
+			// 				return "Horizontal";
+			// 			} else if (prevPerm[`i${north}Arc`] && prevPerm[`i${south}Arc`] && !prevPerm[`i${location}H`]) {
+			// 				// If already only Up and Down
+			// 				return randomlyChoose("Up", "Down");
+			// 			} else if (prevPerm[`i${north}Arc`] && prevPerm[`i${location}H`] && !prevPerm[`i${south}Arc`]) {
+			// 				// If already only Up and Horizontal
+			// 				return randomlyChoose("Up", "Horizontal");
+			// 			} else if (prevPerm[`i${location}H`] && prevPerm[`i${south}Arc`] && !prevPerm[`i${north}Arc`]) {
+			// 				// If already only Horizontal and Down
+			// 				return randomlyChoose("Horizontal", "Down");
+			// 			} else {
+			// 				// Otherwise, randomly assign it
+			// 				return randomlyChoose("Up", "Down", "Horizontal");
+			// 			}
+			// 		}
+			// 	}
+			// }
+
+
+
+
+
+
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 
 			
 			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
@@ -210,6 +380,7 @@ export default function LetterGrid() {
 				// Now we have all possible combinations of segments, we can test each one
 				// We'll start with just one segment currently visible, then two, etc.
 				let matchingOutcomes = [];
+<<<<<<< HEAD
 				// for (let i = 1; i <= segments.length; i++) {
 				// 	const combinations = findCombinations(segments, i); // All combinations of segments of length i
 				// 	console.log(`Testing combinations of length ${i}:`, combinations);
@@ -224,6 +395,10 @@ export default function LetterGrid() {
 				for (let i = segments.length; i >= 1; i--) {
 					// Getting all combinations of segments of length i
 					const combinations = findCombinations(segments, i);
+=======
+				for (let i = 1; i <= segments.length; i++) {
+					const combinations = findCombinations(segments, i); // All combinations of segments of length i
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 					console.log(`Testing combinations of length ${i}:`, combinations);
 
 					// Go through each combination
@@ -250,6 +425,7 @@ export default function LetterGrid() {
 
 						}
 					}
+<<<<<<< HEAD
 
 					// If there are already any matching outcomes, stop the loop
 					if (matchingOutcomes.length > 0) {
@@ -260,6 +436,9 @@ export default function LetterGrid() {
 
 
 
+=======
+				}
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 				console.log("Matching outcomes:", matchingOutcomes);
 
 				// If there are no matching outcomes, randomly pick one of the possible outcomes
@@ -274,14 +453,61 @@ export default function LetterGrid() {
 					return matchingOutcomes[0];
 				} else {
 					// If there are multiple matching outcomes, randomly choose one
+<<<<<<< HEAD
+=======
+
+					// Some outcomes can contain the entirety of other outcomes, e.g., ["oNwV"] and ["oNwV", "oNwH"]
+					// If both of these outcomes are in the array, there's a chance that the shorter one will be chosen
+					// This can be a problem; if there's a segment that's in the longer one but not the shorter one which is already visible, only the longer one should be able to be chosen, as the maximum no. of segments should be preserved between a given letter change
+					// In this e.g., if oNwV and oNwH are both already visible, the shorter array shouldn't be allowed to be chosen as the longer array already contains oNwH and the shorter one would be needlessly hiding it
+					// So we need to remove the shorter one if a longer one contains a segment that the shorter array does not which is already visible
+					// This function will do that
+					function removeShorterOutcomes(outcomes) {
+						// Go through each outcome
+						for (let i = 0; i < outcomes.length; i++) {
+							const outcome1 = outcomes[i]; // The current outcome
+
+							// Go through the outcomes again
+							for (let j = 0; j < outcomes.length; j++) {
+								const outcome2 = outcomes[j];
+
+								// If the second outcome is longer than the first and contains the first
+								if (outcome2.length > outcome1.length && containsSet(outcome2, outcome1)) {
+									// Find the segments that are in the second outcome but not the first
+									const difference = outcome2.filter(segment => !outcome1.includes(segment));
+
+									// If the difference contains any segments that are already visible, remove the first outcome
+									if (containsSet(prevPermSegments, difference)) {
+										outcomes.splice(i, 1);
+										i--;
+										break;
+									}
+								}
+							}
+						}
+
+						return outcomes;
+					}
+
+					// Removing the shorter outcomes
+					matchingOutcomes = removeShorterOutcomes(matchingOutcomes);
+					console.log("Matching outcomes after removing shorter ones:", matchingOutcomes);
+									
+					
+						
+
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 					const chosenOutcome = randomlyChoose(...matchingOutcomes);
 					console.log("Multiple matching outcomes found, randomly chosen:", chosenOutcome);
 					return chosenOutcome;
 				}
 			}
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 			// There are some commonly used presets for corners and centres
 			// This function is used to invoke the stateChooser by using presets instead of arrays of segments
 			function chooseStatePresets(prevPerm, type, location, possibleOutcomes) {
@@ -384,6 +610,13 @@ export default function LetterGrid() {
 					);
 
 					// TOP-LEFT CORNER is variable: Square or Round
+<<<<<<< HEAD
+=======
+					// cornerNW = stateChooser(prevPerm, "corner", ["Square", "Round"], "Nw");
+					// let tester = chooseState(prevPerm, [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]]);
+					// console.log("final: " + tester);
+					
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
 
 					// TOP-RIGHT CORNER is variable: Square or Round
@@ -423,6 +656,7 @@ export default function LetterGrid() {
 					}
 
 					// CENTRE-RIGHT is custom
+<<<<<<< HEAD
 					// Possible outcomes:
 						// Round on top and bottom
 						// Round on top and Square on bottom
@@ -434,6 +668,10 @@ export default function LetterGrid() {
 					]));
 
 					break;
+=======
+					// Conditions:
+						
+>>>>>>> c76124669dcee7f07f4ace090b58ef5f71849ab1
 				case "c":
 				case "C":
 					// C has 2 variables: the top-right and bottom-right corners
