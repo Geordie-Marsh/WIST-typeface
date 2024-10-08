@@ -22,8 +22,8 @@ export const log =  () => console.log;
 
 // Math shortcuts
 // Min and max
-export const min = (number) => Math.min(number);
-export const max = (number) => Math.max(number);
+export const min = (numbers) => Math.min(numbers);
+export const max = (numbers) => Math.max(numbers);
 // Round to the nearest, up and down
 export const round = (number) => Math.round(number);
 export const roundUp = (number) => Math.ceil(number);

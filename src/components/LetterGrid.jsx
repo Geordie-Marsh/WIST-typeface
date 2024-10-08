@@ -435,7 +435,7 @@ export default function LetterGrid() {
 			
 
 			// The switch statement will calculate the new permutation based on the letter
-			// R S T U V W X Y Z   1 2 3 4 5 6 7 8 9 0   ! ? . , ' " : ; - + = ( ) [ ] { } < > / \ | @ # $ % ^ & * ~ ` _ =
+			// 1 2 3 4 5 6 7 8 9 0   ! ? . , ' " : ; - + = ( ) [ ] { } < > / \ | @ # $ % ^ & * ~ ` _ =
 			switch (letter) {
 				case "a":
 				case "A":
@@ -914,6 +914,246 @@ export default function LetterGrid() {
 					
 					// HOOK (bottom-right corner) is custom: Arc, Horizontal or Inv and Vertical
 					newPerm.push(...chooseState(prevPerm, [["oSeInv"], ["oSeH"], ["oSeInv", "oSeV"]]));
+
+					break;
+				case "r":
+				case "R":
+					// R has 5 variables: the top-left corner, the top-right corner, the centre-left, the centre-NE and the bottom-right quarter
+
+					// Adding the constant segments
+					newPerm.push(
+						"iNwV",
+						"iSwV",
+						"oSwV"
+					);
+
+					// TOP-LEFT CORNER is variable: Square, Round or VStem
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round", "VStem"]));
+
+					// TOP-RIGHT CORNER is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+
+					// CENTRE-LEFT is variable: Up, Down or Horizontal
+					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+
+					// CENTRE-NE is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Ne", ["Square", "Round"]));
+
+					// BOTTOM-RIGHT QUARTER is custom: Inwards or Outwards
+					newPerm.push(...chooseState(prevPerm, [
+						["iSV", "oSeInv"], 
+						["iSeArc", "oSeV"]
+					]));
+
+					break;
+				case "s":
+				case "S":
+					// S has 2 variables: the top-right and bottom-left corners
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"iNwArc",
+						"iSeArc",
+						"oSeArc"
+					);
+
+					// TOP-RIGHT CORNER is variable: Horizontal or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+
+					// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+
+					break;
+				case "t":
+				case "T":
+					// T has 1 variable: the top of the stem, which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwH",
+						"oNeH",
+						"iNV",
+						"iSV",
+						"oSV"
+					);
+
+					// TOP OF STEM is custom:
+					// Possible outcomes:
+						// Vertical
+						// Curving to the left (Inv)
+
+					newPerm.push(...chooseState(prevPerm, [
+						["oNV"],
+						["oNwInv"]
+					]));
+
+					break;
+				case "u":
+				case "U":
+					// U have 1 variable: the bottom-right corner, which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwV",
+						"iNwV",
+						"iSwV",
+						"oSwArc",
+						"oSeArc",
+						"iSeV",
+						"iNeV",
+						"oNeV"
+					);
+
+					// BOTTOM-RIGHT CORNER is custom: Vertical, but random chance of not being visible
+					newPerm.push(...chooseState(prevPerm, [["oSeV"]], true));
+
+					break;
+				case "v":
+				case "V":
+					// V is a fixed letter - no calculations needed
+
+					newPerm.push(
+						"oNwV",
+						"iNwV",
+						"iSwV",
+						"oSwV",
+						"oSwH",
+						"oSeArc",
+						"iSeV",
+						"iNeV",
+						"oNeV"
+					);
+
+					break;
+				case "w":
+				case "W":
+					// W has 1 variable: the bottom, which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwV",
+						"iNwV",	
+						"iSwV",
+						"iSV",
+						"oNeV",
+						"iNeV",
+						"iSeV"
+					);
+
+					// BOTTOM is custom:
+					// Possible outcomes:
+						// Facing out on left, facing out on right
+						// Facing out on left, facing in on right
+						// Facing in on left, facing out on right
+
+					newPerm.push(...chooseState(prevPerm, [
+						["oSwV", "oSwInv", "oSeV", "oSeInv"],
+						["oSwV", "oSwInv", "oSV", "oSeArc"],
+						["oSwArc", "oSV", "oSeInv", "oSeV"]
+					]));
+
+					break;
+				case "x":
+				case "X":
+					// X has 3 variables: the entire shape is custom, and is done manually
+
+					// newPerm.push(...chooseState(prevPerm, [
+					// 	["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"],
+					// 	["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"],
+					// 	["oNwInv", "iNV", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeInv", "iSV"]
+					// ]));\
+					let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
+
+					const outcome1 = ["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"];
+					const outcome2 = ["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"];
+					const outcome3 = ["oNwInv", "iNV", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeInv", "iSV"];
+
+					// Count how many of the segments in the first shape are already visible
+					let count1 = 0;
+					for (let segment of outcome1) {
+						if (prevPermSegments.includes(segment)) {
+							count1++;
+						}
+					}
+					// Count how many of the segments in the second shape are already visible
+					let count2 = 0;
+					for (let segment of outcome2) {
+						if (prevPermSegments.includes(segment)) {
+							count2++;
+						}
+					}
+					// Count how many of the segments in the third shape are already visible
+					let count3 = 0;
+					for (let segment of outcome3) {
+						if (prevPermSegments.includes(segment)) {
+							count3++;
+						}
+					}
+					console.log("Count 1:", count1);
+					console.log("Count 2:", count2);
+					console.log("Count 3:", count3);
+
+					// Choose the shape with the most visible segments - if two shapes have the same number of visible segments, randomly choose between them
+					let chosenShape;
+					if (count1 > count2 && count1 > count3) {
+						chosenShape = outcome1;
+					} else if (count2 > count1 && count2 > count3) {
+						chosenShape = outcome2;
+					} else if (count3 > count1 && count3 > count2) {
+						chosenShape = outcome3;
+					} else if (count1 === count2 && count1 > count3) {
+						chosenShape = randomlyChoose(outcome1, outcome2);
+					} else if (count1 === count3 && count1 > count2) {
+						chosenShape = randomlyChoose(outcome1, outcome3);
+					} else if (count2 === count3 && count2 > count1) {
+						chosenShape = randomlyChoose(outcome2, outcome3);
+					} else {
+						chosenShape = randomlyChoose(outcome1, outcome2, outcome3);
+					}
+
+					console.log("Chosen shape:", chosenShape);
+
+					newPerm.push(...chosenShape);
+					
+					break;
+				case "y":
+				case "Y":
+					// Y has 3 variables: the centre-NW, the centre-right and the bottom-left corner
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwV",
+						"oNeV",
+						"iNeV",
+						"iSeV",
+						"oSeArc"
+					);
+
+					// CENTRE-NW is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
+
+					// CENTRE-RIGHT is variable: Up, Down or Horizontal
+					newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
+
+					// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+
+					break;
+				case "z":
+				case "Z":
+					// Z is a fixed letter - no calculations needed
+
+					newPerm.push(
+						"oNwH",
+						"oNeH",
+						"oNeV",
+						"iNeArc",
+						"iSwArc",
+						"oSwV",
+						"oSwH",
+						"oSeH"
+					);
 
 					break;
 				default:
