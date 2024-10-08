@@ -151,10 +151,11 @@ export default function LetterGrid() {
 
 			
 			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
-			function chooseState(prevPerm, possibleOutcomes) {
+			function chooseState(prevPerm, possibleOutcomes, optionalVisibility = false) {
 				console.log("chooseState called with:", prevPerm, possibleOutcomes);
 				
 				// Sample possibleOutcomes: [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]] (Square, Round, VStem)
+				// optionalVisibility is a boolean for if the segment is optional to be visible (chosen from a 50% chance)
 				
 				// Getting all the involved segments (the same segment may appear in multiple outcomes, so this will )
 				let segments = [];
@@ -207,20 +208,18 @@ export default function LetterGrid() {
 					return combinations;
 				}
 
-				// Now we have all possible combinations of segments, we can test each one
-				// We'll start with just one segment currently visible, then two, etc.
-				let matchingOutcomes = [];
-				// for (let i = 1; i <= segments.length; i++) {
-				// 	const combinations = findCombinations(segments, i); // All combinations of segments of length i
-				// 	console.log(`Testing combinations of length ${i}:`, combinations);
 
+				
 				// Now we have all possible combinations of segments, we can test each one
-				// We'll start will testing to see if any of the outcomes contains all the segments
-				// Then we'll test to see if any of the outcomes contains all but one of the segments
-				// Then all but two, etc.
-				// If there are multiple outcomes that match this number of segments, we'll randomly choose one
-				// If an outcome is found, we'll stop the loop after testing all outcomes against that number of segments
-				// If at the end no outcomes are found, we'll randomly choose one of the possible outcomes
+					// We'll start will testing to see if any of the outcomes contains all the segments
+					// If no outcomes are found, we'll check to see if this combination of all the possible segments was entirely present in the previous permutation
+					// If they are, we'll randomly choose one of the possible outcomes
+					// Otherwise, we'll test to see if any of the outcomes contains all but one of the segments
+					// Then all but two, etc.
+					// If there are multiple outcomes that match this number of segments, we'll randomly choose one
+					// If an outcome is found, we'll stop the loop after testing all outcomes against that number of segments
+					// If at the end no outcomes are found, we'll randomly choose one of the possible outcomes
+				let matchingOutcomes = [];
 				for (let i = segments.length; i >= 1; i--) {
 					// Getting all combinations of segments of length i
 					const combinations = findCombinations(segments, i);
@@ -255,6 +254,15 @@ export default function LetterGrid() {
 					if (matchingOutcomes.length > 0) {
 						break;
 					}
+
+					// If no outcomes are found and this is the combination with all the possible segments in it, check to see if the previous permutation contains all the segments
+					if (i === segments.length && containsSet(prevPermSegments, segments)) {
+						console.log("Previous permutation contains all segments");
+						// If it does, randomly choose one of the possible outcomes
+						const chosenOutcome = randomlyChoose(...possibleOutcomes);
+						console.log("Randomly chosen outcome:", chosenOutcome);
+						return chosenOutcome;
+					}
 				}
 
 
@@ -266,16 +274,43 @@ export default function LetterGrid() {
 				if (matchingOutcomes.length === 0) {
 					console.log("No matching outcomes found, randomly choosing one of the possible outcomes");
 					const chosenOutcome = randomlyChoose(...possibleOutcomes);
-					console.log("Randomly chosen outcome:", chosenOutcome);
+					console.log("Randomly chosen outcome (const):", chosenOutcome);
+
+					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
+					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
+					console.log("TESTING: " + containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5)
+					if (containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
+						console.log("Outcome is optionally visible and randomly chosen not to be visible");
+						return [];
+					}
+
 					return chosenOutcome;
 				} else if (matchingOutcomes.length === 1) {
-					// If there is only one matching outcome, return it
+					// If there is only one matching outcome
+
+					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
+					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
+					console.log("TESTING: " + containsSet(prevPermSegments, [matchingOutcomes[0]]), optionalVisibility, Math.random() < 0.5)
+					if (containsSet(prevPermSegments, [matchingOutcomes[0]]) && optionalVisibility && Math.random() < 0.5) {
+						console.log("Outcome is optionally visible and randomly chosen not to be visible");
+						return [];
+					}
+
 					console.log("One matching outcome found:", matchingOutcomes[0]);
 					return matchingOutcomes[0];
 				} else {
 					// If there are multiple matching outcomes, randomly choose one
 					const chosenOutcome = randomlyChoose(...matchingOutcomes);
-					console.log("Multiple matching outcomes found, randomly chosen:", chosenOutcome);
+					console.log("Multiple matching outcomes found, randomly chosen  (const):", chosenOutcome);
+
+					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
+					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
+					console.log("TESTING: " + containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
+					if (containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
+						console.log("Outcome is optionally visible and randomly chosen not to be visible");
+						return [];
+					}
+					
 					return chosenOutcome;
 				}
 			}
@@ -284,7 +319,7 @@ export default function LetterGrid() {
 
 			// There are some commonly used presets for corners and centres
 			// This function is used to invoke the stateChooser by using presets instead of arrays of segments
-			function chooseStatePresets(prevPerm, type, location, possibleOutcomes) {
+			function chooseStatePresets(prevPerm, type, location, possibleOutcomes, optionalVisibility = false) {
 				console.log("chooseStatePresets called with:", prevPerm, type, location, possibleOutcomes);
 				
 				// Type is the type of segment: corner, centre, etc.
@@ -359,7 +394,7 @@ export default function LetterGrid() {
 				console.log("Possible outcomes segments:", possibleOutcomesSegments);
 				
 				// Using the chooseState function to choose the state
-				const chosenState = chooseState(prevPerm, possibleOutcomesSegments);
+				const chosenState = chooseState(prevPerm, possibleOutcomesSegments, optionalVisibility);
 				console.log("Chosen state:", chosenState);
 				return chosenState;
 			}
@@ -418,9 +453,7 @@ export default function LetterGrid() {
 					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
 
 					// CENTRE-LEFT is variable: Up, Down or Horizontal, but random chance of not being visible
-					if (Math.random() < 0.5) {
-						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
-					}
+					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"], true));
 
 					// CENTRE-RIGHT is custom
 					// Possible outcomes:
@@ -470,6 +503,59 @@ export default function LetterGrid() {
 						"oNwV"
 					);
 					
+					break;
+				case "e":
+				case "E":
+					// E has 6 variables, all 4 corners and the centre-left and centre-right
+
+					// Adding the constant segments
+					newPerm.push(
+						"iNwV",
+						"iSwV"
+					);
+
+					// TOP-LEFT CORNER is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+
+					// TOP-RIGHT CORNER is variable: Horizontal or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+
+					// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+
+					// BOTTOM-LEFT CORNER is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
+
+					// CENTRE-LEFT is variable: Up, Down or Horizontal
+					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+
+					// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
+					newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
+
+					break;
+				case "f":
+				case "F":
+					// F has 4 variables: the top-left and top-right corners, and the centre-left and centre-right
+
+					// Adding the constant segments
+					newPerm.push(
+						"iNwV",
+						"iSwV",
+						"oSwV"
+					);
+
+					// TOP-LEFT CORNER is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+
+					// TOP-RIGHT CORNER is variable: Horizontal or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+
+					// CENTRE-LEFT is variable: Down or Horizontal
+					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Down", "Horizontal"]));
+
+					// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
+					newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
+
 					break;
 				case "l":
 				case "L":
@@ -549,158 +635,6 @@ export default function LetterGrid() {
 
 					break;
 			}
-
-			// // Presets
-			// switch (cornerNW) {
-			// 	case "Square":
-			// 		newPerm.push(
-			// 			"oNwH",
-			// 			"oNwV"
-			// 		);
-			// 		break;
-			// 	case "Horizontal":
-			// 		newPerm.push("oNwH");
-			// 		break;
-			// 	case "Vertical":
-			// 		newPerm.push("oNwV");
-			// 		break;
-			// 	case "Round":
-			// 		newPerm.push("oNwArc");
-			// 		break;
-			// 	case "VStem":
-			// 		newPerm.push(
-			// 			"oNwV",
-			// 			"oNwArc"
-			// 		);
-			// 		break;
-			// 	case "HStem":
-			// 		newPerm.push(
-			// 			"oNwH",
-			// 			"oNwArc"
-			// 		);
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
-			// switch (cornerNE) {
-			// 	case "Square":
-			// 		newPerm.push(
-			// 			"oNeH",
-			// 			"oNeV"
-			// 		);
-			// 		break;
-			// 	case "Horizontal":
-			// 		newPerm.push("oNeH");
-			// 		break;
-			// 	case "Vertical":
-			// 		newPerm.push("oNeV");
-			// 		break;
-			// 	case "Round":
-			// 		newPerm.push("oNeArc");
-			// 		break;
-			// 	case "VStem":
-			// 		newPerm.push(
-			// 			"oNeV",
-			// 			"oNeArc"
-			// 		);
-			// 		break;
-			// 	case "HStem":
-			// 		newPerm.push(
-			// 			"oNeH",
-			// 			"oNeArc"
-			// 		);
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
-			// switch (cornerSE) {
-			// 	case "Square":
-			// 		newPerm.push(
-			// 			"oSeH",
-			// 			"oSeV"
-			// 		);
-			// 		break;
-			// 	case "Horizontal":
-			// 		newPerm.push("oSeH");
-			// 		break;
-			// 	case "Vertical":
-			// 		newPerm.push("oSeV");
-			// 		break;
-			// 	case "Round":
-			// 		newPerm.push("oSeArc");
-			// 		break;
-			// 	case "VStem":
-			// 		newPerm.push(
-			// 			"oSeV",
-			// 			"oSeArc"
-			// 		);
-			// 		break;
-			// 	case "HStem":
-			// 		newPerm.push(
-			// 			"oSeH",
-			// 			"oSeArc"
-			// 		);
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
-			// switch (cornerSW) {
-			// 	case "Square":
-			// 		newPerm.push(
-			// 			"oSwH",
-			// 			"oSwV"
-			// 		);
-			// 		break;
-			// 	case "Horizontal":
-			// 		newPerm.push("oSwH");
-			// 		break;
-			// 	case "Vertical":
-			// 		newPerm.push("oSwV");
-			// 		break;
-			// 	case "Round":
-			// 		newPerm.push("oSwArc");
-			// 		break;
-			// 	case "VStem":
-			// 		newPerm.push(
-			// 			"oSwV",
-			// 			"oSwArc"
-			// 		);
-			// 		break;
-			// 	case "HStem":
-			// 		newPerm.push(
-			// 			"oSwH",
-			// 			"oSwArc"
-			// 		);
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
-			// switch (centreE) {
-			// 	case "Up":
-			// 		newPerm.push("iNeArc");
-			// 		break;
-			// 	case "Down":
-			// 		newPerm.push("iSeArc");
-			// 		break;
-			// 	case "Horizontal":
-			// 		newPerm.push("iEH");
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
-			// switch (centreW) {
-			// 	case "Up":
-			// 		newPerm.push("iNwArc");
-			// 		break;
-			// 	case "Down":
-			// 		newPerm.push("iSwArc");
-			// 		break;
-			// 	case "Horizontal":
-			// 		newPerm.push("iWH");
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
 
 			
 			return newPerm;
