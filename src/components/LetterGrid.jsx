@@ -278,8 +278,8 @@ export default function LetterGrid() {
 
 					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
 					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-					console.log("TESTING: " + containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5)
-					if (containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
+					console.log("TESTING: " + !containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
+					if (!containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
 						console.log("Outcome is optionally visible and randomly chosen not to be visible");
 						return [];
 					}
@@ -384,6 +384,27 @@ export default function LetterGrid() {
 							case "Horizontal":
 								outcomeSegments.push(`i${location}H`);
 								break;
+							default:
+								break;
+						}
+					}
+					if (type === "centre-corner") {
+						let EorW;
+						if (location === "Nw" || location === "Sw") {
+							EorW = "W";
+						} else {
+							EorW = "E";
+						}
+						switch (outcome) {
+							case "Round":
+								outcomeSegments.push(`i${location}Arc`);
+								break;
+							case "Square":
+								outcomeSegments.push(
+									`i${EorW}H`, 
+									`i${location}V`
+								);
+								break; 
 							default:
 								break;
 						}
@@ -555,6 +576,128 @@ export default function LetterGrid() {
 
 					// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
 					newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
+
+					break;
+				case "g":
+				case "G":
+					// G has 3 variables: the top-right and bottom-right corners, and the centre-SE
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwArc"
+					);
+
+					// TOP-RIGHT CORNER is variable: Horizontal, Round or Square
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round", "Square"]));
+
+					// BOTTOM-RIGHT CORNER is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
+
+					// CENTRE-SE is variable: Square or Round
+					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Se", ["Square", "Round"]));
+
+					break;
+				case "h":
+				case "H":
+					// H has 1 variable: the centre, which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwV",
+						"iNwV",
+						"iSwV",
+						"oSwV",
+						"oNeV",
+						"iNeV",
+						"iSeV",
+						"oSeV"
+					);
+
+					// CENTRE is custom:
+					// Possible outcomes:
+						// Up on left, Horizontal on right
+						// Horizontal on left, Up on right
+						// Down on left, Horizontal on right
+						// Horizontal on left, Down on right
+						// Horizontal on left, Horizontal on right
+						// Up on left, Down on right
+						// Down on left, Up on right
+
+					newPerm.push(...chooseState(prevPerm, [
+						["iNwArc", "iEH"],
+						["iWH", "iNeArc"],
+						["iSwArc", "iEH"],
+						["iWH", "iSeArc"],
+						["iWH", "iEH"],
+						["iNwArc", "iSeArc"],
+						["iSwArc", "iNeArc"]
+					]));
+
+					break;
+				case "i":
+				case "I":
+					// I has 1 variable: the serifs are optional
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNV",
+						"iNV",
+						"iSV",
+						"oSV"
+					);
+
+					// SERIFS are custom: randomly chosen to be visible or not
+					newPerm.push(...chooseState(prevPerm, [["oNwH", "oSwH", "oNeH", "oSeH"]], true));
+
+					break;
+				case "j":
+				case "J":
+					// J is complex, and is done completely custom
+
+					newPerm.push(...chooseState(prevPerm, [
+						["oNV", "iNV", "iSV", "oSV", "oSwArc"],
+						["oNV", "iNV", "iSV", "oSwInv"],
+						["oNV", "iNV", "iSV", "oSV", "oSwArc", "oNwH"],
+						["oNV", "iNV", "iSV", "oSwInv", "oNwH"],
+						["oNV", "iNV", "iSV", "oSV", "oSwArc", "oNwH", "oNeH"],
+						["oNV", "iNV", "iSV", "oSwInv", "oNwH", "oNeH"],
+
+						["oNeV", "iNeV", "iSeV", "oSeArc", "oSwArc"],
+						["oNeV", "iNeV", "iSeV", "oSeArc", "oSwH"],
+						["oNeV", "iNeV", "iSeV", "oSeArc", "oSwArc", "oNeH"],
+						["oNeV", "iNeV", "iSeV", "oSeArc", "oSwH", "oNeH"],
+						["oNeV", "iNeV", "iSeV", "oSeArc", "oSwArc", "oNeH", "oNwH"],
+						["oNeV", "iNeV", "iSeV", "oSeArc", "oSwH", "oNeH", "oNwH"]
+					]));
+
+					break;
+				case "k":
+				case "K":
+					// K has 2 variables: the centre-left and the bottom-right quarter, the latter of which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwV",
+						"iNwV",
+						"iSwV",
+						"oSwV",
+						"iNeArc"
+					);
+
+					// CENTRE-LEFT is variable: Up, Down or Horizontal
+					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+
+					// BOTTOM-RIGHT QUARTER is custom:
+					// Possible outcomes:
+						// Inwards leg: Down then Round
+						// Outwards leg: Round then Down
+					newPerm.push(...chooseState(prevPerm, [
+						["iSV", "oSeInv"], 
+						["iSeArc", "oSeV"]
+					]));
 
 					break;
 				case "l":
