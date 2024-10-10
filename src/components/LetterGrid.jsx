@@ -117,37 +117,17 @@ export default function LetterGrid() {
 
 
 
-		// Defining the letter makers
-		// Each letter maker will work out which segments should be visible for the letter (based on the rules of the letter)
-		// The function will return an array with the segments that should be visible
 		
-		
-		
-		const makeLetter = {
-			d: () => {
-				// D is a fixed letter - no calculations needed
-				let newPerm = [];
 
-				newPerm.push("oNwH");
-				newPerm.push("oNeArc");
-				newPerm.push("iNeV");
-				newPerm.push("iSeV");
-				newPerm.push("oSeArc");
-				newPerm.push("oSwH");
-				newPerm.push("oSwV");
-				newPerm.push("iSwV");
-				newPerm.push("iNwV");
-				newPerm.push("oNwV");
-				
-				return newPerm;
-			},
-
-		};
-
+		// This function will be used to update the permutation
 		function letterMaker(letter, prevPerm = null) {
-			// The new permutation will be stored in this array, which be updated as the function progresses and then returned at the end
-			let newPerm = [];
+			// Letter: the letter to be displayed
+			// prevPerm: the previous permutation (optional; if not provided, a random permutation will be chosen)
 			
+			// The new permutation will be stored in this array
+			// This will be updated as the function progresses and then returned at the end
+			let newPerm = [];
+
 
 			
 			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
@@ -205,6 +185,7 @@ export default function LetterGrid() {
 						}
 					}
 
+					// Return all the combinations
 					return combinations;
 				}
 
@@ -314,6 +295,8 @@ export default function LetterGrid() {
 					return chosenOutcome;
 				}
 			}
+
+
 
 
 
@@ -434,6 +417,10 @@ export default function LetterGrid() {
 			
 			
 
+
+
+
+
 			// The switch statement will calculate the new permutation based on the letter
 			// 1 2 3 4 5 6 7 8 9 0   ! ? . , ' " : ; - + = ( ) [ ] { } < > / \ | @ # $ % ^ & * ~ ` _ =
 			switch (letter) {
@@ -451,17 +438,15 @@ export default function LetterGrid() {
 						"iNeV"
 					);
 
-					// TOP-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
-
-					// TOP-RIGHT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
-
-					// CENTRE-LEFT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
-
-					// CENTRE-RIGHT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+						// TOP-RIGHT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+						// CENTRE-LEFT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+						// CENTRE-RIGHT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
 
 					break;
 				case "b":
@@ -476,28 +461,25 @@ export default function LetterGrid() {
 						"oSwH"
 					);
 
-					// TOP-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
-
-					// TOP-RIGHT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
-
-					// CENTRE-LEFT is variable: Up, Down or Horizontal, but random chance of not being visible
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"], true));
-
-					// CENTRE-RIGHT is custom
-					// Possible outcomes:
-						// Round on top and bottom
-						// Round on top and Square on bottom
-						// Square on top and Round on bottom
-					newPerm.push(...chooseState(prevPerm, [
-						["iNeArc", "iSeArc"], 
-						["iNeArc", "iEH", "iSeV"], 
-						["iNeV", "iEH", "iSeArc"]
-					]));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+						// TOP-RIGHT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
+						// CENTRE-LEFT is variable: Up, Down or Horizontal, but random chance of not being visible
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"], true));
+						// CENTRE-RIGHT is custom
+						// Possible outcomes:
+							// Round on top and bottom
+							// Round on top and Square on bottom
+							// Square on top and Round on bottom
+						newPerm.push(...chooseState(prevPerm, [
+							["iNeArc", "iSeArc"], 
+							["iNeArc", "iEH", "iSeV"], 
+							["iNeV", "iEH", "iSeArc"]
+						]));
 
 					break;
 				case "c":
@@ -512,11 +494,11 @@ export default function LetterGrid() {
 						"oSwArc"
 					);
 
-					// TOP-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+					// VARIABLE SEGMENTS
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
 
 					break;
 				case "d":
@@ -547,23 +529,19 @@ export default function LetterGrid() {
 						"iSwV"
 					);
 
-					// TOP-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
-
-					// TOP-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
-
-					// BOTTOM-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
-
-					// CENTRE-LEFT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
-
-					// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
-					newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+						// BOTTOM-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
+						// CENTRE-LEFT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+						// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
+						newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
 
 					break;
 				case "f":
@@ -577,17 +555,15 @@ export default function LetterGrid() {
 						"oSwV"
 					);
 
-					// TOP-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
-
-					// TOP-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
-
-					// CENTRE-LEFT is variable: Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Down", "Horizontal"]));
-
-					// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
-					newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// CENTRE-LEFT is variable: Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Down", "Horizontal"]));
+						// CENTRE-RIGHT is custom: Horizontal, but random chance of not being visible
+						newPerm.push(...chooseState(prevPerm, [["iEH"]], true));
 
 					break;
 				case "g":
@@ -602,14 +578,13 @@ export default function LetterGrid() {
 						"oSwArc"
 					);
 
-					// TOP-RIGHT CORNER is variable: Horizontal, Round or Square
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round", "Square"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
-
-					// CENTRE-SE is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Se", ["Square", "Round"]));
+					// VARIABLE SEGMENTS
+						// TOP-RIGHT CORNER is variable: Horizontal, Round or Square
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round", "Square"]));
+						// BOTTOM-RIGHT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
+						// CENTRE-SE is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Se", ["Square", "Round"]));
 
 					break;
 				case "h":
@@ -628,25 +603,25 @@ export default function LetterGrid() {
 						"oSeV"
 					);
 
-					// CENTRE is custom:
-					// Possible outcomes:
-						// Up on left, Horizontal on right
-						// Horizontal on left, Up on right
-						// Down on left, Horizontal on right
-						// Horizontal on left, Down on right
-						// Horizontal on left, Horizontal on right
-						// Up on left, Down on right
-						// Down on left, Up on right
-
-					newPerm.push(...chooseState(prevPerm, [
-						["iNwArc", "iEH"],
-						["iWH", "iNeArc"],
-						["iSwArc", "iEH"],
-						["iWH", "iSeArc"],
-						["iWH", "iEH"],
-						["iNwArc", "iSeArc"],
-						["iSwArc", "iNeArc"]
-					]));
+					// VARIABLE SEGMENTS
+						// CENTRE is custom:
+						// Possible outcomes:
+							// Up on left, Horizontal on right
+							// Horizontal on left, Up on right
+							// Down on left, Horizontal on right
+							// Horizontal on left, Down on right
+							// Horizontal on left, Horizontal on right
+							// Up on left, Down on right
+							// Down on left, Up on right
+						newPerm.push(...chooseState(prevPerm, [
+							["iNwArc", "iEH"],
+							["iWH", "iNeArc"],
+							["iSwArc", "iEH"],
+							["iWH", "iSeArc"],
+							["iWH", "iEH"],
+							["iNwArc", "iSeArc"],
+							["iSwArc", "iNeArc"]
+						]));
 
 					break;
 				case "i":
@@ -661,69 +636,58 @@ export default function LetterGrid() {
 						"oSV"
 					);
 
-					// SERIFS are custom: randomly chosen to be visible or not
-					newPerm.push(...chooseState(prevPerm, [["oNwH", "oSwH", "oNeH", "oSeH"]], true));
+					// VARIABLE SEGMENTS
+						// SERIFS are custom: randomly chosen to be visible or not
+						newPerm.push(...chooseState(prevPerm, [["oNwH", "oSwH", "oNeH", "oSeH"]], true));
 
 					break;
 				case "j":
 				case "J":
 					// J is complex, and is done completely customly
 
-					// Picking whether the stem is in the middle or on the right
+					// Picking whether the stem is in the middle or on the right (this functions as a constant segment)
 					newPerm.push(...chooseState(prevPerm, [
 						["oNV", "iNV", "iSV"], // Stem in the middle
 						["oNeV", "iNeV", "iSeV", "oSeArc"] // Stem on the right
 					]));
 
-					// Checking if the stem is in the middle
-					if (newPerm.includes("oNV")) {
-						// The J with the stem in the middle has 2 variables: the hook and the top serifs, the latter of which are optional, all of which are custom
+					// VARIABLE SEGMENTS
+						// Checking if the stem is in the middle
+						if (newPerm.includes("oNV")) {
+							// The J with the stem in the middle has 2 variables: the hook and the top serifs, the latter of which are optional, all of which are custom
 
-						// HOOK is custom:
-						// Possible outcomes:
-							// Stem extends to the very bottom and hook uses Arc
-							// Inv
-						newPerm.push(...chooseState(prevPerm, [
-							["oSV", "oSwArc"],
-							["oSwInv"]
-						]));
+							// HOOK is custom:
+							// Possible outcomes:
+								// Stem extends to the very bottom and hook uses Arc
+								// Inv
+							newPerm.push(...chooseState(prevPerm, [
+								["oSV", "oSwArc"],
+								["oSwInv"]
+							]));
 
-						// TOP SERIFS are custom: randomly chosen to be visible or not
-						newPerm.push(...chooseState(prevPerm, [
-							["oNwH"], 
-							["oNwH", "oNeH"]
-						], true));
-					} else {
-						// The J with the stem on the right has 2 variables: the hook and the top serifs, the latter of which are optional, all of which are custom
+							// TOP SERIFS are custom: randomly chosen to be visible or not
+							newPerm.push(...chooseState(prevPerm, [
+								["oNwH"], 
+								["oNwH", "oNeH"]
+							], true));
+						} else {
+							// The J with the stem on the right has 2 variables: the hook and the top serifs, the latter of which are optional, all of which are custom
 
-						// HOOK is custom:
-						// Possible outcomes:
-							// Curve continues
-							// Curve becomes horizontal
-						newPerm.push(...chooseState(prevPerm, [
-							["oSwArc"],
-							["oSwH"]
-						]));
+							// HOOK is custom:
+							// Possible outcomes:
+								// Curve continues
+								// Curve becomes horizontal
+							newPerm.push(...chooseState(prevPerm, [
+								["oSwArc"],
+								["oSwH"]
+							]));
 
-						// TOP SERIFS are custom: randomly chosen to be visible or not
-						newPerm.push(...chooseState(prevPerm, [
-							["oNeH"], 
-							["oNeH", "oNwH"]
-						], true));
-					}
-
-					// newPerm.push(...chooseState(prevPerm, [
-					// 	["oNV", "iNV", "iSV", "oSwInv"],
-					// 	["oNV", "iNV", "iSV", "oSwInv", "oNwH"],
-					// 	["oNV", "iNV", "iSV", "oSwInv", "oNwH", "oNeH"],
-
-					// 	["oNeV", "iNeV", "iSeV", "oSeArc", "oSwArc"],
-					// 	["oNeV", "iNeV", "iSeV", "oSeArc", "oSwH"],
-					// 	["oNeV", "iNeV", "iSeV", "oSeArc", "oSwArc", "oNeH"],
-					// 	["oNeV", "iNeV", "iSeV", "oSeArc", "oSwH", "oNeH"],
-					// 	["oNeV", "iNeV", "iSeV", "oSeArc", "oSwArc", "oNeH", "oNwH"],
-					// 	["oNeV", "iNeV", "iSeV", "oSeArc", "oSwH", "oNeH", "oNwH"]
-					// ]));
+							// TOP SERIFS are custom: randomly chosen to be visible or not
+							newPerm.push(...chooseState(prevPerm, [
+								["oNeH"], 
+								["oNeH", "oNwH"]
+							], true));
+						}
 
 					break;
 				case "k":
@@ -739,17 +703,17 @@ export default function LetterGrid() {
 						"iNeArc"
 					);
 
-					// CENTRE-LEFT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
-
-					// BOTTOM-RIGHT QUARTER is custom:
-					// Possible outcomes:
-						// Inwards leg: Down then Round
-						// Outwards leg: Round then Down
-					newPerm.push(...chooseState(prevPerm, [
-						["iSV", "oSeInv"], 
-						["iSeArc", "oSeV"]
-					]));
+					// VARIABLE SEGMENTS
+						// CENTRE-LEFT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+						// BOTTOM-RIGHT QUARTER is custom:
+						// Possible outcomes:
+							// Inwards leg: Down then Round
+							// Outwards leg: Round then Down
+						newPerm.push(...chooseState(prevPerm, [
+							["iSV", "oSeInv"], 
+							["iSeArc", "oSeV"]
+						]));
 
 					break;
 				case "l":
@@ -763,11 +727,11 @@ export default function LetterGrid() {
 						"iSwV"
 					);
 
-					// BOTTOM-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+					// VARIABLE SEGMENTS
+						// BOTTOM-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
 
 					break;
 				case "m":
@@ -785,45 +749,21 @@ export default function LetterGrid() {
 						"oSeV"
 					);
 
-					// TOP is custom:
-					// Possible outcomes:
-						// Facing out on left, facing out on right
-						// Facing out on left, facing in on right
-						// Facing in on left, facing out on right
-					newPerm.push(...chooseState(prevPerm, [
-						["oNwV", "oNwInv", "oNeV", "oNeInv"],
-						["oNwV", "oNwInv", "oNV", "oNeArc"],
-						["oNwArc", "oNV", "oNeInv", "oNeV"]
-					]));
+					// VARIABLE SEGMENTS
+						// TOP is custom:
+						// Possible outcomes:
+							// Facing out on left, facing out on right
+							// Facing out on left, facing in on right
+							// Facing in on left, facing out on right
+						newPerm.push(...chooseState(prevPerm, [
+							["oNwV", "oNwInv", "oNeV", "oNeInv"],
+							["oNwV", "oNwInv", "oNV", "oNeArc"],
+							["oNwArc", "oNV", "oNeInv", "oNeV"]
+						]));
 
 					break;
 				case "n":
 				case "N":
-					// // N is complex, and is done completely customly
-
-					// // Adding the constant segments
-					// newPerm.push(
-					// 	"iNwV",
-					// 	"iSwV",
-					// 	"oSwV",
-					// 	"iNeV",
-					// 	"iSeV"
-					// );
-
-					// // Custom segments
-					// newPerm.push(...chooseState(prevPerm, [
-					// 	["oNwV", "oNwInv", "oSeV", "oSeInv", "oNeV", "iNV", "iSV"],
-					// 	["oNwV", "oNwInv", "oSV", "oSeArc", "oNeV", "iNV", "iSV"],
-					// 	["oNwArc", "oNV", "oSeV", "oSeInv", "oNeV", "iNV", "iSV"],
-					// 	["oNwArc", "oNV", "oSV", "oSeArc", "oNeV", "iNV", "iSV"],
-
-					// 	["oNeArc", "oSeV", "oNwArc"],
-					// 	["oNeArc", "oSeV", "oNwArc", "oNwV"],
-					// 	["oNeArc", "oSeV", "oNwH", "oNwV"],
-					// ]));
-
-					// break;
-
 					// N has 2 variables: the top-left and bottom-right corners
 
 					// Adding the constant segments
@@ -838,11 +778,11 @@ export default function LetterGrid() {
 						"iSeV"
 					);
 
-					// TOP-LEFT CORNER is variable: Outwards or Inwards
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Outwards", "Inwards"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Outwards or Inwards
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Outwards", "Inwards"]));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Outwards or Inwards
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Outwards", "Inwards"]));
+						// BOTTOM-RIGHT CORNER is variable: Outwards or Inwards
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Outwards", "Inwards"]));
 
 					break;
 				case "o":
@@ -859,15 +799,15 @@ export default function LetterGrid() {
 						"iSeV"
 					);
 
-					// BOTTOM-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
-
-					// BOTTOM-RIGHT CORNER is variable: Square or Round, BUT if the bottom-left corner is Round, the bottom-right corner must also be Round
-					if (newPerm.includes("oSwArc")) {
-						newPerm.push("oSeArc");
-					} else {
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
-					}
+					// VARIABLE SEGMENTS
+						// BOTTOM-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Square or Round, BUT if the bottom-left corner is Round, the bottom-right corner must also be Round
+						if (newPerm.includes("oSwArc")) {
+							newPerm.push("oSeArc");
+						} else {
+							newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
+						}
 
 					break;
 				case "p":
@@ -881,17 +821,15 @@ export default function LetterGrid() {
 						"oSwV"
 					);
 
-					// TOP-LEFT CORNER is variable: Square, Round or VStem
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round", "VStem"]));
-
-					// TOP-RIGHT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
-
-					// CENTRE-LEFT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
-
-					// CENTRE-NE is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Ne", ["Square", "Round"]));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Square, Round or VStem
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round", "VStem"]));
+						// TOP-RIGHT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+						// CENTRE-LEFT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+						// CENTRE-NE is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Ne", ["Square", "Round"]));
 
 					break;
 				case "q":
@@ -909,11 +847,11 @@ export default function LetterGrid() {
 						"iNwV"
 					);
 
-					// BOTTOM-LEFT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
-					
-					// HOOK (bottom-right corner) is custom: Arc, Horizontal or Inv and Vertical
-					newPerm.push(...chooseState(prevPerm, [["oSeInv"], ["oSeH"], ["oSeInv", "oSeV"]]));
+					// VARIABLE SEGMENTS
+						// BOTTOM-LEFT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
+						// HOOK (bottom-right corner) is custom: Arc, Horizontal or Inv and Vertical
+						newPerm.push(...chooseState(prevPerm, [["oSeInv"], ["oSeH"], ["oSeInv", "oSeV"]]));
 
 					break;
 				case "r":
@@ -927,23 +865,20 @@ export default function LetterGrid() {
 						"oSwV"
 					);
 
-					// TOP-LEFT CORNER is variable: Square, Round or VStem
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round", "VStem"]));
-
-					// TOP-RIGHT CORNER is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
-
-					// CENTRE-LEFT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
-
-					// CENTRE-NE is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Ne", ["Square", "Round"]));
-
-					// BOTTOM-RIGHT QUARTER is custom: Inwards or Outwards
-					newPerm.push(...chooseState(prevPerm, [
-						["iSV", "oSeInv"], 
-						["iSeArc", "oSeV"]
-					]));
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Square, Round or VStem
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round", "VStem"]));
+						// TOP-RIGHT CORNER is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+						// CENTRE-LEFT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+						// CENTRE-NE is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Ne", ["Square", "Round"]));
+						// BOTTOM-RIGHT QUARTER is custom: Inwards or Outwards
+						newPerm.push(...chooseState(prevPerm, [
+							["iSV", "oSeInv"], 
+							["iSeArc", "oSeV"]
+						]));
 
 					break;
 				case "s":
@@ -958,11 +893,11 @@ export default function LetterGrid() {
 						"oSeArc"
 					);
 
-					// TOP-RIGHT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
-
-					// BOTTOM-LEFT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+					// VARIABLE SEGMENTS
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
 
 					break;
 				case "t":
@@ -978,15 +913,15 @@ export default function LetterGrid() {
 						"oSV"
 					);
 
-					// TOP OF STEM is custom:
-					// Possible outcomes:
-						// Vertical
-						// Curving to the left (Inv)
-
-					newPerm.push(...chooseState(prevPerm, [
-						["oNV"],
-						["oNwInv"]
-					]));
+					// VARIABLE SEGMENTS
+						// TOP OF STEM is custom:
+						// Possible outcomes:
+							// Vertical
+							// Curving to the left (Inv)
+						newPerm.push(...chooseState(prevPerm, [
+							["oNV"],
+							["oNwInv"]
+						]));
 
 					break;
 				case "u":
@@ -1005,8 +940,9 @@ export default function LetterGrid() {
 						"oNeV"
 					);
 
-					// BOTTOM-RIGHT CORNER is custom: Vertical, but random chance of not being visible
-					newPerm.push(...chooseState(prevPerm, [["oSeV"]], true));
+					// VARIABLE SEGMENTS
+						// BOTTOM-RIGHT CORNER is custom: Vertical, but random chance of not being visible
+						newPerm.push(...chooseState(prevPerm, [["oSeV"]], true));
 
 					break;
 				case "v":
@@ -1041,28 +977,23 @@ export default function LetterGrid() {
 						"iSeV"
 					);
 
-					// BOTTOM is custom:
-					// Possible outcomes:
-						// Facing out on left, facing out on right
-						// Facing out on left, facing in on right
-						// Facing in on left, facing out on right
-
-					newPerm.push(...chooseState(prevPerm, [
-						["oSwV", "oSwInv", "oSeV", "oSeInv"],
-						["oSwV", "oSwInv", "oSV", "oSeArc"],
-						["oSwArc", "oSV", "oSeInv", "oSeV"]
-					]));
+					// VARIABLE SEGMENTS
+						// BOTTOM is custom:
+						// Possible outcomes:
+							// Facing out on left, facing out on right
+							// Facing out on left, facing in on right
+							// Facing in on left, facing out on right
+						newPerm.push(...chooseState(prevPerm, [
+							["oSwV", "oSwInv", "oSeV", "oSeInv"],
+							["oSwV", "oSwInv", "oSV", "oSeArc"],
+							["oSwArc", "oSV", "oSeInv", "oSeV"]
+						]));
 
 					break;
 				case "x":
 				case "X":
 					// X has 3 variables: the entire shape is custom, and is done manually
 
-					// newPerm.push(...chooseState(prevPerm, [
-					// 	["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"],
-					// 	["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"],
-					// 	["oNwInv", "iNV", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeInv", "iSV"]
-					// ]));\
 					let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
 
 					const outcome1 = ["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"];
@@ -1130,14 +1061,13 @@ export default function LetterGrid() {
 						"oSeArc"
 					);
 
-					// CENTRE-NW is variable: Square or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
-
-					// CENTRE-RIGHT is variable: Up, Down or Horizontal
-					newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
-
-					// BOTTOM-LEFT CORNER is variable: Horizontal or Round
-					newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+					// VARIABLE SEGMENTS
+						// CENTRE-NW is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
+						// CENTRE-RIGHT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
+						// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
 
 					break;
 				case "z":
@@ -1157,7 +1087,7 @@ export default function LetterGrid() {
 
 					break;
 				default:
-					// For now, add all the segments to show the full grid
+					// (For now) the default option is to show all the segments //TEMP
 
 					newPerm.push(
 						"oNwH",
@@ -1195,9 +1125,13 @@ export default function LetterGrid() {
 					break;
 			}
 
-			
+			// Returning the new permutation
 			return newPerm;
 		}
+
+
+
+
 
 
 
@@ -1231,6 +1165,7 @@ export default function LetterGrid() {
 			}
 		}
 
+		
 
 		// A keypress event listener is added to the window to allow the user to change the letter
 		window.addEventListener("keypress", (e) => {
