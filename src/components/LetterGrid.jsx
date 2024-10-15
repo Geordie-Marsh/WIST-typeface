@@ -5,6 +5,9 @@
 	// Importing defs
 	import { hide, show, randomlyChoose, containsExactSet, containsSet } from '../defs';
 
+	// Importing GSAP
+	import { gsap } from 'gsap';
+
 
 export default function LetterGrid() {
 	// Guide to the naming system for the segments:
@@ -83,7 +86,7 @@ export default function LetterGrid() {
 		];
 
 		// This object will be used to keep track of the current permutation, i.e., which segments are currently visible
-		let perm = {
+		let currentPerm = {
 			oNwV: true,
 			oNwH: true,
 			oNwArc: true,
@@ -1217,319 +1220,220 @@ export default function LetterGrid() {
 		// This is the function to change to a new letter (or number, punctuation, etc.)
 		function changeToLetter(letter) {
 			// Store the existing permutation of the grid
-			let existingPerm = Object.assign({}, perm);
+			let existingPerm = Object.assign({}, currentPerm);
+			let existingPermSegments = Object.keys(existingPerm).filter(key => existingPerm[key]);
+			console.log(existingPerm);//TEMP
 
-			// Changing the permutation to be the new letter
 			// Getting the array of segments that should be visible for the new letter
-			let visibleSegments = letterMaker(letter, existingPerm);
-			console.log(visibleSegments);//TEMP
-			// Updating the permutation object to reflect the new letter
-			for (let segment in perm) {
+			let newPerm = letterMaker(letter, existingPerm);
+			console.log(newPerm);//TEMP
+			
+			// Changing the permutation to be the new letter
+			// Updating the permutation object to reflect the new letter and showing/hiding segments as necessary
+			for (let segment in currentPerm) {
 				// If the segment is in the new letter's array of visible segments
-				if (visibleSegments.includes(segment)) {
-					perm[segment] = true;
-				} else {
-					perm[segment] = false;
-				}
-			}
+				if (newPerm.includes(segment)) {
+					// Change the status of the segment to visible
+					currentPerm[segment] = true;
 
-			// Going through each segment and hiding or showing it as necessary
-			for (let segment in perm) {
-				// If the segment is now visible
-				if (perm[segment]) {
-					show(eval(segment).current);
+					// If the segment was not previously visible, show it
+					// Use GSAP to animate the drawing of the segment
+					if (!existingPermSegments.includes(segment)) {
+						gsap.to(eval(segment).current, {
+							duration: 1,
+							strokeDashoffset: 0,
+							ease: "power1.inOut",
+						});
+					}
 				} else {
-					hide(eval(segment).current);
+					// Change the status of the segment to invisible
+					currentPerm[segment] = false;
+
+					// If the segment was previously visible, hide it
+					// Use GSAP to animate the erasing of the segment
+					if (existingPermSegments.includes(segment)) {
+						gsap.to(eval(segment).current, {
+							duration: 1,
+							strokeDashoffset: 100,
+							ease: "power1.inOut",
+						});
+					}
 				}
 			}
 		}
-
 		
 
 		// A keypress event listener is added to the window to allow the user to change the letter
-		window.addEventListener("keypress", (e) => {
+		const handleKeyPress = (e) => {
 			// The key that was pressed is stored in the variable 'key'
 			let key = e.key;
 			changeToLetter(key);
-		});
+		};
+
+		window.addEventListener("keypress", handleKeyPress);
+
+		// Cleanup function to remove the event listener
+		return () => {
+			window.removeEventListener("keypress", handleKeyPress);
+		};
+
+
 	}, []);
 
 
 
 
 	return (
-		// <svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 200.5 400.5">
-		// 	<line 
-		// 		className="o-nw-h"
-		// 		ref={ oNwH }
-		// 		x1=".5" y1=".5" x2="100.5" y2=".5"
-		// 	/>
-		// 	<line 
-		// 		className="o-nw-v"
-		// 		ref={ oNwV }
-		// 		x1=".5" y1="100.5" x2=".5" y2=".5"
-		// 	/>
-		// 	<path 
-		// 		className="o-nw-arc"
-		// 		ref={ oNwArc }
-		// 		d="M.5,100.5C.5,45.272,45.272.5,100.5.5"
-		// 	/>
-		// 	<path 
-		// 		className="o-nw-inv"
-		// 		ref={ oNwInv }
-		// 		d="M.5.5c55.228,0,100,44.772,100,100"
-		// 	/>
-		// 	<line 
-		// 		className="o-n-v"
-		// 		ref={ oNV }
-		// 		x1="100.5" y1=".5" x2="100.5" y2="100.5"
-		// 	/>
-		// 	<line 
-		// 		className="o-ne-h"
-		// 		ref={ oNeH }
-		// 		x1="100.5" y1=".5" x2="200.5" y2=".5"
-		// 	/>
-		// 	<line 
-		// 		className="o-ne-v"
-		// 		ref={ oNeV }
-		// 		x1="200.5" y1=".5" x2="200.5" y2="100.5"
-		// 	/>
-		// 	<path 
-		// 		className="o-ne-arc"
-		// 		ref={ oNeArc }
-		// 		d="M100.5.5c55.228,0,100,44.772,100,100"
-		// 	/>
-		// 	<path 
-		// 		className="o-ne-inv"
-		// 		ref={ oNeInv }
-		// 		d="M100.5,100.5C100.5,45.272,145.272.5,200.5.5"
-		// 	/>
-		// 	<line 
-		// 		className="i-nw-v"
-		// 		ref={ iNwV }
-		// 		x1=".5" y1="200.5" x2=".5" y2="100.5"
-		// 	/>
-		// 	<path 
-		// 		className="i-nw-arc"
-		// 		ref={ iNwArc }
-		// 		d="M100.5,200.5C45.272,200.5.5,155.728.5,100.5"
-		// 	/>
-		// 	<line 
-		// 		className="i-n-v"
-		// 		ref={ iNV }
-		// 		x1="100.5" y1="100.5" x2="100.5" y2="200.5"
-		// 	/>
-		// 	<line 
-		// 		className="i-ne-v" 
-		// 		ref={ iNeV }
-		// 		x1="200.5" y1="100.5" x2="200.5" y2="200.5"
-		// 	/>
-		// 	<path 
-		// 		className="i-ne-arc"
-		// 		ref={ iNeArc }
-		// 		d="M200.5,100.5c0,55.228-44.772,100-100,100"
-		// 	/>
-		// 	<line 
-		// 		className="i-w-h"
-		// 		ref={ iWH }
-		// 		x1="100.5" y1="200.5" x2=".5" y2="200.5"
-		// 	/>
-		// 	<line 
-		// 		className="i-e-h"
-		// 		ref={ iEH }
-		// 		x1="200.5" y1="200.5" x2="100.5" y2="200.5"
-		// 	/>
-		// 	<line 
-		// 		className="i-sw-v"
-		// 		ref={ iSwV }
-		// 		x1=".5" y1="300.5" x2=".5" y2="200.5"
-		// 	/>
-		// 	<path 
-		// 		className="i-sw-arc"
-		// 		ref={ iSwArc }
-		// 		d="M.5,300.5c0-55.228,44.772-100,100-100"
-		// 	/>
-		// 	<line 
-		// 		className="i-s-v"
-		// 		ref={ iSV }
-		// 		x1="100.5" y1="200.5" x2="100.5" y2="300.5"
-		// 	/>
-		// 	<line 
-		// 		className="i-se-v"
-		// 		ref={ iSeV }
-		// 		x1="200.5" y1="200.5" x2="200.5" y2="300.5"
-		// 	/>
-		// 	<path 
-		// 		className="i-se-arc"
-		// 		ref={ iSeArc }
-		// 		d="M100.5,200.5c55.228,0,100,44.772,100,100"
-		// 	/>
-		// 	<line 
-		// 		className="o-sw-v"
-		// 		ref={ oSwV }
-		// 		x1=".5" y1="400.5" x2=".5" y2="300.5"
-		// 	/>
-		// 	<line 
-		// 		className="o-sw-h"
-		// 		ref={ oSwH }
-		// 		x1="100.5" y1="400.5" x2=".5" y2="400.5"
-		// 	/>
-		// 	<path 
-		// 		className="o-sw-arc"
-		// 		ref={ oSwArc }
-		// 		d="M100.5,400.5c-55.228,0-100-44.772-100-100"
-		// 	/>
-		// 	<path 
-		// 		className="o-sw-inv"
-		// 		ref={ oSwInv }
-		// 		d="M100.5,300.5c0,55.228-44.772,100-100,100"
-		// 	/>
-		// 	<line 
-		// 		className="o-s-v" 
-		// 		ref={ oSV }
-		// 		x1="100.5" y1="300.5" x2="100.5" y2="400.5"
-		// 	/>
-		// 	<line 
-		// 		className="o-se-v"
-		// 		ref={ oSeV }
-		// 		x1="200.5" y1="300.5" x2="200.5" y2="400.5"
-		// 	/>
-		// 	<line 
-		// 		className="o-se-h" 
-		// 		ref={ oSeH }
-		// 		x1="200.5" y1="400.5" x2="100.5" y2="400.5"
-		// 	/>
-		// 	<path 
-		// 		className="o-se-arc"
-		// 		ref={ oSeArc }
-		// 		d="M200.5,300.5c0,55.228-44.772,100-100,100"
-		// 	/>
-		// 	<path 
-		// 		className="o-se-inv"
-		// 		ref={ oSeInv }
-		// 		d="M200.5,400.5c-55.228,0-100-44.772-100-100"
-		// 	/>
-		// </svg>
 		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 401">
 			<path 
 				className="oSeArc" 
 				ref={ oSeArc } 
+				pathLength={ 100 }
 				d="M200.5,300.5c-.071,7.076-.243,12.711-1.846,22.379-1.065,6.422-2.652,12.363-5.006,18.451s-5.626,11.79-9.035,17.066c-3.409,5.276-7.325,10.126-11.708,14.509s-9.233,8.299-14.509,11.708-10.978,6.613-17.066,8.967c-6.088,2.354-12.13,3.879-18.333,5.074-8.219,1.583-15.029,1.846-22.497,1.846"/>
 			<line 
 				className="oSeH" 
 				ref={ oSeH } 
+				pathLength={ 100 }
 				x1="200.5" y1="400.5" x2="100.5" y2="400.5"/>
 			<line 
 				className="oSeV" 
 				ref={ oSeV } 
+				pathLength={ 100 }
 				x1="200.5" y1="300.5" x2="200.5" y2="400.5"/>
 			<line 
 				className="oSV" 
 				ref={ oSV } 
+				pathLength={ 100 }
 				x1="100.5" y1="300.5" x2="100.5" y2="400.5"/>
 			<path 
 				className="oSwArc" 
 				ref={ oSwArc } 
+				pathLength={ 100 }
 				d="M100.5,400.5c-7.076-.071-12.711-.243-22.379-1.846-6.422-1.065-12.363-2.652-18.451-5.006s-11.79-5.626-17.066-9.035-10.126-7.325-14.509-11.708-8.299-9.233-11.708-14.509-6.613-10.978-8.967-17.066c-2.354-6.088-3.879-12.13-5.074-18.333-1.583-8.219-1.846-15.029-1.846-22.497"/>
 			<line 
 				className="oSwH" 
 				ref={ oSwH } 
+				pathLength={ 100 }
 				x1="100.5" y1="400.5" x2=".5" y2="400.5"/>
 			<line 
 				className="oSwV" 
 				ref={ oSwV } 
+				pathLength={ 100 }
 				x1=".5" y1="400.5" x2=".5" y2="300.5"/>
 			<path 
 				className="iSeArc" 
 				ref={ iSeArc } 
+				pathLength={ 100 }
 				d="M100.5,200.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006,6.088,2.354,11.79,5.626,17.066,9.035s10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
 			<line 
 				className="iSeV" 
 				ref={ iSeV } 
+				pathLength={ 100 }
 				x1="200.5" y1="200.5" x2="200.5" y2="300.5"/>
 			<line 
 				className="iSV" 
 				ref={ iSV } 
+				pathLength={ 100 }
 				x1="100.5" y1="200.5" x2="100.5" y2="300.5"/>
 			<path 
 				className="iSwArc" 
 				ref={ iSwArc } 
+				pathLength={ 100 }
 				d="M.5,300.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708c5.276-3.409,10.978-6.613,17.066-8.967s12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
 			<line 
 				className="iSwV" 
 				ref={ iSwV } 
+				pathLength={ 100 }
 				x1=".5" y1="300.5" x2=".5" y2="200.5"/>
 			<line 
 				className="SeDiag" 
 				ref={ SeDiag } 
+				pathLength={ 100 }
 				x1="100.5" y1="200.5" x2="200.5" y2="400.5"/>
 			<line 
 				className="SwDiag" 
 				ref={ SwDiag } 
+				pathLength={ 100 }
 				x1=".5" y1="400.5" x2="100.5" y2="200.5"/>
 			<line 
 				className="iEH" 
 				ref={ iEH } 
+				pathLength={ 100 }
 				x1="100.5" y1="200.5" x2="200.5" y2="200.5"/>
 			<line 
 				className="iWH" 
 				ref={ iWH } 
+				pathLength={ 100 }
 				x1=".5" y1="200.5" x2="100.5" y2="200.5"/>
 			<line 
 				className="NeDiag" 
 				ref={ NeDiag } 
+				pathLength={ 100 }
 				x1="100.5" y1="200.5" x2="200.5" y2=".5"/>
 			<line 
 				className="NwDiag" 
 				ref={ NwDiag } 
+				pathLength={ 100 }
 				x1=".5" y1=".5" x2="100.5" y2="200.5"/>
 			<path 
 				className="iNeArc" 
 				ref={ iNeArc } 
+				pathLength={ 100 }
 				d="M200.5,100.5c-.071,7.076-.243,12.711-1.846,22.379-1.065,6.422-2.652,12.363-5.006,18.451-2.354,6.088-5.626,11.79-9.035,17.066s-7.325,10.126-11.708,14.509-9.233,8.299-14.509,11.708-10.978,6.613-17.066,8.967-12.13,3.879-18.333,5.074c-8.219,1.583-15.029,1.846-22.497,1.846"/>
 			<line 
 				className="iNeV" 
 				ref={ iNeV } 
+				pathLength={ 100 }
 				x1="200.5" y1="100.5" x2="200.5" y2="200.5"/>
 			<line 
 				className="iNV" 
 				ref={ iNV } 
+				pathLength={ 100 }
 				x1="100.5" y1="100.5" x2="100.5" y2="200.5"/>
 			<path 
 				className="iNwArc" 
 				ref={ iNwArc } 
+				pathLength={ 100 }
 				d="M100.5,200.5c-7.076-.071-12.711-.243-22.379-1.846-6.422-1.065-12.363-2.652-18.451-5.006s-11.79-5.626-17.066-9.035-10.126-7.325-14.509-11.708-8.299-9.233-11.708-14.509-6.613-10.978-8.967-17.066c-2.354-6.088-3.879-12.13-5.074-18.333-1.583-8.219-1.846-15.029-1.846-22.497"/>
 			<line 
 				className="iNwV" 
 				ref={ iNwV } 
+				pathLength={ 100 }
 				x1=".5" y1="200.5" x2=".5" y2="100.5"/>
 			<path 
 				className="oNeArc" 
 				ref={ oNeArc } 
+				pathLength={ 100 }
 				d="M100.5.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006s11.79,5.626,17.066,9.035,10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
 			<line 
 				className="oNeH" 
 				ref={ oNeH } 
+				pathLength={ 100 }
 				x1="100.5" y1=".5" x2="200.5" y2=".5"/>
 			<line 
 				className="oNeV" 
 				ref={ oNeV } 
+				pathLength={ 100 }
 				x1="200.5" y1=".5" x2="200.5" y2="100.5"/>
 			<line 
 				className="oNV" 
 				ref={ oNV } 
+				pathLength={ 100 }
 				x1="100.5" y1=".5" x2="100.5" y2="100.5"/>
 			<path 
 				className="oNwArc" 
 				ref={ oNwArc } 
+				pathLength={ 100 }
 				d="M.5,100.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708,10.978-6.613,17.066-8.967,12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
 			<line 
 				className="oNwH" 
 				ref={ oNwH } 
+				pathLength={ 100 }
 				x1=".5" y1=".5" x2="100.5" y2=".5"/>
 			<line 
 				className="oNwV" 
 				ref={ oNwV } 
+				pathLength={ 100 }
 				x1=".5" y1="100.5" x2=".5" y2=".5"/>
 		</svg>
 	);
