@@ -13,22 +13,24 @@ export default function LetterGrid() {
 		// Then the segment type is specified: V = vertical line, H = horizontal line, Arc = arc as part of one of the circles, Inv = arc that isn't part of the circles (ends on a corner)
 
 	// Refs are used for each segment (remember: you'll have to use .current after the ref to access the element)
-	const oNwH   = useRef(null);
 	const oNwV   = useRef(null);
+	const oNwH   = useRef(null);
 	const oNwArc = useRef(null);
-	const oNwInv = useRef(null);
 	const oNV    = useRef(null);
-	const oNeH   = useRef(null);
 	const oNeV   = useRef(null);
+	const oNeH   = useRef(null);
 	const oNeArc = useRef(null);
-	const oNeInv = useRef(null);
 	const iNwV   = useRef(null);
 	const iNwArc = useRef(null);
 	const iNV    = useRef(null);
 	const iNeV   = useRef(null);
 	const iNeArc = useRef(null);
+	const NwDiag = useRef(null);
+	const NeDiag = useRef(null);
 	const iWH    = useRef(null);
 	const iEH    = useRef(null);
+	const SwDiag = useRef(null);
+	const SeDiag = useRef(null);
 	const iSwV   = useRef(null);
 	const iSwArc = useRef(null);
 	const iSV    = useRef(null);
@@ -37,34 +39,35 @@ export default function LetterGrid() {
 	const oSwV   = useRef(null);
 	const oSwH   = useRef(null);
 	const oSwArc = useRef(null);
-	const oSwInv = useRef(null);
 	const oSV    = useRef(null);
 	const oSeV   = useRef(null);
 	const oSeH   = useRef(null);
 	const oSeArc = useRef(null);
-	const oSeInv = useRef(null);
+	
 
 
 	// useEffect is used to animate the grid
 	useEffect(() => {
 		// This is an array of all the segments
 		const allSegments = [
-			"oNwH",
 			"oNwV",
+			"oNwH",
 			"oNwArc",
-			"oNwInv",
 			"oNV",
-			"oNeH",
 			"oNeV",
+			"oNeH",
 			"oNeArc",
-			"oNeInv",
 			"iNwV",
 			"iNwArc",
 			"iNV",
 			"iNeV",
 			"iNeArc",
+			"NwDiag",
+			"NeDiag",
 			"iWH",
 			"iEH",
+			"SwDiag",
+			"SeDiag",
 			"iSwV",
 			"iSwArc",
 			"iSV",
@@ -73,51 +76,49 @@ export default function LetterGrid() {
 			"oSwV",
 			"oSwH",
 			"oSwArc",
-			"oSwInv",
 			"oSV",
 			"oSeV",
 			"oSeH",
-			"oSeArc",
-			"oSeInv"
+			"oSeArc"
 		];
 
 		// This object will be used to keep track of the current permutation, i.e., which segments are currently visible
 		let perm = {
-			oNwH:   true,
-			oNwV:   true,
+			oNwV: true,
+			oNwH: true,
 			oNwArc: true,
-			oNwInv: true,
-			oNV:    true,
-			oNeH:   true,
-			oNeV:   true,
+			oNV: true,
+			oNeV: true,
+			oNeH: true,
 			oNeArc: true,
-			oNeInv: true,
-			iNwV:   true,
+			iNwV: true,
 			iNwArc: true,
-			iNV:    true,
-			iNeV:   true,
+			iNV: true,
+			iNeV: true,
 			iNeArc: true,
-			iWH:    true,
-			iEH:    true,
-			iSwV:   true,
+			NwDiag: true,
+			NeDiag: true,
+			iWH: true,
+			iEH: true,
+			SwDiag: true,
+			SeDiag: true,
+			iSwV: true,
 			iSwArc: true,
-			iSV:    true,
-			iSeV:   true,
+			iSV: true,
+			iSeV: true,
 			iSeArc: true,
-			oSwV:   true,
-			oSwH:   true,
+			oSwV: true,
+			oSwH: true,
 			oSwArc: true,
-			oSwInv: true,
-			oSV:    true,
-			oSeV:   true,
-			oSeH:   true,
+			oSV: true,
+			oSeV: true,
+			oSeH: true,
 			oSeArc: true,
-			oSeInv: true
 		};
 
 
 
-		
+
 
 		// This function will be used to update the permutation
 		function letterMaker(letter, prevPerm = null) {
@@ -340,20 +341,20 @@ export default function LetterGrid() {
 							case "Square":
 								outcomeSegments.push(`o${location}H`, `o${location}V`);
 								break;
+							case "SquareRound":
+								outcomeSegments.push(`o${location}H`, `o${location}V`, `o${location}Arc`);
+								break;
 							case "Horizontal":
 								outcomeSegments.push(`o${location}H`);
+								break;
+							case "HorizontalRound":
+								outcomeSegments.push(`o${location}H`, `o${location}Arc`);
 								break;
 							case "Vertical":
 								outcomeSegments.push(`o${location}V`);
 								break;
 							case "VStem":
 								outcomeSegments.push(`o${location}V`, `o${location}Arc`);
-								break;
-							case "Outwards":
-								outcomeSegments.push(`o${location}Inv`, `o${location}V`);
-								break;
-							case "Inwards":
-								outcomeSegments.push(`o${location}Arc`, `o${NorS}V`);
 								break;
 							default:
 								break;
@@ -379,6 +380,17 @@ export default function LetterGrid() {
 							case "Horizontal":
 								outcomeSegments.push(`i${location}H`);
 								break;
+							case "UpDown":
+								outcomeSegments.push(`i${north}Arc`, `i${south}Arc`);
+								break;
+							case "UpHorizontal":
+								outcomeSegments.push(`i${north}Arc`, `i${location}H`);
+								break;
+							case "DownHorizontal":
+								outcomeSegments.push(`i${south}Arc`, `i${location}H`);
+								break;
+							case "UpDownHorizontal":
+								outcomeSegments.push(`i${north}Arc`, `i${south}Arc`, `i${location}H`);
 							default:
 								break;
 						}
@@ -440,13 +452,13 @@ export default function LetterGrid() {
 
 					// VARIABLE SEGMENTS
 						// TOP-LEFT CORNER is variable: Square or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"/* , "SquareRound" */]));
 						// TOP-RIGHT CORNER is variable: Square or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"/* , "SquareRound" */]));
 						// CENTRE-LEFT is variable: Up, Down or Horizontal
-						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"/* , "UpHorizontal", "DownHorizontal", "UpDownHorizontal" */]));
 						// CENTRE-RIGHT is variable: Up, Down or Horizontal
-						newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"/* , "UpHorizontal", "DownHorizontal", "UpDownHorizontal" */]));
 
 					break;
 				case "b":
@@ -463,13 +475,13 @@ export default function LetterGrid() {
 
 					// VARIABLE SEGMENTS
 						// TOP-LEFT CORNER is variable: Square or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Square", "Round"/* , "SquareRound" */]));
 						// TOP-RIGHT CORNER is variable: Square or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Square", "Round"/* , "SquareRound" */]));
 						// BOTTOM-RIGHT CORNER is variable: Square or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Square", "Round"/* , "SquareRound" */]));
 						// CENTRE-LEFT is variable: Up, Down or Horizontal, but random chance of not being visible
-						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"], true));
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"/* , "UpHorizontal", "DownHorizontal", "UpDownHorizontal" */], true));
 						// CENTRE-RIGHT is custom
 						// Possible outcomes:
 							// Round on top and bottom
@@ -484,7 +496,8 @@ export default function LetterGrid() {
 					break;
 				case "c":
 				case "C":
-					// C has 2 variables: the top-right and bottom-right corners
+					// C has 2 main variables: the top-right and bottom-right corners
+					// C has 2 structural variables: the top-left and bottom-left corners
 
 					// Adding the constant segments
 					newPerm.push(
@@ -496,9 +509,15 @@ export default function LetterGrid() {
 
 					// VARIABLE SEGMENTS
 						// TOP-RIGHT CORNER is variable: Horizontal or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"/* , "SquareRound" */]));
 						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"/* , "SquareRound" */]));
+
+					// STRUCTURAL VARIABLES
+						// BOTTOM-LEFT CORNER is structurally variable: Round or SquareRound
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Round"/* , "SquareRound" */]));
+						// TOP-LEFT CORNER is structurally variable: Round or SquareRound
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Round"/* , "SquareRound" */]));
 
 					break;
 				case "d":
@@ -657,13 +676,7 @@ export default function LetterGrid() {
 							// The J with the stem in the middle has 2 variables: the hook and the top serifs, the latter of which are optional, all of which are custom
 
 							// HOOK is custom:
-							// Possible outcomes:
-								// Stem extends to the very bottom and hook uses Arc
-								// Inv
-							newPerm.push(...chooseState(prevPerm, [
-								["oSV", "oSwArc"],
-								["oSwInv"]
-							]));
+							newPerm.push("oSV", "oSwArc");
 
 							// TOP SERIFS are custom: randomly chosen to be visible or not
 							newPerm.push(...chooseState(prevPerm, [
@@ -708,10 +721,10 @@ export default function LetterGrid() {
 						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
 						// BOTTOM-RIGHT QUARTER is custom:
 						// Possible outcomes:
-							// Inwards leg: Down then Round
+							// Straight leg: Diagonal
 							// Outwards leg: Round then Down
 						newPerm.push(...chooseState(prevPerm, [
-							["iSV", "oSeInv"], 
+							["SeDiag"],
 							["iSeArc", "oSeV"]
 						]));
 
@@ -743,23 +756,28 @@ export default function LetterGrid() {
 						"iNwV",
 						"iSwV",
 						"oSwV",
-						"iNV",
 						"iNeV",
 						"iSeV",
-						"oSeV"
+						"oSeV",
+						"oNeV",
+						"oNwV",
+						"NwDiag",
+						"NeDiag"
 					);
 
-					// VARIABLE SEGMENTS
-						// TOP is custom:
-						// Possible outcomes:
-							// Facing out on left, facing out on right
-							// Facing out on left, facing in on right
-							// Facing in on left, facing out on right
-						newPerm.push(...chooseState(prevPerm, [
-							["oNwV", "oNwInv", "oNeV", "oNeInv"],
-							["oNwV", "oNwInv", "oNV", "oNeArc"],
-							["oNwArc", "oNV", "oNeInv", "oNeV"]
-						]));
+					// // VARIABLE SEGMENTS
+					// 	// TOP is custom:
+					// 	// Possible outcomes:
+					// 		// Diagonal on left, Curved on right
+					// 		// Curved on left, Diagonal on right
+					// 		// Diagonal on left, Diagonal on right
+					// 	newPerm.push(...chooseState(prevPerm, [
+					// 		["oNwV", "oNwInv", "oNeV", "oNeInv"],
+					// 		["oNwV", "oNwInv", "oNV", "oNeArc"],
+					// 		["oNwArc", "oNV", "oNeInv", "oNeV"]
+					// 	]));
+
+					//!Could add more variables
 
 					break;
 				case "n":
@@ -771,18 +789,22 @@ export default function LetterGrid() {
 						"iNwV",
 						"iSwV",
 						"oSwV",
-						"iNV",
-						"iSV",
 						"oNeV",
 						"iNeV",
-						"iSeV"
+						"iSeV",
+						"oNwV",
+						"NwDiag",
+						"SeDiag",
+						"oSeV"
 					);
 
 					// VARIABLE SEGMENTS
-						// TOP-LEFT CORNER is variable: Outwards or Inwards
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Outwards", "Inwards"]));
-						// BOTTOM-RIGHT CORNER is variable: Outwards or Inwards
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Outwards", "Inwards"]));
+						// // TOP-LEFT CORNER is variable: Outwards or Inwards
+						// newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Outwards", "Inwards"]));
+						// // BOTTOM-RIGHT CORNER is variable: Outwards or Inwards
+						// newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Outwards", "Inwards"]));
+
+						//!Could add more variables
 
 					break;
 				case "o":
@@ -844,14 +866,15 @@ export default function LetterGrid() {
 						"iSeV",
 						"oSeArc",
 						"iSwV",
-						"iNwV"
+						"iNwV",
+						"SeDiag"
 					);
 
 					// VARIABLE SEGMENTS
 						// BOTTOM-LEFT CORNER is variable: Square or Round
 						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Square", "Round"]));
-						// HOOK (bottom-right corner) is custom: Arc, Horizontal or Inv and Vertical
-						newPerm.push(...chooseState(prevPerm, [["oSeInv"], ["oSeH"], ["oSeInv", "oSeV"]]));
+
+						//!Could add more variables
 
 					break;
 				case "r":
@@ -874,11 +897,14 @@ export default function LetterGrid() {
 						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Up", "Down", "Horizontal"]));
 						// CENTRE-NE is variable: Square or Round
 						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Ne", ["Square", "Round"]));
-						// BOTTOM-RIGHT QUARTER is custom: Inwards or Outwards
-						newPerm.push(...chooseState(prevPerm, [
-							["iSV", "oSeInv"], 
-							["iSeArc", "oSeV"]
-						]));
+						// BOTTOM-RIGHT QUARTER is custom:
+						// Possible outcomes:
+							// Straight leg: Diagonal
+							// Outwards leg: Round then Down
+							newPerm.push(...chooseState(prevPerm, [
+								["SeDiag"],
+								["iSeArc", "oSeV"]
+							]));
 
 					break;
 				case "s":
@@ -910,18 +936,19 @@ export default function LetterGrid() {
 						"oNeH",
 						"iNV",
 						"iSV",
-						"oSV"
+						"oSV",
+						"oNV"
 					);
 
-					// VARIABLE SEGMENTS
-						// TOP OF STEM is custom:
-						// Possible outcomes:
-							// Vertical
-							// Curving to the left (Inv)
-						newPerm.push(...chooseState(prevPerm, [
-							["oNV"],
-							["oNwInv"]
-						]));
+					// // VARIABLE SEGMENTS
+					// 	// TOP OF STEM is custom:
+					// 	// Possible outcomes:
+					// 		// Vertical
+					// 		// Curving to the left (Inv)
+					// 	newPerm.push(...chooseState(prevPerm, [
+					// 		["oNV"],
+					// 		["oNwInv"]
+					// 	]));
 
 					break;
 				case "u":
@@ -971,156 +998,156 @@ export default function LetterGrid() {
 						"oNwV",
 						"iNwV",	
 						"iSwV",
-						"iSV",
 						"oNeV",
 						"iNeV",
-						"iSeV"
+						"iSeV",
+						"oSwV",
+						"SwDiag",
+						"SeDiag",
+						"oSeV",
 					);
 
-					// VARIABLE SEGMENTS
-						// BOTTOM is custom:
-						// Possible outcomes:
-							// Facing out on left, facing out on right
-							// Facing out on left, facing in on right
-							// Facing in on left, facing out on right
-						newPerm.push(...chooseState(prevPerm, [
-							["oSwV", "oSwInv", "oSeV", "oSeInv"],
-							["oSwV", "oSwInv", "oSV", "oSeArc"],
-							["oSwArc", "oSV", "oSeInv", "oSeV"]
-						]));
+					// // VARIABLE SEGMENTS
+					// 	// BOTTOM is custom:
+					// 	// Possible outcomes:
+					// 		// Facing out on left, facing out on right
+					// 		// Facing out on left, facing in on right
+					// 		// Facing in on left, facing out on right
+					// 	newPerm.push(...chooseState(prevPerm, [
+					// 		["oSwV", "oSwInv", "oSeV", "oSeInv"],
+					// 		["oSwV", "oSwInv", "oSV", "oSeArc"],
+					// 		["oSwArc", "oSV", "oSeInv", "oSeV"]
+					// 	]));
+
+					//!Could add more variables
 
 					break;
 				case "x":
 				case "X":
 					// X has 3 variables: the entire shape is custom, and is done manually
 
-					let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
+					// let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
 
-					const outcome1 = ["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"];
-					const outcome2 = ["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"];
-					const outcome3 = ["oNwInv", "iNV", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeInv", "iSV"];
+					// const outcome1 = ["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"];
+					// const outcome2 = ["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"];
+					// const outcome3 = ["oNwInv", "iNV", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeInv", "iSV"];
 
-					// Count how many of the segments in the first shape are already visible
-					let count1 = 0;
-					for (let segment of outcome1) {
-						if (prevPermSegments.includes(segment)) {
-							count1++;
-						}
-					}
-					// Count how many of the segments in the second shape are already visible
-					let count2 = 0;
-					for (let segment of outcome2) {
-						if (prevPermSegments.includes(segment)) {
-							count2++;
-						}
-					}
-					// Count how many of the segments in the third shape are already visible
-					let count3 = 0;
-					for (let segment of outcome3) {
-						if (prevPermSegments.includes(segment)) {
-							count3++;
-						}
-					}
-					console.log("Count 1:", count1);
-					console.log("Count 2:", count2);
-					console.log("Count 3:", count3);
+					// // Count how many of the segments in the first shape are already visible
+					// let count1 = 0;
+					// for (let segment of outcome1) {
+					// 	if (prevPermSegments.includes(segment)) {
+					// 		count1++;
+					// 	}
+					// }
+					// // Count how many of the segments in the second shape are already visible
+					// let count2 = 0;
+					// for (let segment of outcome2) {
+					// 	if (prevPermSegments.includes(segment)) {
+					// 		count2++;
+					// 	}
+					// }
+					// // Count how many of the segments in the third shape are already visible
+					// let count3 = 0;
+					// for (let segment of outcome3) {
+					// 	if (prevPermSegments.includes(segment)) {
+					// 		count3++;
+					// 	}
+					// }
+					// console.log("Count 1:", count1);
+					// console.log("Count 2:", count2);
+					// console.log("Count 3:", count3);
 
-					// Choose the shape with the most visible segments - if two shapes have the same number of visible segments, randomly choose between them
-					let chosenShape;
-					if (count1 > count2 && count1 > count3) {
-						chosenShape = outcome1;
-					} else if (count2 > count1 && count2 > count3) {
-						chosenShape = outcome2;
-					} else if (count3 > count1 && count3 > count2) {
-						chosenShape = outcome3;
-					} else if (count1 === count2 && count1 > count3) {
-						chosenShape = randomlyChoose(outcome1, outcome2);
-					} else if (count1 === count3 && count1 > count2) {
-						chosenShape = randomlyChoose(outcome1, outcome3);
-					} else if (count2 === count3 && count2 > count1) {
-						chosenShape = randomlyChoose(outcome2, outcome3);
-					} else {
-						chosenShape = randomlyChoose(outcome1, outcome2, outcome3);
-					}
+					// // Choose the shape with the most visible segments - if two shapes have the same number of visible segments, randomly choose between them
+					// let chosenShape;
+					// if (count1 > count2 && count1 > count3) {
+					// 	chosenShape = outcome1;
+					// } else if (count2 > count1 && count2 > count3) {
+					// 	chosenShape = outcome2;
+					// } else if (count3 > count1 && count3 > count2) {
+					// 	chosenShape = outcome3;
+					// } else if (count1 === count2 && count1 > count3) {
+					// 	chosenShape = randomlyChoose(outcome1, outcome2);
+					// } else if (count1 === count3 && count1 > count2) {
+					// 	chosenShape = randomlyChoose(outcome1, outcome3);
+					// } else if (count2 === count3 && count2 > count1) {
+					// 	chosenShape = randomlyChoose(outcome2, outcome3);
+					// } else {
+					// 	chosenShape = randomlyChoose(outcome1, outcome2, outcome3);
+					// }
 
-					console.log("Chosen shape:", chosenShape);
+					// console.log("Chosen shape:", chosenShape);
 
-					newPerm.push(...chosenShape);
+					// newPerm.push(...chosenShape);
+
+					newPerm.push(...chooseState(prevPerm, [
+						["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"],
+						["NwDiag", "NeDiag", "SeDiag", "SwDiag"]
+					]));
 					
 					break;
 				case "y":
 				case "Y":
 					// Y has 3 variables: the centre-NW, the centre-right and the bottom-left corner
 
-					// Adding the constant segments
-					newPerm.push(
-						"oNwV",
-						"oNeV",
-						"iNeV",
-						"iSeV",
-						"oSeArc"
-					);
+					// If the previous permutation has the upper diagonal segments, then use the special symmetrical Y shape
+					if (prevPerm["NwDiag"] || prevPerm["NeDiag"]) { 
+						newPerm.push(
+							"NwDiag",
+							"NeDiag",
+							"iSV",
+							"oSV"
+						);
+					} else {
 
-					// VARIABLE SEGMENTS
-						// CENTRE-NW is variable: Square or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
-						// CENTRE-RIGHT is variable: Up, Down or Horizontal
-						newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
-						// BOTTOM-LEFT CORNER is variable: Horizontal or Round
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+						// Adding the constant segments
+						newPerm.push(
+							"oNwV",
+							"oNeV",
+							"iNeV",
+							"iSeV",
+							"oSeArc"
+						);
+
+						// VARIABLE SEGMENTS
+							// CENTRE-NW is variable: Square or Round
+							newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
+							// CENTRE-RIGHT is variable: Up, Down or Horizontal
+							newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
+							// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+							newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+					}
 
 					break;
 				case "z":
 				case "Z":
 					// Z is a fixed letter - no calculations needed
 
+					// newPerm.push(
+					// 	"oNwH",
+					// 	"oNeH",
+					// 	"oNeV",
+					// 	"iNeArc",
+					// 	"iSwArc",
+					// 	"oSwV",
+					// 	"oSwH",
+					// 	"oSeH"
+					// );
+
 					newPerm.push(
 						"oNwH",
 						"oNeH",
-						"oNeV",
-						"iNeArc",
-						"iSwArc",
-						"oSwV",
+						"NeDiag",
+						"SwDiag",
 						"oSwH",
 						"oSeH"
 					);
 
 					break;
 				default:
-					// (For now) the default option is to show all the segments //TEMP
+					// (For now) the default option is to clear the grid
 
-					newPerm.push(
-						"oNwH",
-						"oNwV",
-						"oNwArc",
-						"oNwInv",
-						"oNV",
-						"oNeH",
-						"oNeV",
-						"oNeArc",
-						"oNeInv",
-						"iNwV",
-						"iNwArc",
-						"iNV",
-						"iNeV",
-						"iNeArc",
-						"iWH",
-						"iEH",
-						"iSwV",
-						"iSwArc",
-						"iSV",
-						"iSeV",
-						"iSeArc",
-						"oSwV",
-						"oSwH",
-						"oSwArc",
-						"oSwInv",
-						"oSV",
-						"oSeV",
-						"oSeH",
-						"oSeArc",
-						"oSeInv"
-					);
+
+					newPerm = [];
 
 					break;
 			}
@@ -1179,157 +1206,279 @@ export default function LetterGrid() {
 
 
 	return (
+		// <svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 200.5 400.5">
+		// 	<line 
+		// 		className="o-nw-h"
+		// 		ref={ oNwH }
+		// 		x1=".5" y1=".5" x2="100.5" y2=".5"
+		// 	/>
+		// 	<line 
+		// 		className="o-nw-v"
+		// 		ref={ oNwV }
+		// 		x1=".5" y1="100.5" x2=".5" y2=".5"
+		// 	/>
+		// 	<path 
+		// 		className="o-nw-arc"
+		// 		ref={ oNwArc }
+		// 		d="M.5,100.5C.5,45.272,45.272.5,100.5.5"
+		// 	/>
+		// 	<path 
+		// 		className="o-nw-inv"
+		// 		ref={ oNwInv }
+		// 		d="M.5.5c55.228,0,100,44.772,100,100"
+		// 	/>
+		// 	<line 
+		// 		className="o-n-v"
+		// 		ref={ oNV }
+		// 		x1="100.5" y1=".5" x2="100.5" y2="100.5"
+		// 	/>
+		// 	<line 
+		// 		className="o-ne-h"
+		// 		ref={ oNeH }
+		// 		x1="100.5" y1=".5" x2="200.5" y2=".5"
+		// 	/>
+		// 	<line 
+		// 		className="o-ne-v"
+		// 		ref={ oNeV }
+		// 		x1="200.5" y1=".5" x2="200.5" y2="100.5"
+		// 	/>
+		// 	<path 
+		// 		className="o-ne-arc"
+		// 		ref={ oNeArc }
+		// 		d="M100.5.5c55.228,0,100,44.772,100,100"
+		// 	/>
+		// 	<path 
+		// 		className="o-ne-inv"
+		// 		ref={ oNeInv }
+		// 		d="M100.5,100.5C100.5,45.272,145.272.5,200.5.5"
+		// 	/>
+		// 	<line 
+		// 		className="i-nw-v"
+		// 		ref={ iNwV }
+		// 		x1=".5" y1="200.5" x2=".5" y2="100.5"
+		// 	/>
+		// 	<path 
+		// 		className="i-nw-arc"
+		// 		ref={ iNwArc }
+		// 		d="M100.5,200.5C45.272,200.5.5,155.728.5,100.5"
+		// 	/>
+		// 	<line 
+		// 		className="i-n-v"
+		// 		ref={ iNV }
+		// 		x1="100.5" y1="100.5" x2="100.5" y2="200.5"
+		// 	/>
+		// 	<line 
+		// 		className="i-ne-v" 
+		// 		ref={ iNeV }
+		// 		x1="200.5" y1="100.5" x2="200.5" y2="200.5"
+		// 	/>
+		// 	<path 
+		// 		className="i-ne-arc"
+		// 		ref={ iNeArc }
+		// 		d="M200.5,100.5c0,55.228-44.772,100-100,100"
+		// 	/>
+		// 	<line 
+		// 		className="i-w-h"
+		// 		ref={ iWH }
+		// 		x1="100.5" y1="200.5" x2=".5" y2="200.5"
+		// 	/>
+		// 	<line 
+		// 		className="i-e-h"
+		// 		ref={ iEH }
+		// 		x1="200.5" y1="200.5" x2="100.5" y2="200.5"
+		// 	/>
+		// 	<line 
+		// 		className="i-sw-v"
+		// 		ref={ iSwV }
+		// 		x1=".5" y1="300.5" x2=".5" y2="200.5"
+		// 	/>
+		// 	<path 
+		// 		className="i-sw-arc"
+		// 		ref={ iSwArc }
+		// 		d="M.5,300.5c0-55.228,44.772-100,100-100"
+		// 	/>
+		// 	<line 
+		// 		className="i-s-v"
+		// 		ref={ iSV }
+		// 		x1="100.5" y1="200.5" x2="100.5" y2="300.5"
+		// 	/>
+		// 	<line 
+		// 		className="i-se-v"
+		// 		ref={ iSeV }
+		// 		x1="200.5" y1="200.5" x2="200.5" y2="300.5"
+		// 	/>
+		// 	<path 
+		// 		className="i-se-arc"
+		// 		ref={ iSeArc }
+		// 		d="M100.5,200.5c55.228,0,100,44.772,100,100"
+		// 	/>
+		// 	<line 
+		// 		className="o-sw-v"
+		// 		ref={ oSwV }
+		// 		x1=".5" y1="400.5" x2=".5" y2="300.5"
+		// 	/>
+		// 	<line 
+		// 		className="o-sw-h"
+		// 		ref={ oSwH }
+		// 		x1="100.5" y1="400.5" x2=".5" y2="400.5"
+		// 	/>
+		// 	<path 
+		// 		className="o-sw-arc"
+		// 		ref={ oSwArc }
+		// 		d="M100.5,400.5c-55.228,0-100-44.772-100-100"
+		// 	/>
+		// 	<path 
+		// 		className="o-sw-inv"
+		// 		ref={ oSwInv }
+		// 		d="M100.5,300.5c0,55.228-44.772,100-100,100"
+		// 	/>
+		// 	<line 
+		// 		className="o-s-v" 
+		// 		ref={ oSV }
+		// 		x1="100.5" y1="300.5" x2="100.5" y2="400.5"
+		// 	/>
+		// 	<line 
+		// 		className="o-se-v"
+		// 		ref={ oSeV }
+		// 		x1="200.5" y1="300.5" x2="200.5" y2="400.5"
+		// 	/>
+		// 	<line 
+		// 		className="o-se-h" 
+		// 		ref={ oSeH }
+		// 		x1="200.5" y1="400.5" x2="100.5" y2="400.5"
+		// 	/>
+		// 	<path 
+		// 		className="o-se-arc"
+		// 		ref={ oSeArc }
+		// 		d="M200.5,300.5c0,55.228-44.772,100-100,100"
+		// 	/>
+		// 	<path 
+		// 		className="o-se-inv"
+		// 		ref={ oSeInv }
+		// 		d="M200.5,400.5c-55.228,0-100-44.772-100-100"
+		// 	/>
+		// </svg>
 		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 401">
-			<line 
-				className="o-nw-h"
-				ref={ oNwH }
-				x1=".5" y1=".5" x2="100.5" y2=".5"
-			/>
-			<line 
-				className="o-nw-v"
-				ref={ oNwV }
-				x1=".5" y1="100.5" x2=".5" y2=".5"
-			/>
 			<path 
-				className="o-nw-arc"
-				ref={ oNwArc }
-				d="M.5,100.5C.5,45.272,45.272.5,100.5.5"
-			/>
+				className="oSeArc" 
+				ref={ oSeArc } 
+				d="M200.5,300.5c-.071,7.076-.243,12.711-1.846,22.379-1.065,6.422-2.652,12.363-5.006,18.451s-5.626,11.79-9.035,17.066c-3.409,5.276-7.325,10.126-11.708,14.509s-9.233,8.299-14.509,11.708-10.978,6.613-17.066,8.967c-6.088,2.354-12.13,3.879-18.333,5.074-8.219,1.583-15.029,1.846-22.497,1.846"/>
+			<line 
+				className="oSeH" 
+				ref={ oSeH } 
+				x1="200.5" y1="400.5" x2="100.5" y2="400.5"/>
+			<line 
+				className="oSeV" 
+				ref={ oSeV } 
+				x1="200.5" y1="300.5" x2="200.5" y2="400.5"/>
+			<line 
+				className="oSV" 
+				ref={ oSV } 
+				x1="100.5" y1="300.5" x2="100.5" y2="400.5"/>
 			<path 
-				className="o-nw-inv"
-				ref={ oNwInv }
-				d="M.5.5c55.228,0,100,44.772,100,100"
-			/>
+				className="oSwArc" 
+				ref={ oSwArc } 
+				d="M100.5,400.5c-7.076-.071-12.711-.243-22.379-1.846-6.422-1.065-12.363-2.652-18.451-5.006s-11.79-5.626-17.066-9.035-10.126-7.325-14.509-11.708-8.299-9.233-11.708-14.509-6.613-10.978-8.967-17.066c-2.354-6.088-3.879-12.13-5.074-18.333-1.583-8.219-1.846-15.029-1.846-22.497"/>
 			<line 
-				className="o-n-v"
-				ref={ oNV }
-				x1="100.5" y1=".5" x2="100.5" y2="100.5"
-			/>
+				className="oSwH" 
+				ref={ oSwH } 
+				x1="100.5" y1="400.5" x2=".5" y2="400.5"/>
 			<line 
-				className="o-ne-h"
-				ref={ oNeH }
-				x1="100.5" y1=".5" x2="200.5" y2=".5"
-			/>
-			<line 
-				className="o-ne-v"
-				ref={ oNeV }
-				x1="200.5" y1=".5" x2="200.5" y2="100.5"
-			/>
+				className="oSwV" 
+				ref={ oSwV } 
+				x1=".5" y1="400.5" x2=".5" y2="300.5"/>
 			<path 
-				className="o-ne-arc"
-				ref={ oNeArc }
-				d="M100.5.5c55.228,0,100,44.772,100,100"
-			/>
+				className="iSeArc" 
+				ref={ iSeArc } 
+				d="M100.5,200.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006,6.088,2.354,11.79,5.626,17.066,9.035s10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
+			<line 
+				className="iSeV" 
+				ref={ iSeV } 
+				x1="200.5" y1="200.5" x2="200.5" y2="300.5"/>
+			<line 
+				className="iSV" 
+				ref={ iSV } 
+				x1="100.5" y1="200.5" x2="100.5" y2="300.5"/>
 			<path 
-				className="o-ne-inv"
-				ref={ oNeInv }
-				d="M100.5,100.5C100.5,45.272,145.272.5,200.5.5"
-			/>
+				className="iSwArc" 
+				ref={ iSwArc } 
+				d="M.5,300.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708c5.276-3.409,10.978-6.613,17.066-8.967s12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
 			<line 
-				className="i-nw-v"
-				ref={ iNwV }
-				x1=".5" y1="200.5" x2=".5" y2="100.5"
-			/>
+				className="iSwV" 
+				ref={ iSwV } 
+				x1=".5" y1="300.5" x2=".5" y2="200.5"/>
+			<line 
+				className="SeDiag" 
+				ref={ SeDiag } 
+				x1="100.5" y1="200.5" x2="200.5" y2="400.5"/>
+			<line 
+				className="SwDiag" 
+				ref={ SwDiag } 
+				x1=".5" y1="400.5" x2="100.5" y2="200.5"/>
+			<line 
+				className="iEH" 
+				ref={ iEH } 
+				x1="100.5" y1="200.5" x2="200.5" y2="200.5"/>
+			<line 
+				className="iWH" 
+				ref={ iWH } 
+				x1=".5" y1="200.5" x2="100.5" y2="200.5"/>
+			<line 
+				className="NeDiag" 
+				ref={ NeDiag } 
+				x1="100.5" y1="200.5" x2="200.5" y2=".5"/>
+			<line 
+				className="NwDiag" 
+				ref={ NwDiag } 
+				x1=".5" y1=".5" x2="100.5" y2="200.5"/>
 			<path 
-				className="i-nw-arc"
-				ref={ iNwArc }
-				d="M100.5,200.5C45.272,200.5.5,155.728.5,100.5"
-			/>
+				className="iNeArc" 
+				ref={ iNeArc } 
+				d="M200.5,100.5c-.071,7.076-.243,12.711-1.846,22.379-1.065,6.422-2.652,12.363-5.006,18.451-2.354,6.088-5.626,11.79-9.035,17.066s-7.325,10.126-11.708,14.509-9.233,8.299-14.509,11.708-10.978,6.613-17.066,8.967-12.13,3.879-18.333,5.074c-8.219,1.583-15.029,1.846-22.497,1.846"/>
 			<line 
-				className="i-n-v"
-				ref={ iNV }
-				x1="100.5" y1="100.5" x2="100.5" y2="200.5"
-			/>
+				className="iNeV" 
+				ref={ iNeV } 
+				x1="200.5" y1="100.5" x2="200.5" y2="200.5"/>
 			<line 
-				className="i-ne-v" 
-				ref={ iNeV }
-				x1="200.5" y1="100.5" x2="200.5" y2="200.5"
-			/>
+				className="iNV" 
+				ref={ iNV } 
+				x1="100.5" y1="100.5" x2="100.5" y2="200.5"/>
 			<path 
-				className="i-ne-arc"
-				ref={ iNeArc }
-				d="M200.5,100.5c0,55.228-44.772,100-100,100"
-			/>
+				className="iNwArc" 
+				ref={ iNwArc } 
+				d="M100.5,200.5c-7.076-.071-12.711-.243-22.379-1.846-6.422-1.065-12.363-2.652-18.451-5.006s-11.79-5.626-17.066-9.035-10.126-7.325-14.509-11.708-8.299-9.233-11.708-14.509-6.613-10.978-8.967-17.066c-2.354-6.088-3.879-12.13-5.074-18.333-1.583-8.219-1.846-15.029-1.846-22.497"/>
 			<line 
-				className="i-w-h"
-				ref={ iWH }
-				x1="100.5" y1="200.5" x2=".5" y2="200.5"
-			/>
-			<line 
-				className="i-e-h"
-				ref={ iEH }
-				x1="200.5" y1="200.5" x2="100.5" y2="200.5"
-			/>
-			<line 
-				className="i-sw-v"
-				ref={ iSwV }
-				x1=".5" y1="300.5" x2=".5" y2="200.5"
-			/>
+				className="iNwV" 
+				ref={ iNwV } 
+				x1=".5" y1="200.5" x2=".5" y2="100.5"/>
 			<path 
-				className="i-sw-arc"
-				ref={ iSwArc }
-				d="M.5,300.5c0-55.228,44.772-100,100-100"
-			/>
+				className="oNeArc" 
+				ref={ oNeArc } 
+				d="M100.5.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006s11.79,5.626,17.066,9.035,10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
 			<line 
-				className="i-s-v"
-				ref={ iSV }
-				x1="100.5" y1="200.5" x2="100.5" y2="300.5"
-			/>
+				className="oNeH" 
+				ref={ oNeH } 
+				x1="100.5" y1=".5" x2="200.5" y2=".5"/>
 			<line 
-				className="i-se-v"
-				ref={ iSeV }
-				x1="200.5" y1="200.5" x2="200.5" y2="300.5"
-			/>
+				className="oNeV" 
+				ref={ oNeV } 
+				x1="200.5" y1=".5" x2="200.5" y2="100.5"/>
+			<line 
+				className="oNV" 
+				ref={ oNV } 
+				x1="100.5" y1=".5" x2="100.5" y2="100.5"/>
 			<path 
-				className="i-se-arc"
-				ref={ iSeArc }
-				d="M100.5,200.5c55.228,0,100,44.772,100,100"
-			/>
+				className="oNwArc" 
+				ref={ oNwArc } 
+				d="M.5,100.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708,10.978-6.613,17.066-8.967,12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
 			<line 
-				className="o-sw-v"
-				ref={ oSwV }
-				x1=".5" y1="400.5" x2=".5" y2="300.5"
-			/>
+				className="oNwH" 
+				ref={ oNwH } 
+				x1=".5" y1=".5" x2="100.5" y2=".5"/>
 			<line 
-				className="o-sw-h"
-				ref={ oSwH }
-				x1="100.5" y1="400.5" x2=".5" y2="400.5"
-			/>
-			<path 
-				className="o-sw-arc"
-				ref={ oSwArc }
-				d="M100.5,400.5c-55.228,0-100-44.772-100-100"
-			/>
-			<path 
-				className="o-sw-inv"
-				ref={ oSwInv }
-				d="M100.5,300.5c0,55.228-44.772,100-100,100"
-			/>
-			<line 
-				className="o-s-v" 
-				ref={ oSV }
-				x1="100.5" y1="300.5" x2="100.5" y2="400.5"
-			/>
-			<line 
-				className="o-se-v"
-				ref={ oSeV }
-				x1="200.5" y1="300.5" x2="200.5" y2="400.5"
-			/>
-			<line 
-				className="o-se-h" 
-				ref={ oSeH }
-				x1="200.5" y1="400.5" x2="100.5" y2="400.5"
-			/>
-			<path 
-				className="o-se-arc"
-				ref={ oSeArc }
-				d="M200.5,300.5c0,55.228-44.772,100-100,100"
-			/>
-			<path 
-				className="o-se-inv"
-				ref={ oSeInv }
-				d="M200.5,400.5c-55.228,0-100-44.772-100-100"
-			/>
+				className="oNwV" 
+				ref={ oNwV } 
+				x1=".5" y1="100.5" x2=".5" y2=".5"/>
 		</svg>
 	);
 }
