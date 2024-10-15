@@ -130,172 +130,224 @@ export default function LetterGrid() {
 			let newPerm = [];
 
 
-			
 			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
 			function chooseState(prevPerm, possibleOutcomes, optionalVisibility = false) {
 				console.log("chooseState called with:", prevPerm, possibleOutcomes);
 				
+				// PrevPerm is an object with the previous permutation
 				// Sample possibleOutcomes: [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]] (Square, Round, VStem)
 				// optionalVisibility is a boolean for if the segment is optional to be visible (chosen from a 50% chance)
-				
-				// Getting all the involved segments (the same segment may appear in multiple outcomes, so this will )
-				let segments = [];
-				for (let i = 0; i < possibleOutcomes.length; i++) {
-					const outcome = possibleOutcomes[i];
-					
-					// Go through each segment in the outcome
-					for (let j = 0; j < outcome.length; j++) {
-						const segment = outcome[j];
-						
-						// If the segment isn't already in the array, add it
-						if (!segments.includes(segment)) {
-							segments.push(segment);
-						}
-					}
-				}
-				console.log("Involved segments:", segments);
-				
-				// Getting all the segments that AREN'T in involved
-				let notInvolvedSegments = allSegments.filter(segment => !segments.includes(segment));
-				console.log("Not involved segments:", notInvolvedSegments);
-				
-				// Getting all the segments that were visible in the previous permutation
+
+				// Turning the prevPerm object into an array of segments
 				let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
 				console.log("Previous permutation segments:", prevPermSegments);
 
-				// We need to test all possible combinations of segments, i.e., first where only one segment is visible, then where two are visible, etc.
-				// The problem is that we don't necessarily know how many segments there are
-				// So we need to find all possible combinations of segments
-				// This is a recursive function that will find all possible combinations of segments
-				function findCombinations(segments, length = 1) {
-					// If the length is 1, just return the segments
-					if (length === 1) {
-						return segments.map(segment => [segment]);
-					}
+				// For each possible outcome, we'll count how many of its segments are in the previous permutation
+				// We'll then choose the outcome with the most segments in the previous permutation
+				let bestOutcome = []; // The best outcome (note, outcomes should be pushed as arrays so this is an array of arrays)
+				let bestOutcomeCount = 0; // The number of segments in the best outcome that are in the previous permutation
 
-					// If the length is greater than 1, find all combinations of the segments
-					let combinations = [];
-					for (let i = 0; i < segments.length; i++) {
-						const segment = segments[i]; // The current segment
-						const remainingSegments = segments.slice(i + 1); // The remaining segments
-						const smallerCombinations = findCombinations(remainingSegments, length - 1); // The combinations of the remaining segments
+				// Go through each possible outcome
+				for (let i = 0; i < possibleOutcomes.length; i++) {
+					const outcome = possibleOutcomes[i]; // The current outcome
+					console.log("Processing outcome:", outcome);
 
-						for (let j = 0; j < smallerCombinations.length; j++) {
-							const smallerCombination = smallerCombinations[j]; // The current combination of the remaining segments
-							combinations.push([segment, ...smallerCombination]); // Add the current segment to the combination of the remaining segments
+					// Count how many segments in the outcome are in the previous permutation
+					let count = 0;
+					for (let j = 0; j < outcome.length; j++) {
+						const segment = outcome[j]; // The current segment
+						if (prevPermSegments.includes(segment)) {
+							count++;
 						}
 					}
+					console.log(`Outcome: ${outcome}, Count: ${count}`);
 
-					// Return all the combinations
-					return combinations;
+					// The count may be equal to the best outcome count, in which case we'll add it to the best outcome array
+					if (count === bestOutcomeCount) {
+						bestOutcome.push(outcome);
+						console.log(`Added to bestOutcome: ${outcome}`);
+					}
+					// If the count is greater than the best outcome count, we'll replace the best outcome array with this outcome
+					if (count > bestOutcomeCount) {
+						bestOutcome = [outcome];
+						bestOutcomeCount = count;
+						console.log(`New bestOutcome: ${outcome}, bestOutcomeCount: ${bestOutcomeCount}`);
+					}
 				}
+
+				// If there are multiple best outcomes, we'll randomly choose one
+				const chosenOutcome = randomlyChoose(...bestOutcome);
+				console.log("Chosen outcome:", chosenOutcome);
+				return chosenOutcome;
+			}
+
+
+			
+			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
+			// function chooseState(prevPerm, possibleOutcomes, optionalVisibility = false) {
+			// 	console.log("chooseState called with:", prevPerm, possibleOutcomes);
+				
+			// 	// Sample possibleOutcomes: [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]] (Square, Round, VStem)
+			// 	// optionalVisibility is a boolean for if the segment is optional to be visible (chosen from a 50% chance)
+				
+			// 	// Getting all the involved segments (the same segment may appear in multiple outcomes, so this will )
+			// 	let segments = [];
+			// 	for (let i = 0; i < possibleOutcomes.length; i++) {
+			// 		const outcome = possibleOutcomes[i];
+					
+			// 		// Go through each segment in the outcome
+			// 		for (let j = 0; j < outcome.length; j++) {
+			// 			const segment = outcome[j];
+						
+			// 			// If the segment isn't already in the array, add it
+			// 			if (!segments.includes(segment)) {
+			// 				segments.push(segment);
+			// 			}
+			// 		}
+			// 	}
+			// 	console.log("Involved segments:", segments);
+				
+			// 	// Getting all the segments that AREN'T in involved
+			// 	let notInvolvedSegments = allSegments.filter(segment => !segments.includes(segment));
+			// 	console.log("Not involved segments:", notInvolvedSegments);
+				
+			// 	// Getting all the segments that were visible in the previous permutation
+			// 	let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
+			// 	console.log("Previous permutation segments:", prevPermSegments);
+
+			// 	// We need to test all possible combinations of segments, i.e., first where only one segment is visible, then where two are visible, etc.
+			// 	// The problem is that we don't necessarily know how many segments there are
+			// 	// So we need to find all possible combinations of segments
+			// 	// This is a recursive function that will find all possible combinations of segments
+			// 	function findCombinations(segments, length = 1) {
+			// 		// If the length is 1, just return the segments
+			// 		if (length === 1) {
+			// 			return segments.map(segment => [segment]);
+			// 		}
+
+			// 		// If the length is greater than 1, find all combinations of the segments
+			// 		let combinations = [];
+			// 		for (let i = 0; i < segments.length; i++) {
+			// 			const segment = segments[i]; // The current segment
+			// 			const remainingSegments = segments.slice(i + 1); // The remaining segments
+			// 			const smallerCombinations = findCombinations(remainingSegments, length - 1); // The combinations of the remaining segments
+
+			// 			for (let j = 0; j < smallerCombinations.length; j++) {
+			// 				const smallerCombination = smallerCombinations[j]; // The current combination of the remaining segments
+			// 				combinations.push([segment, ...smallerCombination]); // Add the current segment to the combination of the remaining segments
+			// 			}
+			// 		}
+
+			// 		// Return all the combinations
+			// 		return combinations;
+			// 	}
 
 
 				
-				// Now we have all possible combinations of segments, we can test each one
-					// We'll start will testing to see if any of the outcomes contains all the segments
-					// If no outcomes are found, we'll check to see if this combination of all the possible segments was entirely present in the previous permutation
-					// If they are, we'll randomly choose one of the possible outcomes
-					// Otherwise, we'll test to see if any of the outcomes contains all but one of the segments
-					// Then all but two, etc.
-					// If there are multiple outcomes that match this number of segments, we'll randomly choose one
-					// If an outcome is found, we'll stop the loop after testing all outcomes against that number of segments
-					// If at the end no outcomes are found, we'll randomly choose one of the possible outcomes
-				let matchingOutcomes = [];
-				for (let i = segments.length; i >= 1; i--) {
-					// Getting all combinations of segments of length i
-					const combinations = findCombinations(segments, i);
-					console.log(`Testing combinations of length ${i}:`, combinations);
+			// 	// Now we have all possible combinations of segments, we can test each one
+			// 		// We'll start will testing to see if any of the outcomes contains all the segments
+			// 		// If no outcomes are found, we'll check to see if this combination of all the possible segments was entirely present in the previous permutation
+			// 		// If they are, we'll randomly choose one of the possible outcomes
+			// 		// Otherwise, we'll test to see if any of the outcomes contains all but one of the segments
+			// 		// Then all but two, etc.
+			// 		// If there are multiple outcomes that match this number of segments, we'll randomly choose one
+			// 		// If an outcome is found, we'll stop the loop after testing all outcomes against that number of segments
+			// 		// If at the end no outcomes are found, we'll randomly choose one of the possible outcomes
+			// 	let matchingOutcomes = [];
+			// 	for (let i = segments.length; i >= 1; i--) {
+			// 		// Getting all combinations of segments of length i
+			// 		const combinations = findCombinations(segments, i);
+			// 		console.log(`Testing combinations of length ${i}:`, combinations);
 
-					// Go through each combination
-					for (let j = 0; j < combinations.length; j++) {
-						const combination = combinations[j]; // The current combination
-						console.log("Testing combination:", combination);
+			// 		// Go through each combination
+			// 		for (let j = 0; j < combinations.length; j++) {
+			// 			const combination = combinations[j]; // The current combination
+			// 			console.log("Testing combination:", combination);
 
-						// Check to see if the combination matches the previous permutation and doesn't contain any segments that aren't involved
-						console.log(containsSet(prevPermSegments, combination), !containsSet(notInvolvedSegments, combination));
-						if (containsSet(prevPermSegments, combination) && !containsSet(notInvolvedSegments, combination)) {
-							console.log("Combination matches previous permutation and doesn't contain not involved segments:", combination);
+			// 			// Check to see if the combination matches the previous permutation and doesn't contain any segments that aren't involved
+			// 			console.log(containsSet(prevPermSegments, combination), !containsSet(notInvolvedSegments, combination));
+			// 			if (containsSet(prevPermSegments, combination) && !containsSet(notInvolvedSegments, combination)) {
+			// 				console.log("Combination matches previous permutation and doesn't contain not involved segments:", combination);
 
-							// If it does, check to see which (if any) of the possible outcomes contains the combination
+			// 				// If it does, check to see which (if any) of the possible outcomes contains the combination
 
-							for (let k = 0; k < possibleOutcomes.length; k++) {
-								const outcome = possibleOutcomes[k]; // The current outcome
+			// 				for (let k = 0; k < possibleOutcomes.length; k++) {
+			// 					const outcome = possibleOutcomes[k]; // The current outcome
 
-								// If the outcome contains the combination and isn't already in the matchingOutcomes array
-								if (containsSet(outcome, combination) && !matchingOutcomes.includes(outcome)) {
-									// Add the outcome to the matchingOutcomes array
-									matchingOutcomes.push(outcome);
-								}
-							}
+			// 					// If the outcome contains the combination and isn't already in the matchingOutcomes array
+			// 					if (containsSet(outcome, combination) && !matchingOutcomes.includes(outcome)) {
+			// 						// Add the outcome to the matchingOutcomes array
+			// 						matchingOutcomes.push(outcome);
+			// 					}
+			// 				}
 
-						}
-					}
+			// 			}
+			// 		}
 
-					// If there are already any matching outcomes, stop the loop
-					if (matchingOutcomes.length > 0) {
-						break;
-					}
+			// 		// If there are already any matching outcomes, stop the loop
+			// 		if (matchingOutcomes.length > 0) {
+			// 			break;
+			// 		}
 
-					// If no outcomes are found and this is the combination with all the possible segments in it, check to see if the previous permutation contains all the segments
-					if (i === segments.length && containsSet(prevPermSegments, segments)) {
-						console.log("Previous permutation contains all segments");
-						// If it does, randomly choose one of the possible outcomes
-						const chosenOutcome = randomlyChoose(...possibleOutcomes);
-						console.log("Randomly chosen outcome:", chosenOutcome);
-						return chosenOutcome;
-					}
-				}
-
-
+			// 		// If no outcomes are found and this is the combination with all the possible segments in it, check to see if the previous permutation contains all the segments
+			// 		if (i === segments.length && containsSet(prevPermSegments, segments)) {
+			// 			console.log("Previous permutation contains all segments");
+			// 			// If it does, randomly choose one of the possible outcomes
+			// 			const chosenOutcome = randomlyChoose(...possibleOutcomes);
+			// 			console.log("Randomly chosen outcome:", chosenOutcome);
+			// 			return chosenOutcome;
+			// 		}
+			// 	}
 
 
-				console.log("Matching outcomes:", matchingOutcomes);
 
-				// If there are no matching outcomes, randomly pick one of the possible outcomes
-				if (matchingOutcomes.length === 0) {
-					console.log("No matching outcomes found, randomly choosing one of the possible outcomes");
-					const chosenOutcome = randomlyChoose(...possibleOutcomes);
-					console.log("Randomly chosen outcome (const):", chosenOutcome);
 
-					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
-					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-					console.log("TESTING: " + !containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
-					if (!containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
-						console.log("Outcome is optionally visible and randomly chosen not to be visible");
-						return [];
-					}
+			// 	console.log("Matching outcomes:", matchingOutcomes);
 
-					return chosenOutcome;
-				} else if (matchingOutcomes.length === 1) {
-					// If there is only one matching outcome
+			// 	// If there are no matching outcomes, randomly pick one of the possible outcomes
+			// 	if (matchingOutcomes.length === 0) {
+			// 		console.log("No matching outcomes found, randomly choosing one of the possible outcomes");
+			// 		const chosenOutcome = randomlyChoose(...possibleOutcomes);
+			// 		console.log("Randomly chosen outcome (const):", chosenOutcome);
 
-					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
-					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-					console.log("TESTING: " + containsSet(prevPermSegments, [matchingOutcomes[0]]), optionalVisibility, Math.random() < 0.5)
-					if (containsSet(prevPermSegments, [matchingOutcomes[0]]) && optionalVisibility && Math.random() < 0.5) {
-						console.log("Outcome is optionally visible and randomly chosen not to be visible");
-						return [];
-					}
+			// 		// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
+			// 		// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
+			// 		console.log("TESTING: " + !containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
+			// 		if (!containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
+			// 			console.log("Outcome is optionally visible and randomly chosen not to be visible");
+			// 			return [];
+			// 		}
 
-					console.log("One matching outcome found:", matchingOutcomes[0]);
-					return matchingOutcomes[0];
-				} else {
-					// If there are multiple matching outcomes, randomly choose one
-					const chosenOutcome = randomlyChoose(...matchingOutcomes);
-					console.log("Multiple matching outcomes found, randomly chosen  (const):", chosenOutcome);
+			// 		return chosenOutcome;
+			// 	} else if (matchingOutcomes.length === 1) {
+			// 		// If there is only one matching outcome
 
-					// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
-					// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-					console.log("TESTING: " + containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
-					if (containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
-						console.log("Outcome is optionally visible and randomly chosen not to be visible");
-						return [];
-					}
+			// 		// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
+			// 		// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
+			// 		console.log("TESTING: " + containsSet(prevPermSegments, [matchingOutcomes[0]]), optionalVisibility, Math.random() < 0.5)
+			// 		if (containsSet(prevPermSegments, [matchingOutcomes[0]]) && optionalVisibility && Math.random() < 0.5) {
+			// 			console.log("Outcome is optionally visible and randomly chosen not to be visible");
+			// 			return [];
+			// 		}
+
+			// 		console.log("One matching outcome found:", matchingOutcomes[0]);
+			// 		return matchingOutcomes[0];
+			// 	} else {
+			// 		// If there are multiple matching outcomes, randomly choose one
+			// 		const chosenOutcome = randomlyChoose(...matchingOutcomes);
+			// 		console.log("Multiple matching outcomes found, randomly chosen  (const):", chosenOutcome);
+
+			// 		// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
+			// 		// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
+			// 		console.log("TESTING: " + containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
+			// 		if (containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
+			// 			console.log("Outcome is optionally visible and randomly chosen not to be visible");
+			// 			return [];
+			// 		}
 					
-					return chosenOutcome;
-				}
-			}
+			// 		return chosenOutcome;
+			// 	}
+			// }
 
 
 
