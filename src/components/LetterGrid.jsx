@@ -1235,7 +1235,8 @@ export default function LetterGrid() {
 			// Getting the array of segments that are being added
 			let addedSegments = newPerm.filter(segment => !existingPermSegments.includes(segment));
 			let groupedAddedSegments = groupSegments(addedSegments);
-			console.log("Added: ", addedSegments, groupedAddedSegments);//TEMP
+			console.log("Added: ", addedSegments);//TEMP
+			console.log("Grouped Added: ", groupedAddedSegments);//TEMP
 
 			// Getting the array of segments that are being removed
 			let removedSegments = existingPermSegments.filter(segment => !newPerm.includes(segment));
@@ -1283,52 +1284,10 @@ export default function LetterGrid() {
 
 			
 			// Updating the permutation to reflect the new letter and showing/hiding segments as necessary
-			let changeTl = gsap.timeline();
-
-			// Adding the added segments
-			for (let group of groupedAddedSegments) {
-				console.log("Group: ", group);//TEMP
-				// Use GSAP to animate the drawing of the group
-				if (group.length === 1) {
-					let segment = group[0];
-
-					// Change the status of the segment to visible
-					currentPerm[segment] = true;
-
-					// If the group only has one segment, draw it normally
-					gsap.to(eval(segment).current, {
-						duration: 1,
-						strokeDashoffset: 0,
-						ease: "power1.inOut",
-					});
-				} else {
-					// If the group has multiple segments, string together the drawing of the segments
-					// blurAmount = gsap.utils.interpolate(blurAmountInitial, 0, Math.sqrt(self.progress));
-					let tl = gsap.timeline();
-
-					let segmentDuration = 1 / group.length;
-
-					for (let segment of group) {
-						// Change the status of the segment to visible
-						currentPerm[segment] = true;
-
-						tl.to(eval(segment).current, {
-							duration: segmentDuration,
-							strokeDashoffset: 0,
-							ease: "none",
-						});
-					}
-
-					gsap.to(tl, {
-						time: tl.duration(),
-						duration: 2,
-						ease: "power3.inOut",
-						onComplete: () => {
-							tl.kill();
-						}
-					});
-				}
-			}
+			let letterChangeTl = gsap.timeline({ paused: true });
+			
+			let dur = 0.8;
+			let ease = "power2.inOut";
 
 			// Removing the removed segments
 			for (let group of groupedRemovedSegments) {
@@ -1341,44 +1300,119 @@ export default function LetterGrid() {
 					currentPerm[segment] = false;
 
 					// Erase the segment
-					gsap.to(eval(segment).current, {
-						duration: 1,
-						strokeDashoffset: -100,
-						ease: "power1.inOut",
+					letterChangeTl.to(eval(segment).current, {
+						duration: dur,
+						strokeDashoffset: -101,
+						ease: ease,
 						onComplete: () => {
-							gsap.set(eval(segment).current, { strokeDashoffset: 100 });
+							gsap.set(eval(segment).current, { strokeDashoffset: 101 });
 						}
-					});
+					}, "<");
 				} else {
 					// If the group has multiple segments, string together the erasing of the segments
-					let tl = gsap.timeline();
+					let segmentDuration = dur * 2 / group.length;
 
-					let segmentDuration = 1 / group.length;
+					let tl = gsap.timeline({
+						paused: true,
+						defaults: {
+							duration: segmentDuration,
+							ease: "none"
+						}
+					});
 
 					for (let segment of group) {
 						// Change the status of the segment to invisible
 						currentPerm[segment] = false;
 
 						tl.to(eval(segment).current, {
-							duration: segmentDuration,
-							strokeDashoffset: -100,
-							ease: "none", 
+							strokeDashoffset: -101,
 							onComplete: () => {
-								gsap.set(eval(segment).current, { strokeDashoffset: 100 });
+								gsap.set(eval(segment).current, { strokeDashoffset: 101 });
 							}
 						});
 					}
 
-					gsap.to(tl, {
+					letterChangeTl.to(tl, {
 						time: tl.duration(),
-						duration: 2,
-						ease: "power3.inOut",
-						onComplete: () => {
-							tl.kill();
-						}
-					});
+						duration: tl.duration(),
+						ease: ease,
+					}, "<");
 				}
 			}
+
+			// Adding the added segments
+			for (let group of groupedAddedSegments) {
+				console.log("Group: ", group);//TEMP
+				// Use GSAP to animate the drawing of the group
+				if (group.length === 1) {
+					let segment = group[0];
+
+					// Change the status of the segment to visible
+					currentPerm[segment] = true;
+
+					// If the group only has one segment, draw it normally
+					letterChangeTl.to(eval(segment).current, {
+						duration: dur,
+						strokeDashoffset: 0,
+						ease: ease,
+					}, `>${dur * -1.3}`);
+				} else {
+					// If the group has multiple segments, string together the drawing of the segments
+					let segmentDuration = dur * 2 / group.length;
+
+					let tl = gsap.timeline({
+						paused: true,
+						defaults: {
+							duration: segmentDuration,
+							ease: "none"
+						}
+					});
+
+					for (let segment of group) {
+						// Change the status of the segment to visible
+						currentPerm[segment] = true;
+
+						tl.to(eval(segment).current, {
+							strokeDashoffset: 0,
+						});
+					}
+
+					letterChangeTl.to(tl, {
+						time: tl.duration(),
+						duration: tl.duration(),
+						ease: ease,
+					}, `>${dur * -1.3}`);
+
+					/* let tl = gsap.timeline({
+						defaults: {
+							duration: dur * 2,
+							ease: "power3.inOut"
+						}
+					});
+
+					let segmentDuration = dur / group.length;
+
+					for (let segment of group) {
+						// Change the status of the segment to visible
+						currentPerm[segment] = true;
+
+						tl.to(eval(segment).current, {
+							strokeDashoffset: 0
+						});
+					}
+
+					letterChangeTl.to(tl, `<${dur / 3}`); */
+				}
+			}
+
+			
+
+			// Updating the timeline
+			// letterChangeTl.add(removeTl);
+			// letterChangeTl.add(addTl);
+
+			// Play the timeline
+			letterChangeTl.play();
 		}
 
 
