@@ -3,7 +3,7 @@
 	import { useEffect, useRef } from 'react';
 
 	// Importing defs
-	import { hide, show, randomlyChoose, containsExactSet, containsSet } from '../defs';
+	import { hide, show, randomlyChoose, containsExactSet, containsSet, removeValues } from '../defs';
 
 	// Importing GSAP
 	import { gsap } from 'gsap';
@@ -568,11 +568,11 @@ export default function LetterGrid() {
 						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
 						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"/* , "SquareRound" */]));
 
-					// STRUCTURAL VARIABLES
-						// BOTTOM-LEFT CORNER is structurally variable: Round or SquareRound
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Round"/* , "SquareRound" */]));
-						// TOP-LEFT CORNER is structurally variable: Round or SquareRound
-						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Round"/* , "SquareRound" */]));
+					// // STRUCTURAL VARIABLES
+					// 	// BOTTOM-LEFT CORNER is structurally variable: Round or SquareRound
+					// 	newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Round"/* , "SquareRound" */]));
+					// 	// TOP-LEFT CORNER is structurally variable: Round or SquareRound
+					// 	newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Round"/* , "SquareRound" */]));
 
 					break;
 				case "d":
@@ -1217,50 +1217,743 @@ export default function LetterGrid() {
 
 
 
+
+
+
+
 		// This is the function to change to a new letter (or number, punctuation, etc.)
 		function changeToLetter(letter) {
 			// Store the existing permutation of the grid
 			let existingPerm = Object.assign({}, currentPerm);
 			let existingPermSegments = Object.keys(existingPerm).filter(key => existingPerm[key]);
-			console.log(existingPerm);//TEMP
+			console.log("existingPerm: ", existingPerm, existingPermSegments);//TEMP
 
 			// Getting the array of segments that should be visible for the new letter
 			let newPerm = letterMaker(letter, existingPerm);
-			console.log(newPerm);//TEMP
+			console.log("newPerm: ", newPerm);//TEMP
 			
-			// Changing the permutation to be the new letter
-			// Updating the permutation object to reflect the new letter and showing/hiding segments as necessary
-			for (let segment in currentPerm) {
-				// If the segment is in the new letter's array of visible segments
-				if (newPerm.includes(segment)) {
+			// Getting the array of segments that are being added
+			let addedSegments = newPerm.filter(segment => !existingPermSegments.includes(segment));
+			let groupedAddedSegments = groupSegments(addedSegments);
+			console.log("Added: ", addedSegments, groupedAddedSegments);//TEMP
+
+			// Getting the array of segments that are being removed
+			let removedSegments = existingPermSegments.filter(segment => !newPerm.includes(segment));
+			let groupedRemovedSegments = groupSegments(removedSegments);
+			console.log("Removed: ", removedSegments, groupedRemovedSegments);//TEMP
+
+
+			const segmentsHierarchy = [
+				"oNwV",
+				"iNwV",
+				"iSwV",
+				"oSwV",
+				"oNwH",
+				"NwDiag",
+				"oNwArc",
+				"iNwArc",
+				"iWH",
+				"oNV",
+				"iNV",
+				"oNeH",
+				"oNeV",
+				"oNeArc",
+				"NeDiag",
+				"iNeV",
+				"iNeArc",
+				"iEH",
+				"SwDiag",
+				"iSV",
+				"SeDiag",
+				"iSwArc",
+				"iSeV",
+				"iSeArc",
+				"oSwArc",
+				"oSeV",
+				"oSeArc",
+				"oSwH",
+				"oSV",
+				"oSeH"
+			];
+			
+			// Ordering the groupedAddedSegments and groupedRemovedSegments arrays based on the segmentsHierarchy array
+			groupedAddedSegments.sort((a, b) => segmentsHierarchy.indexOf(a[0]) - segmentsHierarchy.indexOf(b[0]));
+			groupedRemovedSegments.sort((a, b) => segmentsHierarchy.indexOf(a[0]) - segmentsHierarchy.indexOf(b[0]));
+			console.log("Ordered Added: ", groupedAddedSegments);//TEMP
+
+			
+			// Updating the permutation to reflect the new letter and showing/hiding segments as necessary
+			let changeTl = gsap.timeline();
+
+			// Adding the added segments
+			for (let group of groupedAddedSegments) {
+				console.log("Group: ", group);//TEMP
+				// Use GSAP to animate the drawing of the group
+				if (group.length === 1) {
+					let segment = group[0];
+
 					// Change the status of the segment to visible
 					currentPerm[segment] = true;
 
-					// If the segment was not previously visible, show it
-					// Use GSAP to animate the drawing of the segment
-					if (!existingPermSegments.includes(segment)) {
-						gsap.to(eval(segment).current, {
-							duration: 1,
+					// If the group only has one segment, draw it normally
+					gsap.to(eval(segment).current, {
+						duration: 1,
+						strokeDashoffset: 0,
+						ease: "power1.inOut",
+					});
+				} else {
+					// If the group has multiple segments, string together the drawing of the segments
+					// blurAmount = gsap.utils.interpolate(blurAmountInitial, 0, Math.sqrt(self.progress));
+					let tl = gsap.timeline();
+
+					let segmentDuration = 1 / group.length;
+
+					for (let segment of group) {
+						// Change the status of the segment to visible
+						currentPerm[segment] = true;
+
+						tl.to(eval(segment).current, {
+							duration: segmentDuration,
 							strokeDashoffset: 0,
-							ease: "power1.inOut",
+							ease: "none",
 						});
 					}
-				} else {
+
+					gsap.to(tl, {
+						time: tl.duration(),
+						duration: 2,
+						ease: "power3.inOut",
+						onComplete: () => {
+							tl.kill();
+						}
+					});
+				}
+			}
+
+			// Removing the removed segments
+			for (let group of groupedRemovedSegments) {
+				console.log("Group: ", group);//TEMP
+				// Use GSAP to animate the erasing of the group
+				if (group.length === 1) {
+					let segment = group[0];
+
 					// Change the status of the segment to invisible
 					currentPerm[segment] = false;
 
-					// If the segment was previously visible, hide it
-					// Use GSAP to animate the erasing of the segment
-					if (existingPermSegments.includes(segment)) {
-						gsap.to(eval(segment).current, {
-							duration: 1,
-							strokeDashoffset: 100,
-							ease: "power1.inOut",
+					// Erase the segment
+					gsap.to(eval(segment).current, {
+						duration: 1,
+						strokeDashoffset: -100,
+						ease: "power1.inOut",
+						onComplete: () => {
+							gsap.set(eval(segment).current, { strokeDashoffset: 100 });
+						}
+					});
+				} else {
+					// If the group has multiple segments, string together the erasing of the segments
+					let tl = gsap.timeline();
+
+					let segmentDuration = 1 / group.length;
+
+					for (let segment of group) {
+						// Change the status of the segment to invisible
+						currentPerm[segment] = false;
+
+						tl.to(eval(segment).current, {
+							duration: segmentDuration,
+							strokeDashoffset: -100,
+							ease: "none", 
+							onComplete: () => {
+								gsap.set(eval(segment).current, { strokeDashoffset: 100 });
+							}
 						});
 					}
+
+					gsap.to(tl, {
+						time: tl.duration(),
+						duration: 2,
+						ease: "power3.inOut",
+						onComplete: () => {
+							tl.kill();
+						}
+					});
 				}
 			}
 		}
+
+
+
+
+		function groupSegments(segments) {
+			// Create a copy of the segments array
+			let groupedSegments = [...segments];
+			console.log("Segments copy: ", groupedSegments);//TEMP
+
+			// Straight line, centre
+			switch (true) {
+				case containsSet(segments, [
+					"oNV",
+					"iNV",
+					"iSV",
+					"oSV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNV", "iNV", "iSV", "oSV"]);
+					groupedSegments.push(["oNV", "iNV", "iSV", "oSV"]);
+					break;
+				case containsSet(segments, [
+					"oNw",
+					"iNV",
+					"iSV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNw", "iNV", "iSV"]);
+					groupedSegments.push(["oNw", "iNV", "iSV"]);
+					break;
+				case containsSet(segments, [
+					"iNV",
+					"iSV",
+					"oSV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNV", "iSV", "oSV"]);
+					groupedSegments.push(["iNV", "iSV", "oSV"]);
+					break;
+				case containsSet(segments, [
+					"oNw",
+					"iNV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNw", "iNV"]);
+					groupedSegments.push(["oNw", "iNV"]);
+					break;
+				case containsSet(segments, [
+					"iNV",
+					"iSV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNV", "iSV"]);
+					groupedSegments.push(["iNV", "iSV"]);
+					break;
+				case containsSet(segments, [
+					"iSV",
+					"oSV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSV", "oSV"]);
+					groupedSegments.push(["iSV", "oSV"]);
+					break;
+			};
+
+			// Upper circle
+			switch (true) {
+				case containsSet(segments, [
+					"oNeArc",
+					"iNeArc",
+					"iNwArc",
+					"oNwArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeArc", "iNwArc", "oNwArc"]);
+					groupedSegments.push(["oNeArc", "iNeArc", "iNwArc", "oNwArc"]);
+					break;
+				case containsSet(segments, [
+					"oNwArc",
+					"oNeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwArc", "oNeArc"]);
+					groupedSegments.push(["oNwArc", "oNeArc"]);
+					break;
+				case containsSet(segments, [
+					"oNwH",
+					"oNeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwH", "oNeArc"]);
+					groupedSegments.push(["oNwH", "oNeArc"]);
+					break;
+				case containsSet(segments, [
+					"oNwArc",
+					"oNeH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwArc", "oNeH"]);
+					groupedSegments.push(["oNwArc", "oNeH"]);
+					break;
+			};
+
+			// Lower circle
+			switch (true) {
+				case containsSet(segments, [
+					"oSeArc",
+					"iSeArc",
+					"iSwArc",
+					"oSwArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oSeArc", "iSeArc", "iSwArc", "oSwArc"]);
+					groupedSegments.push(["oSeArc", "iSeArc", "iSwArc", "oSwArc"]);
+					break;
+				case containsSet(segments, [
+					"oSwArc",
+					"oSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oSwArc", "oSeArc"]);
+					groupedSegments.push(["oSwArc", "oSeArc"]);
+					break;
+				case containsSet(segments, [
+					"oSwH",
+					"oSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oSwH", "oSeArc"]);
+					groupedSegments.push(["oSwH", "oSeArc"]);
+					break;
+				case containsSet(segments, [
+					"oSwArc",
+					"oSeH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oSwArc", "oSeH"]);
+					groupedSegments.push(["oSwArc", "oSeH"]);
+					break;
+			};
+
+			// Middle horizontal bar
+			switch (true) {
+				case containsSet(segments, [
+					"iWH",
+					"iEH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iWH", "iEH"]);
+					groupedSegments.push(["iWH", "iEH"]);
+					break;
+				case containsSet(segments, [
+					"iNwArc",
+					"iNeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNwArc", "iNeArc"]);
+					groupedSegments.push(["iNwArc", "iNeArc"]);
+					break;
+				case containsSet(segments, [
+					"iSwArc",
+					"iSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSwArc", "iSeArc"]);
+					groupedSegments.push(["iSwArc", "iSeArc"]);
+					break;
+				case containsSet(segments, [
+					"iNwArc",
+					"iEH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNwArc", "iEH"]);
+					groupedSegments.push(["iNwArc", "iEH"]);
+					break;
+				case containsSet(segments, [
+					"iWH",
+					"iNeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iWH", "iNeArc"]);
+					groupedSegments.push(["iWH", "iNeArc"]);
+					break;
+				case containsSet(segments, [
+					"iSwArc",
+					"iEH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSwArc", "iEH"]);
+					groupedSegments.push(["iSwArc", "iEH"]);
+					break;
+				case containsSet(segments, [
+					"iWH",
+					"iSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iWH", "iSeArc"]);
+					groupedSegments.push(["iWH", "iSeArc"]);
+					break;
+				case containsSet(segments, [
+					"iNwArc",
+					"iSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNwArc", "iSeArc"]);
+					groupedSegments.push(["iNwArc", "iSeArc"]);
+					break;
+				case containsSet(segments, [
+					"iSwArc",
+					"iNeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSwArc", "iNeArc"]);
+					groupedSegments.push(["iSwArc", "iNeArc"]);
+					break;
+			};
+
+			// Upper horizontal bar
+			switch (true) {
+				case containsSet(segments, [
+					"oNwH",
+					"oNeH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwH", "oNeH"]);
+					groupedSegments.push(["oNwH", "oNeH"]);
+					break;
+			};
+
+			// Lower horizontal bar
+			switch (true) {
+				case containsSet(segments, [
+					"oSwH",
+					"oSeH"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oSwH", "oSeH"]);
+					groupedSegments.push(["oSwH", "oSeH"]);
+					break;
+			};
+
+			// Straight line, left
+			switch (true) {
+				case containsSet(segments, [
+					"oNwV",
+					"iNwV",
+					"iSwV",
+					"oSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV", "iSwV", "oSwV"]);
+					groupedSegments.push(["oNwV", "iNwV", "iSwV", "oSwV"]);
+					break;
+				case containsSet(segments, [
+					"oNwArc",
+					"iNwV",
+					"iSwV",
+					"oSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV", "iSwV", "oSwV"]);
+					groupedSegments.push(["oNwArc", "iNwV", "iSwV", "oSwV"]);
+					break;
+				case containsSet(segments, [
+					"oNwV",
+					"iNwV",
+					"iSwV",
+					"oSwArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV", "iSwV", "oSwArc"]);
+					groupedSegments.push(["oNwV", "iNwV", "iSwV", "oSwArc"]);
+					break;
+				case containsSet(segments, [
+					"oNwArc",
+					"iNwV",
+					"iSwV",
+					"oSwArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV", "iSwV", "oSwArc"]);
+					groupedSegments.push(["oNwArc", "iNwV", "iSwV", "oSwArc"]);
+					break;
+				case containsSet(segments, [
+					"oNwV",
+					"iNwV",
+					"iSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV", "iSwV"]);
+					groupedSegments.push(["oNwV", "iNwV", "iSwV"]);
+					break;
+				case containsSet(segments, [
+					"oNwArc",
+					"iNwV",
+					"iSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV", "iSwV"]);
+					groupedSegments.push(["oNwArc", "iNwV", "iSwV"]);
+					break;
+				case containsSet(segments, [
+					"iNwV",
+					"iSwV",
+					"oSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNwV", "iSwV", "oSwV"]);
+					groupedSegments.push(["iNwV", "iSwV", "oSwV"]);
+					break;
+				case containsSet(segments, [
+					"iNwV",
+					"iSwV",
+					"oSwArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNwV", "iSwV", "oSwArc"]);
+					groupedSegments.push(["iNwV", "iSwV", "oSwArc"]);
+					break;
+				case containsSet(segments, [
+					"oNwV",
+					"iNwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV"]);
+					groupedSegments.push(["oNwV", "iNwV"]);
+					break;
+				case containsSet(segments, [
+					"oNwArc",
+					"iNwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV"]);
+					groupedSegments.push(["oNwArc", "iNwV"]);
+					break;
+				case containsSet(segments, [
+					"iNwV",
+					"iSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNwV", "iSwV"]);
+					groupedSegments.push(["iNwV", "iSwV"]);
+					break;
+				case containsSet(segments, [
+					"iSwV",
+					"oSwV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSwV", "oSwV"]);
+					groupedSegments.push(["iSwV", "oSwV"]);
+					break;
+				case containsSet(segments, [
+					"iSwV",
+					"oSwArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSwV", "oSwArc"]);
+					groupedSegments.push(["iSwV", "oSwArc"]);
+					break;
+			};
+			
+			// Straight line, right
+			switch (true) {
+				case containsSet(segments, [
+					"oNeV",
+					"iNeV",
+					"iSeV",
+					"oSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV", "oSeV"]);
+					groupedSegments.push(["oNeV", "iNeV", "iSeV", "oSeV"]);
+					break;
+				case containsSet(segments, [
+					"oNeV",
+					"iNeV",
+					"iSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV"]);
+					groupedSegments.push(["oNeV", "iNeV", "iSeV"]);
+					break;
+				case containsSet(segments, [
+					"iNeV",
+					"iSeV",
+					"oSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNeV", "iSeV", "oSeV"]);
+					groupedSegments.push(["iNeV", "iSeV", "oSeV"]);
+					break;
+				case containsSet(segments, [
+					"oNeV",
+					"iNeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV"]);
+					groupedSegments.push(["oNeV", "iNeV"]);
+					break;
+				case containsSet(segments, [
+					"iNeV",
+					"iSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNeV", "iSeV"]);
+					groupedSegments.push(["iNeV", "iSeV"]);
+					break;
+				case containsSet(segments, [
+					"iSeV",
+					"oSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSeV", "oSeV"]);
+					groupedSegments.push(["iSeV", "oSeV"]);
+					break;
+			};
+
+			// For any segments that are not part of a group, put each one into an array of its own (so it can be animated individually) and add it to the groupedSegments array
+			let ungroupedSegments = groupedSegments.filter(segment => !Array.isArray(segment));
+			
+			for (let segment of ungroupedSegments) {
+				let newArray = [segment];
+				groupedSegments.push(newArray);
+			}
+
+			// Remove the ungrouped segments from the groupedSegments array
+			groupedSegments = groupedSegments.filter(segment => Array.isArray(segment));
+			
+			return groupedSegments;
+		}
+
+		// // This is the function that will find routes (strings, snakes, paths, etc.) in the removed and added segments for animation purposes
+		// function routesFinder(segments) {
+		// 	// segments is an array of segments that are being added or removed
+
+		// 	// Create the array to store the routes - note, routes are arrays of segments, so only arrays should be added to this array
+		// 	let routes = [];
+
+		// 	// Create an array of segments which have been accounted for
+		// 	let accountedSegments = [];
+
+		// 	const segmentsHierarchy = [
+		// 		"oNwV",
+		// 		"iNwV",
+		// 		"iSwV",
+		// 		"oSwV",
+		// 		"oNwH",
+		// 		"NwDiag",
+		// 		"oNwArc",
+		// 		"iNwArc",
+		// 		"iWH",
+		// 		"oNV",
+		// 		"iNV",
+		// 		"oNeH",
+		// 		"oNeV",
+		// 		"oNeArc",
+		// 		"NeDiag",
+		// 		"iNeV",
+		// 		"iNeArc",
+		// 		"iEH",
+		// 		"SwDiag",
+		// 		"iSV",
+		// 		"SeDiag",
+		// 		"iSwArc",
+		// 		"iSeV",
+		// 		"iSeArc",
+		// 		"oSwArc",
+		// 		"oSeV",
+		// 		"oSeArc",
+		// 		"oSwH",
+		// 		"oSV",
+		// 		"oSeH"
+		// 	]
+
+		// 	for (let i = 0; i < segmentsHierarchy.length; i++) {
+		// 		const rank = segmentsHierarchy[i];
+				
+		// 		// Finding the most highly ranked segment in the segments array
+		// 		if (segments.includes(rank)) {
+		// 			// Checking if it's a valid route starter
+		// 			let validNeighbours = findValidNeighbours(rank);
+		// 		}
+		// 	}
+
+		// 	function findValidNeighbours(startingSegment, validSegments, accountedSegments, currentRoute) {
+				
+		// 	}
+
+
+		// 	// Create a function to find the route of a segment
+		// 	function findRoute(segment) {
+		// 		// Create an array to store the route
+		// 		let route = [segment];
+
+		// 		// First, this route will conduct a search through the potential segments
+		// 		// The segments have a defined hierarchy of which ones should start a route first (since some drawing directions look more natural than others)
+		// 		// This will search through them in that order
+		// 		// For a segment to pass to the next stage, it must be valid as a route starter, meaning it must have at most one valid route neighbour
+		// 		// (it can have more neighbours, but only one neighbour that could be used as the next part of a route--this is so a route isn't started from what could be the middle of a longer route)
+
+
+		// 		// First we'll explore 'forwards'
+		// 		let forwardsRoute = []; // This will be the array to store the 'forwards' part of the route
+
+		// 		// This loop will find the full route forwards fromt the segment in question 
+		// 		let noMoreOptions = false;
+		// 		while (noMoreOptions === false) {
+		// 			// Find the best neighbour for the route to continue forwards with
+		// 			// This function will weed out any invalid neighbours (i.e., those which can't be proceeded to or those which are already accounted for, etc.)
+		// 			let nextNeighbour = findBestNeighbour(segment, segments, accountedSegments, forwardsRoute);
+	
+		// 			// If there are no more valid neighbours, then this segment is the end of the route (for this direction)
+		// 			if (nextNeighbour === false) {
+		// 				noMoreOptions = true;
+		// 			} else {
+		// 				// If there is a valid segment for the route to continue with, push it to the forwardsRoute and accountedSegments 
+		// 				forwardsRoute.push(nextNeighbour);
+		// 				accountedSegments.push(nextNeighbour);
+		// 			}
+		// 		}
+
+		// 		// After 
+				
+
+		// 	}
+
+			
+
+		// 	function findBestNeighbour(startingSegment, validSegments, accountedSegments, currentRoute) {
+		// 		let potentialNeighbour; // This stores the potential chosen neigbour
+		// 		// switch (startingSegment) {
+		// 		// 	case "oNwV":
+		// 		// 		if (checkNeighbourValidity("iNwV")) {
+		// 		// 			return "iNwV";
+		// 		// 		} else if (checkNeighbourValidity("iNwArc")) {
+		// 		// 			return "iNwArc";
+		// 		// 		} else {
+		// 		// 			return false;
+		// 		// 		}
+		// 		// 		break
+		// 		// 	case "oNwH":
+		// 		// 		if (checkNeighbourValidity("oNeH")) {
+		// 		// 			return "oNeH";
+		// 		// 		} else if (checkNeighbourValidity("oNeArc")) {
+		// 		// 			return "oNeArc";
+		// 		// 		} else {
+		// 		// 			return false;
+		// 		// 		}
+		// 		// 		break;
+		// 		// 	case "oNwArc":
+		// 		// 		if (checkNeighbourValidity("oNwH") && )
+		// 		// 	default:
+		// 		// 		break;
+		// 		// }
+
+		// 		function checkNeighbourValidity(segment) {
+		// 			if (validSegments.includes(segment) && accountedSegments.includes(segment)) {
+		// 				return true;
+		// 			} else {
+		// 				return false;
+		// 			}
+		// 		}
+
+
+		// 		// // Filter out any neighbours which aren't in the segments array
+		// 		// 	let forwardsConsideredNeighbours = forwardsAllNeighbours.filter(neighbour => segments.includes(neighbour));
+	
+		// 		// 	// Filter out any neighbours which are already accounted for
+		// 		// 	let forwardsFilteredNeighbours = forwardsConsideredNeighbours.filter(neighbour => accountedSegments.includes(neighbour));
+		// 	}
+
+		// 	// function findRoute(segment) {
+		// 	// 	// segment is the segment to find the route for
+		// 	// 	// Find the segment in the segments array
+		// 	// 	let segmentIndex = segments.indexOf(segment);
+
+		// 	// 	// If the segment is not in the array, return an empty array
+		// 	// 	if (segmentIndex === -1) {
+		// 	// 		return [];
+		// 	// 	}
+
+		// 	// 	// Create an array to store the route
+		// 	// 	let route = [segment];
+
+		// 	// 	// Add the segment to the accountedSegments array
+		// 	// 	accountedSegments.push(segment);
+
+		// 	// 	// Find the segment's neighbours
+		// 	// 	let neighbours = findNeighbours(segment);
+
+		// 	// 	// Find the neighbours that are in the segments array
+		// 	// 	let activeNeighbours = neighbours.filter(neighbour => segments.includes(neighbour));
+
+		// 	// 	// If there are no active neighbours, return the route
+		// 	// 	if (activeNeighbours.length === 0) {
+		// 	// 		return route;
+		// 	// 	}
+
+		// 	// 	// For each active neighbour
+		// 	// 	for (let neighbour of activeNeighbours) {
+		// 	// 		// If the neighbour is not already accounted for
+		// 	// 		if (!accountedSegments.includes(neighbour)) {
+		// 	// 			// Find the neighbour's route
+		// 	// 			let neighbourRoute = findRoute(neighbour);
+
+		// 	// 			// Add the neighbour's route to the route
+		// 	// 			route.push(...neighbourRoute);
+		// 	// 		}
+		// 	// 	}
+
+		// 	// 	// Return the route
+		// 	// 	return route;
+		// 	// }
+
+
+		// }
+
+
 		
 
 		// A keypress event listener is added to the window to allow the user to change the letter
@@ -1289,12 +1982,12 @@ export default function LetterGrid() {
 				className="oSeArc" 
 				ref={ oSeArc } 
 				pathLength={ 100 }
-				d="M200.5,300.5c-.071,7.076-.243,12.711-1.846,22.379-1.065,6.422-2.652,12.363-5.006,18.451s-5.626,11.79-9.035,17.066c-3.409,5.276-7.325,10.126-11.708,14.509s-9.233,8.299-14.509,11.708-10.978,6.613-17.066,8.967c-6.088,2.354-12.13,3.879-18.333,5.074-8.219,1.583-15.029,1.846-22.497,1.846"/>
+				d="M100.5,400.5c7.468,0,14.278-.263,22.497-1.846,6.204-1.195,12.246-2.72,18.333-5.074,6.088-2.354,11.79-5.558,17.066-8.967s10.126-7.325,14.509-11.708,8.299-9.233,11.708-14.509c3.409-5.276,6.682-10.978,9.035-17.066s3.941-12.029,5.006-18.451c1.603-9.668,1.775-15.303,1.846-22.379"/>
 			<line 
 				className="oSeH" 
 				ref={ oSeH } 
 				pathLength={ 100 }
-				x1="200.5" y1="400.5" x2="100.5" y2="400.5"/>
+				x1="100.5" y1="400.5" x2="200.5" y2="400.5"/>
 			<line 
 				className="oSeV" 
 				ref={ oSeV } 
@@ -1309,17 +2002,17 @@ export default function LetterGrid() {
 				className="oSwArc" 
 				ref={ oSwArc } 
 				pathLength={ 100 }
-				d="M100.5,400.5c-7.076-.071-12.711-.243-22.379-1.846-6.422-1.065-12.363-2.652-18.451-5.006s-11.79-5.626-17.066-9.035-10.126-7.325-14.509-11.708-8.299-9.233-11.708-14.509-6.613-10.978-8.967-17.066c-2.354-6.088-3.879-12.13-5.074-18.333-1.583-8.219-1.846-15.029-1.846-22.497"/>
+				d="M.5,300.5c0,7.468.263,14.278,1.846,22.497,1.195,6.204,2.72,12.246,5.074,18.333,2.354,6.088,5.558,11.79,8.967,17.066s7.325,10.126,11.708,14.509,9.233,8.299,14.509,11.708,10.978,6.682,17.066,9.035,12.029,3.941,18.451,5.006c9.668,1.603,15.303,1.775,22.379,1.846"/>
 			<line 
 				className="oSwH" 
 				ref={ oSwH } 
 				pathLength={ 100 }
-				x1="100.5" y1="400.5" x2=".5" y2="400.5"/>
+				x1=".5" y1="400.5" x2="100.5" y2="400.5"/>
 			<line 
 				className="oSwV" 
 				ref={ oSwV } 
 				pathLength={ 100 }
-				x1=".5" y1="400.5" x2=".5" y2="300.5"/>
+				x1=".5" y1="300.5" x2=".5" y2="400.5"/>
 			<path 
 				className="iSeArc" 
 				ref={ iSeArc } 
@@ -1344,7 +2037,7 @@ export default function LetterGrid() {
 				className="iSwV" 
 				ref={ iSwV } 
 				pathLength={ 100 }
-				x1=".5" y1="300.5" x2=".5" y2="200.5"/>
+				x1=".5" y1="200.5" x2=".5" y2="300.5"/>
 			<line 
 				className="SeDiag" 
 				ref={ SeDiag } 
@@ -1354,7 +2047,7 @@ export default function LetterGrid() {
 				className="SwDiag" 
 				ref={ SwDiag } 
 				pathLength={ 100 }
-				x1=".5" y1="400.5" x2="100.5" y2="200.5"/>
+				x1="100.5" y1="200.5" x2="5" y2="400.5"/>
 			<line 
 				className="iEH" 
 				ref={ iEH } 
@@ -1374,12 +2067,12 @@ export default function LetterGrid() {
 				className="NwDiag" 
 				ref={ NwDiag } 
 				pathLength={ 100 }
-				x1=".5" y1=".5" x2="100.5" y2="200.5"/>
+				x1="100.5" y1="200.5" x2=".5" y2=".5"/>
 			<path 
 				className="iNeArc" 
 				ref={ iNeArc } 
 				pathLength={ 100 }
-				d="M200.5,100.5c-.071,7.076-.243,12.711-1.846,22.379-1.065,6.422-2.652,12.363-5.006,18.451-2.354,6.088-5.626,11.79-9.035,17.066s-7.325,10.126-11.708,14.509-9.233,8.299-14.509,11.708-10.978,6.613-17.066,8.967-12.13,3.879-18.333,5.074c-8.219,1.583-15.029,1.846-22.497,1.846"/>
+				d="M100.5,200.5c7.468,0,14.278-.263,22.497-1.846,6.204-1.195,12.246-2.72,18.333-5.074,6.088-2.354,11.79-5.558,17.066-8.967s10.126-7.325,14.509-11.708,8.299-9.233,11.708-14.509c3.409-5.276,6.682-10.978,9.035-17.066,2.354-6.088,3.941-12.029,5.006-18.451,1.603-9.668,1.775-15.303,1.846-22.379"/>
 			<line 
 				className="iNeV" 
 				ref={ iNeV } 
@@ -1394,12 +2087,12 @@ export default function LetterGrid() {
 				className="iNwArc" 
 				ref={ iNwArc } 
 				pathLength={ 100 }
-				d="M100.5,200.5c-7.076-.071-12.711-.243-22.379-1.846-6.422-1.065-12.363-2.652-18.451-5.006s-11.79-5.626-17.066-9.035-10.126-7.325-14.509-11.708-8.299-9.233-11.708-14.509-6.613-10.978-8.967-17.066c-2.354-6.088-3.879-12.13-5.074-18.333-1.583-8.219-1.846-15.029-1.846-22.497"/>
+				d="M.5,100.5c0,7.468.263,14.278,1.846,22.497,1.195,6.204,2.72,12.246,5.074,18.333,2.354,6.088,5.558,11.79,8.967,17.066s7.325,10.126,11.708,14.509,9.233,8.299,14.509,11.708c5.276,3.409,10.978,6.682,17.066,9.035s12.029,3.941,18.451,5.006c9.668,1.603,15.303,1.775,22.379,1.846"/>
 			<line 
 				className="iNwV" 
 				ref={ iNwV } 
 				pathLength={ 100 }
-				x1=".5" y1="200.5" x2=".5" y2="100.5"/>
+				x1=".5" y1="100.5" x2=".5" y2="200.5"/>
 			<path 
 				className="oNeArc" 
 				ref={ oNeArc } 
@@ -1434,7 +2127,7 @@ export default function LetterGrid() {
 				className="oNwV" 
 				ref={ oNwV } 
 				pathLength={ 100 }
-				x1=".5" y1="100.5" x2=".5" y2=".5"/>
+				x1=".5" y1=".5" x2=".5" y2="100.5"/>
 		</svg>
 	);
 }

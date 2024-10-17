@@ -78,3 +78,9 @@ export function containsExactSet(array, values) {
 export function containsSet(array, values) {
 	return values.every(value => array.includes(value));
 }
+
+
+// To remove values from an array
+export function removeValues(array, values) {
+	return array.filter(value => !values.includes(value));
+}
