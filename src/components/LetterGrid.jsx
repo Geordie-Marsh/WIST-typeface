@@ -51,6 +51,11 @@ export default function LetterGrid() {
 
 	// useEffect is used to animate the grid
 	useEffect(() => {
+		// CONTROLLERS
+		let controllerColour = false;
+		let controllerDur = 1;
+
+
 		// This is an array of all the segments
 		const allSegments = [
 			"oNwV",
@@ -128,7 +133,7 @@ export default function LetterGrid() {
 			"#0ac8f2",
 			"#1e6bff",
 			"#743ee6",
-			"#ff2566"
+			"#ff458f"
 		];
 		let colourIndex = COLOUR_CYCLE.length - 2;
 
@@ -1342,7 +1347,7 @@ export default function LetterGrid() {
 			let letterChangeTl = gsap.timeline({ paused: true });
 			
 			// Setting the duration and easing of the animations
-			let dur = 0.8;
+			let dur = controllerDur;
 			let ease = "power2.inOut";
 
 			// Removing the removed segments
@@ -1414,8 +1419,9 @@ export default function LetterGrid() {
 					}, `>${dur * -1.3}`);
 
 					// Changing the colour of the segment
-					// eval(segment).current.style.stroke = COLOUR_CYCLE[colourIndex];
-					eval(segment).current.style.stroke = newColour;
+					if (controllerColour) {
+						eval(segment).current.style.stroke = newColour;
+					}
 				} else {
 					// If the group has multiple segments, string together the drawing of the segments
 					let segmentDuration = dur * 2 / group.length;
@@ -1438,7 +1444,9 @@ export default function LetterGrid() {
 
 						// Changing the colour of the segment
 						// eval(segment).current.style.stroke = COLOUR_CYCLE[colourIndex];
-						eval(segment).current.style.stroke = newColour;
+						if (controllerColour) {
+							eval(segment).current.style.stroke = newColour;
+						}
 					}
 
 					letterChangeTl.to(tl, {
