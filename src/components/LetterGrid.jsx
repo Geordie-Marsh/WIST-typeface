@@ -335,6 +335,9 @@ export default function LetterGrid() {
 									`i${location}V`
 								);
 								break; 
+							case "Horizontal":
+								outcomeSegments.push(`i${EorW}H`);
+								break;
 							default:
 								break;
 						}
@@ -357,7 +360,7 @@ export default function LetterGrid() {
 
 
 			// The switch statement will calculate the new permutation based on the letter
-			// 1 2 3 4 5 6 7 8 9 0   ! ? . , ' " : ; - + = ( ) [ ] { } < > / \ | @ # $ % ^ & * ~ ` _ =
+			// . ! ? , ' " : ; - + = ( ) [ ] { } < > / \ | @ # $ % ^ & * ~ ` _ =  +diacritics
 			switch (letter) {
 				case "a":
 				case "A":
@@ -985,6 +988,270 @@ export default function LetterGrid() {
 						"SwDiag",
 						"oSwH",
 						"oSeH"
+					);
+
+					break;
+				case "1":
+					// 1 has 1 variable: the bottom, which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"oNV",
+						"iNV",
+						"iSV",
+						"oSV"
+					);
+
+					// VARIABLE SEGMENTS
+						// BOTTOM is custom: Horizontal, but random chance of not being visible
+						newPerm.push(...chooseState(prevPerm, [["oSwH", "oSeH"]], true));
+						
+					break;
+				case "2":
+					// 2 has 1 variable: the top-left corner
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNeArc",
+						"iNeArc",
+						"iSwArc",
+						"oSwV",
+						"oSwH",
+						"oSeH"
+					);
+
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is custom: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Horizontal", "Round"]));
+
+					break;
+				case "3":
+					// 3 has 5 variables: the top-left corner, the top-right corner, the centre-right, the centre-right and the bottom-right corner
+
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Round or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Round", "Horizontal"]));
+						// TOP-RIGHT CORNER is variable: Round or Square
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Round", "Square"]));
+						// BOTTOM-RIGHT CORNER is variable: Round or Square
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Round", "Square"]));
+						// BOTTOM-LEFT CORNER is variable: Round or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Round", "Horizontal"]));
+						// CENTRE-RIGHT is custom
+						// Possible outcomes:
+							// Round on top and bottom
+							// Round on top and Square on bottom
+							// Square on top and Round on bottom
+							newPerm.push(...chooseState(prevPerm, [
+								["iNeArc", "iSeArc"], 
+								["iNeArc", "iEH", "iSeV"], 
+								["iNeV", "iEH", "iSeArc"]
+							]));
+
+					break;
+				case "4":
+					// 4 has 3 variables: the centre-NW, the centre-right and the top-right vertical, the last of which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwV",
+						"iNeV",
+						"iSeV",
+						"oSeV"
+					);
+
+					// VARIABLE SEGMENTS
+						// CENTRE-NW is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
+						// CENTRE-RIGHT is variable: Up, Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "E", ["Up", "Down", "Horizontal"]));
+						// TOP-RIGHT VERTICAL is custom: Vertical, but random chance of not being visible
+						newPerm.push(...chooseState(prevPerm, [["oNeV"]], true));
+
+					break;
+				case "5":
+					// 5 has 3 variables: the centre-NW, the centre-SE and the bottom-left corner
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNeH",
+						"oNwH",
+						"oNwV",
+						"oSeArc"
+					);
+
+					// VARIABLE SEGMENTS
+						// CENTRE-NW is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Nw", ["Square", "Round"]));
+						// CENTRE-SE is variable: Square or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Se", ["Square", "Round"]));
+						// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+
+					break;
+				case "6":
+					// 6 has 1 variable: the centre-SW
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNeArc",
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwArc",
+						"oSeArc",
+						"iSeArc"
+					);
+
+					// VARIABLE SEGMENTS
+						// CENTRE-SW is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "centre-corner", "Sw", ["Horizontal", "Round"]));
+
+					break;
+				case "7":
+					// 7 has 1 variable: the centre, which is custom
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwH",
+						"oNeH",
+						"NeDiag",
+						"iSV",
+						"oSV"
+					);
+
+					// VARIABLE SEGMENTS
+						// CENTRE is custom: Horizontal, but random chance of not being visible
+						newPerm.push(...chooseState(prevPerm, [["iWH", "iEH"]], true));
+
+					break;
+				case "8":
+					// 8 is complex, and is done completely customly
+
+					// THE CENTRE
+					newPerm.push(...chooseState(prevPerm, [
+						["iNwArc", "iNeArc", "iSeArc", "iSwArc"],
+						["iNwV", "iWH", "iSwArc", "iSeV", "iEH", "iNeArc"],
+						["iSwV", "iWH", "iNwArc", "iNeV", "iEH", "iSeArc"]
+					]));
+
+					// THE TOP-LEFT AND BOTTOM-RIGHT CORNERS
+					newPerm.push(...chooseState(prevPerm, [
+						["oNwArc", "oSeArc"],
+						["oNwV", "oNwH", "oSeV", "oSeH"]
+					]));
+
+					// THE BOTTOM-LEFT AND TOP-RIGHT CORNERS
+					newPerm.push(...chooseState(prevPerm, [
+						["oSwArc", "oNeArc"],
+						["oSwV", "oSwH", "oNeV", "oNeH"]
+					]));
+
+					break;
+				case "9":
+					// 9 has 1 variable: the bottom, which is custom and also influences the top-right corner
+					
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"iNwArc",
+						"iNeArc",
+						"iNeV",
+						"iSeV"
+					);
+
+					// VARIABLE SEGMENTS
+						// BOTTOM is custom
+						// Possible outcomes:
+							// Vertical
+							// Curved
+						newPerm.push(...chooseState(prevPerm, [
+							["oSeV", "oNeArc"],
+							["oSeV", "oNeV", "oNeH"],
+							["oSeArc", "oSwArc", "oNeArc"]
+						]));
+
+					break;
+				case "0":
+					// 0 is fixed - no calculations needed
+
+					newPerm.push(
+						"oNwArc",
+						"oNeArc",
+						"iNeV",
+						"iSeV",
+						"oSeArc",
+						"oSwArc",
+						"iSwV",
+						"iNwV",
+						"iNeArc",
+						"iSwArc"
+					);
+
+					break;
+				case "Œ":
+				case "œ":
+					// Œ has 2 variables: the top-right and bottom-right corners
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwArc",
+						"oNV",
+						"iNV",
+						"iSV",
+						"oSV",
+						"iEH"
+					);
+
+					// VARIABLE SEGMENTS
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+
+					break;
+				case "Æ":
+				case "æ":
+					// Æ has 3 variables: the top-right and bottom-right corners and the centre-left
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwV",
+						"oNV",
+						"iNV",
+						"iSV",
+						"oSV",
+						"iEH"
+					);
+
+					// VARIABLE SEGMENTS
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// BOTTOM-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Se", ["Horizontal", "Round"]));
+						// CENTRE-LEFT is variable: Down or Horizontal
+						newPerm.push(...chooseStatePresets(prevPerm, "centre", "W", ["Down", "Horizontal"]));
+
+					break;
+				case "ß":
+					// ß is fixed - no calculations needed
+
+					newPerm.push(
+						"oSwV",
+						"iSwV",
+						"iNwV",
+						"oNwArc",
+						"oNeArc",
+						"iNeArc",
+						"iSeArc",
+						"oSeArc"
 					);
 
 					break;
