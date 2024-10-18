@@ -3,7 +3,7 @@
 	import { useEffect, useRef } from 'react';
 
 	// Importing defs
-	import { hide, show, randomlyChoose, containsExactSet, containsSet, removeValues } from '../defs';
+	import { hide, show, randomlyChoose, containsExactSet, containsSet, removeValues, rgbToHex } from '../defs';
 
 	// Importing GSAP
 	import { gsap } from 'gsap';
@@ -118,6 +118,19 @@ export default function LetterGrid() {
 			oSeH: true,
 			oSeArc: true,
 		};
+
+		// The cycle of colours to go through
+		const COLOUR_CYCLE = [
+			"#f52929",
+			"#ff6b00",
+			"#fcb500",
+			"#9ce500",
+			"#0ac8f2",
+			"#1e6bff",
+			"#743ee6",
+			"#ff2566"
+		];
+		let colourIndex = COLOUR_CYCLE.length - 2;
 
 
 
@@ -1243,6 +1256,48 @@ export default function LetterGrid() {
 			let groupedRemovedSegments = groupSegments(removedSegments);
 			console.log("Removed: ", removedSegments, groupedRemovedSegments);//TEMP
 
+			// Getting the array of segments that are being kept
+			let keptSegments = existingPermSegments.filter(segment => !removedSegments.includes(segment));
+
+			// Changing the added colour
+			// Getting a list of the colours currently visible
+			let visibleColours = [];
+			for (let segment of existingPermSegments) {
+				let colour = eval(segment).current.style.stroke;
+				console.log("Segment: ", segment, "Colour: ", colour);//TEMP
+				
+				// The colour is represented as an RGB string, e.g. "rgb(116, 62, 230)", so we need to convert it to a hex string
+				// The rgbToHex function takes the RGB values as input, so we need to extract them from the string
+				if (colour) {
+					let rgb = colour.match(/\d+/g).map(Number);
+					let colourHex = rgbToHex(...rgb);
+					console.log("Colour: ", colourHex);//TEMP
+	
+					if (!visibleColours.includes(colourHex)) {
+						visibleColours.push(colourHex);
+					}
+				}
+			}
+			console.log("Visible Colours: ", visibleColours);//TEMP
+
+			// Getting a list of colours that could be used
+			let availableColours = COLOUR_CYCLE.filter(colour => !visibleColours.includes(colour));
+			console.log("Available Colours: ", availableColours);//TEMP
+
+			// Choosing a new colour
+			let newColour = randomlyChoose(...availableColours);
+			console.log("New Colour: ", newColour);//TEMP
+
+			
+
+			if (addedSegments.length > 0) {
+				if (colourIndex === COLOUR_CYCLE.length - 1) {
+					colourIndex = 0;
+				} else {
+					colourIndex++;
+				}	
+			}
+
 
 			const segmentsHierarchy = [
 				"oNwV",
@@ -1286,6 +1341,7 @@ export default function LetterGrid() {
 			// Updating the permutation to reflect the new letter and showing/hiding segments as necessary
 			let letterChangeTl = gsap.timeline({ paused: true });
 			
+			// Setting the duration and easing of the animations
 			let dur = 0.8;
 			let ease = "power2.inOut";
 
@@ -1356,6 +1412,10 @@ export default function LetterGrid() {
 						strokeDashoffset: 0,
 						ease: ease,
 					}, `>${dur * -1.3}`);
+
+					// Changing the colour of the segment
+					// eval(segment).current.style.stroke = COLOUR_CYCLE[colourIndex];
+					eval(segment).current.style.stroke = newColour;
 				} else {
 					// If the group has multiple segments, string together the drawing of the segments
 					let segmentDuration = dur * 2 / group.length;
@@ -1375,6 +1435,10 @@ export default function LetterGrid() {
 						tl.to(eval(segment).current, {
 							strokeDashoffset: 0,
 						});
+
+						// Changing the colour of the segment
+						// eval(segment).current.style.stroke = COLOUR_CYCLE[colourIndex];
+						eval(segment).current.style.stroke = newColour;
 					}
 
 					letterChangeTl.to(tl, {
@@ -2017,61 +2081,42 @@ export default function LetterGrid() {
 				ref={ oSeArc } 
 				pathLength={ 100 }
 				d="M100.5,400.5c7.468,0,14.278-.263,22.497-1.846,6.204-1.195,12.246-2.72,18.333-5.074,6.088-2.354,11.79-5.558,17.066-8.967s10.126-7.325,14.509-11.708,8.299-9.233,11.708-14.509c3.409-5.276,6.682-10.978,9.035-17.066s3.941-12.029,5.006-18.451c1.603-9.668,1.775-15.303,1.846-22.379"/>
-			<line 
-				className="oSeH" 
-				ref={ oSeH } 
-				pathLength={ 100 }
-				x1="100.5" y1="400.5" x2="200.5" y2="400.5"/>
-			<line 
-				className="oSeV" 
-				ref={ oSeV } 
-				pathLength={ 100 }
-				x1="200.5" y1="300.5" x2="200.5" y2="400.5"/>
-			<line 
-				className="oSV" 
-				ref={ oSV } 
-				pathLength={ 100 }
-				x1="100.5" y1="300.5" x2="100.5" y2="400.5"/>
 			<path 
 				className="oSwArc" 
 				ref={ oSwArc } 
 				pathLength={ 100 }
 				d="M.5,300.5c0,7.468.263,14.278,1.846,22.497,1.195,6.204,2.72,12.246,5.074,18.333,2.354,6.088,5.558,11.79,8.967,17.066s7.325,10.126,11.708,14.509,9.233,8.299,14.509,11.708,10.978,6.682,17.066,9.035,12.029,3.941,18.451,5.006c9.668,1.603,15.303,1.775,22.379,1.846"/>
-			<line 
-				className="oSwH" 
-				ref={ oSwH } 
-				pathLength={ 100 }
-				x1=".5" y1="400.5" x2="100.5" y2="400.5"/>
-			<line 
-				className="oSwV" 
-				ref={ oSwV } 
-				pathLength={ 100 }
-				x1=".5" y1="300.5" x2=".5" y2="400.5"/>
 			<path 
 				className="iSeArc" 
 				ref={ iSeArc } 
 				pathLength={ 100 }
 				d="M100.5,200.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006,6.088,2.354,11.79,5.626,17.066,9.035s10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
-			<line 
-				className="iSeV" 
-				ref={ iSeV } 
-				pathLength={ 100 }
-				x1="200.5" y1="200.5" x2="200.5" y2="300.5"/>
-			<line 
-				className="iSV" 
-				ref={ iSV } 
-				pathLength={ 100 }
-				x1="100.5" y1="200.5" x2="100.5" y2="300.5"/>
 			<path 
 				className="iSwArc" 
 				ref={ iSwArc } 
 				pathLength={ 100 }
 				d="M.5,300.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708c5.276-3.409,10.978-6.613,17.066-8.967s12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
-			<line 
-				className="iSwV" 
-				ref={ iSwV } 
+			<path 
+				className="iNeArc" 
+				ref={ iNeArc } 
 				pathLength={ 100 }
-				x1=".5" y1="200.5" x2=".5" y2="300.5"/>
+				d="M100.5,200.5c7.468,0,14.278-.263,22.497-1.846,6.204-1.195,12.246-2.72,18.333-5.074,6.088-2.354,11.79-5.558,17.066-8.967s10.126-7.325,14.509-11.708,8.299-9.233,11.708-14.509c3.409-5.276,6.682-10.978,9.035-17.066,2.354-6.088,3.941-12.029,5.006-18.451,1.603-9.668,1.775-15.303,1.846-22.379"/>
+			<path 
+				className="iNwArc" 
+				ref={ iNwArc } 
+				pathLength={ 100 }
+				d="M.5,100.5c0,7.468.263,14.278,1.846,22.497,1.195,6.204,2.72,12.246,5.074,18.333,2.354,6.088,5.558,11.79,8.967,17.066s7.325,10.126,11.708,14.509,9.233,8.299,14.509,11.708c5.276,3.409,10.978,6.682,17.066,9.035s12.029,3.941,18.451,5.006c9.668,1.603,15.303,1.775,22.379,1.846"/>
+			<path 
+				className="oNeArc" 
+				ref={ oNeArc } 
+				pathLength={ 100 }
+				d="M100.5.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006s11.79,5.626,17.066,9.035,10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
+			<path 
+				className="oNwArc" 
+				ref={ oNwArc } 
+				pathLength={ 100 }
+				d="M.5,100.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708,10.978-6.613,17.066-8.967,12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
+			
 			<line 
 				className="SeDiag" 
 				ref={ SeDiag } 
@@ -2081,17 +2126,7 @@ export default function LetterGrid() {
 				className="SwDiag" 
 				ref={ SwDiag } 
 				pathLength={ 100 }
-				x1="100.5" y1="200.5" x2="5" y2="400.5"/>
-			<line 
-				className="iEH" 
-				ref={ iEH } 
-				pathLength={ 100 }
-				x1="100.5" y1="200.5" x2="200.5" y2="200.5"/>
-			<line 
-				className="iWH" 
-				ref={ iWH } 
-				pathLength={ 100 }
-				x1=".5" y1="200.5" x2="100.5" y2="200.5"/>
+				x1="100.5" y1="200.5" x2=".5" y2="400.5"/>
 			<line 
 				className="NeDiag" 
 				ref={ NeDiag } 
@@ -2102,61 +2137,97 @@ export default function LetterGrid() {
 				ref={ NwDiag } 
 				pathLength={ 100 }
 				x1="100.5" y1="200.5" x2=".5" y2=".5"/>
-			<path 
-				className="iNeArc" 
-				ref={ iNeArc } 
-				pathLength={ 100 }
-				d="M100.5,200.5c7.468,0,14.278-.263,22.497-1.846,6.204-1.195,12.246-2.72,18.333-5.074,6.088-2.354,11.79-5.558,17.066-8.967s10.126-7.325,14.509-11.708,8.299-9.233,11.708-14.509c3.409-5.276,6.682-10.978,9.035-17.066,2.354-6.088,3.941-12.029,5.006-18.451,1.603-9.668,1.775-15.303,1.846-22.379"/>
+			
 			<line 
-				className="iNeV" 
-				ref={ iNeV } 
+				className="oSeH" 
+				ref={ oSeH } 
 				pathLength={ 100 }
-				x1="200.5" y1="100.5" x2="200.5" y2="200.5"/>
+				x1="100.5" y1="400.5" x2="200.5" y2="400.5"/>
 			<line 
-				className="iNV" 
-				ref={ iNV } 
+				className="oSwH" 
+				ref={ oSwH } 
 				pathLength={ 100 }
-				x1="100.5" y1="100.5" x2="100.5" y2="200.5"/>
-			<path 
-				className="iNwArc" 
-				ref={ iNwArc } 
-				pathLength={ 100 }
-				d="M.5,100.5c0,7.468.263,14.278,1.846,22.497,1.195,6.204,2.72,12.246,5.074,18.333,2.354,6.088,5.558,11.79,8.967,17.066s7.325,10.126,11.708,14.509,9.233,8.299,14.509,11.708c5.276,3.409,10.978,6.682,17.066,9.035s12.029,3.941,18.451,5.006c9.668,1.603,15.303,1.775,22.379,1.846"/>
+				x1=".5" y1="400.5" x2="100.5" y2="400.5"/>
+			
 			<line 
-				className="iNwV" 
-				ref={ iNwV } 
+				className="iEH" 
+				ref={ iEH } 
 				pathLength={ 100 }
-				x1=".5" y1="100.5" x2=".5" y2="200.5"/>
-			<path 
-				className="oNeArc" 
-				ref={ oNeArc } 
+				x1="100.5" y1="200.5" x2="200.5" y2="200.5"/>
+			<line 
+				className="iWH" 
+				ref={ iWH } 
 				pathLength={ 100 }
-				d="M100.5.5c7.076.071,12.711.243,22.379,1.846,6.422,1.065,12.363,2.652,18.451,5.006s11.79,5.626,17.066,9.035,10.126,7.325,14.509,11.708,8.299,9.233,11.708,14.509,6.613,10.978,8.967,17.066c2.354,6.088,3.879,12.13,5.074,18.333,1.583,8.219,1.846,15.029,1.846,22.497"/>
+				x1=".5" y1="200.5" x2="100.5" y2="200.5"/>
+			
 			<line 
 				className="oNeH" 
 				ref={ oNeH } 
 				pathLength={ 100 }
 				x1="100.5" y1=".5" x2="200.5" y2=".5"/>
 			<line 
-				className="oNeV" 
-				ref={ oNeV } 
+				className="oNwH" 
+				ref={ oNwH } 
 				pathLength={ 100 }
-				x1="200.5" y1=".5" x2="200.5" y2="100.5"/>
+				x1=".5" y1=".5" x2="100.5" y2=".5"/>
+
+			<line 
+				className="oSV" 
+				ref={ oSV } 
+				pathLength={ 100 }
+				x1="100.5" y1="300.5" x2="100.5" y2="400.5"/>
+			<line 
+				className="iSV" 
+				ref={ iSV } 
+				pathLength={ 100 }
+				x1="100.5" y1="200.5" x2="100.5" y2="300.5"/>
+			<line 
+				className="iNV" 
+				ref={ iNV } 
+				pathLength={ 100 }
+				x1="100.5" y1="100.5" x2="100.5" y2="200.5"/>
 			<line 
 				className="oNV" 
 				ref={ oNV } 
 				pathLength={ 100 }
 				x1="100.5" y1=".5" x2="100.5" y2="100.5"/>
-			<path 
-				className="oNwArc" 
-				ref={ oNwArc } 
-				pathLength={ 100 }
-				d="M.5,100.5c.071-7.076.243-12.711,1.846-22.379,1.065-6.422,2.652-12.363,5.006-18.451s5.626-11.79,9.035-17.066,7.325-10.126,11.708-14.509,9.233-8.299,14.509-11.708,10.978-6.613,17.066-8.967,12.13-3.879,18.333-5.074c8.219-1.583,15.029-1.846,22.497-1.846"/>
+			
 			<line 
-				className="oNwH" 
-				ref={ oNwH } 
+				className="oSeV" 
+				ref={ oSeV } 
 				pathLength={ 100 }
-				x1=".5" y1=".5" x2="100.5" y2=".5"/>
+				x1="200.5" y1="300.5" x2="200.5" y2="400.5"/>
+			<line 
+				className="iSeV" 
+				ref={ iSeV } 
+				pathLength={ 100 }
+				x1="200.5" y1="200.5" x2="200.5" y2="300.5"/>
+			<line 
+				className="iNeV" 
+				ref={ iNeV } 
+				pathLength={ 100 }
+				x1="200.5" y1="100.5" x2="200.5" y2="200.5"/>
+			<line 
+				className="oNeV" 
+				ref={ oNeV } 
+				pathLength={ 100 }
+				x1="200.5" y1=".5" x2="200.5" y2="100.5"/>
+			
+			<line 
+				className="oSwV" 
+				ref={ oSwV } 
+				pathLength={ 100 }
+				x1=".5" y1="300.5" x2=".5" y2="400.5"/>
+			<line 
+				className="iSwV" 
+				ref={ iSwV } 
+				pathLength={ 100 }
+				x1=".5" y1="200.5" x2=".5" y2="300.5"/>
+			<line 
+				className="iNwV" 
+				ref={ iNwV } 
+				pathLength={ 100 }
+				x1=".5" y1="100.5" x2=".5" y2="200.5"/>
 			<line 
 				className="oNwV" 
 				ref={ oNwV } 

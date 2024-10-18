@@ -84,3 +84,9 @@ export function containsSet(array, values) {
 export function removeValues(array, values) {
 	return array.filter(value => !values.includes(value));
 }
+
+
+// To convert a colour from RGB to hex
+export function rgbToHex(r, g, b) {
+	return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
