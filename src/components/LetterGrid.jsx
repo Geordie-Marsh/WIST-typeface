@@ -13,7 +13,7 @@ export default function LetterGrid() {
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
-		// Then the segment type is specified: V = vertical line, H = horizontal line, Arc = arc as part of one of the circles, Inv = arc that isn't part of the circles (ends on a corner)
+		// Then the segment type is specified: V = vertical line, H = horizontal line, Arc = a segment of circle, Diag = diagonal line
 
 	// Refs are used for each segment (remember: you'll have to use .current after the ref to access the element)
 	const oNwV   = useRef(null);
@@ -49,11 +49,11 @@ export default function LetterGrid() {
 	
 
 
-	// useEffect is used to animate the grid
+	// useEffect will run once the component has mounted
 	useEffect(() => {
 		// CONTROLLERS
 		let controllerColour = false;
-		let controllerDur = 1;
+		let controllerDur = 0.8;
 
 
 		// This is an array of all the segments
@@ -135,7 +135,7 @@ export default function LetterGrid() {
 			"#743ee6",
 			"#ff458f"
 		];
-		let colourIndex = COLOUR_CYCLE.length - 2;
+		let colourIndex = COLOUR_CYCLE.length - 2; // The index of the colour to start on
 
 
 
@@ -151,9 +151,12 @@ export default function LetterGrid() {
 			let newPerm = [];
 
 
+
+
+			
 			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
 			function chooseState(prevPerm, possibleOutcomes, optionalVisibility = false) {
-				console.log("chooseState called with:", prevPerm, possibleOutcomes);
+				console.log("chooseState called with:", prevPerm, possibleOutcomes);//TEMP
 				
 				// PrevPerm is an object with the previous permutation
 				// Sample possibleOutcomes: [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]] (Square, Round, VStem)
@@ -161,7 +164,7 @@ export default function LetterGrid() {
 
 				// Turning the prevPerm object into an array of segments
 				let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
-				console.log("Previous permutation segments:", prevPermSegments);
+				console.log("Previous permutation segments:", prevPermSegments);//TEMP
 
 				// For each possible outcome, we'll count how many of its segments are in the previous permutation
 				// We'll then choose the outcome with the most segments in the previous permutation
@@ -171,7 +174,7 @@ export default function LetterGrid() {
 				// Go through each possible outcome
 				for (let i = 0; i < possibleOutcomes.length; i++) {
 					const outcome = possibleOutcomes[i]; // The current outcome
-					console.log("Processing outcome:", outcome);
+					console.log("Processing outcome:", outcome);//TEMP
 
 					// Count how many segments in the outcome are in the previous permutation
 					let count = 0;
@@ -181,194 +184,33 @@ export default function LetterGrid() {
 							count++;
 						}
 					}
-					console.log(`Outcome: ${outcome}, Count: ${count}`);
+					console.log(`Outcome: ${outcome}, Count: ${count}`);//TEMP
 
 					// The count may be equal to the best outcome count, in which case we'll add it to the best outcome array
 					if (count === bestOutcomeCount) {
 						bestOutcome.push(outcome);
-						console.log(`Added to bestOutcome: ${outcome}`);
+						console.log(`Added to bestOutcome: ${outcome}`);//TEMP
 					}
 					// If the count is greater than the best outcome count, we'll replace the best outcome array with this outcome
 					if (count > bestOutcomeCount) {
 						bestOutcome = [outcome];
 						bestOutcomeCount = count;
-						console.log(`New bestOutcome: ${outcome}, bestOutcomeCount: ${bestOutcomeCount}`);
+						console.log(`New bestOutcome: ${outcome}, bestOutcomeCount: ${bestOutcomeCount}`);//TEMP
 					}
 				}
 
 				// If there are multiple best outcomes, we'll randomly choose one
 				const chosenOutcome = randomlyChoose(...bestOutcome);
-				console.log("Chosen outcome:", chosenOutcome);
+				console.log("Chosen outcome:", chosenOutcome);//TEMP
+
+				// If it is optionally visible and none of the segments were already visible, we'll return an empty array 50% of the time
+				if (optionalVisibility && bestOutcomeCount === 0) {
+					if (Math.random() < 0.5) {
+						return [];
+					}					
+				}
 				return chosenOutcome;
 			}
-
-
-			
-			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
-			// function chooseState(prevPerm, possibleOutcomes, optionalVisibility = false) {
-			// 	console.log("chooseState called with:", prevPerm, possibleOutcomes);
-				
-			// 	// Sample possibleOutcomes: [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]] (Square, Round, VStem)
-			// 	// optionalVisibility is a boolean for if the segment is optional to be visible (chosen from a 50% chance)
-				
-			// 	// Getting all the involved segments (the same segment may appear in multiple outcomes, so this will )
-			// 	let segments = [];
-			// 	for (let i = 0; i < possibleOutcomes.length; i++) {
-			// 		const outcome = possibleOutcomes[i];
-					
-			// 		// Go through each segment in the outcome
-			// 		for (let j = 0; j < outcome.length; j++) {
-			// 			const segment = outcome[j];
-						
-			// 			// If the segment isn't already in the array, add it
-			// 			if (!segments.includes(segment)) {
-			// 				segments.push(segment);
-			// 			}
-			// 		}
-			// 	}
-			// 	console.log("Involved segments:", segments);
-				
-			// 	// Getting all the segments that AREN'T in involved
-			// 	let notInvolvedSegments = allSegments.filter(segment => !segments.includes(segment));
-			// 	console.log("Not involved segments:", notInvolvedSegments);
-				
-			// 	// Getting all the segments that were visible in the previous permutation
-			// 	let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
-			// 	console.log("Previous permutation segments:", prevPermSegments);
-
-			// 	// We need to test all possible combinations of segments, i.e., first where only one segment is visible, then where two are visible, etc.
-			// 	// The problem is that we don't necessarily know how many segments there are
-			// 	// So we need to find all possible combinations of segments
-			// 	// This is a recursive function that will find all possible combinations of segments
-			// 	function findCombinations(segments, length = 1) {
-			// 		// If the length is 1, just return the segments
-			// 		if (length === 1) {
-			// 			return segments.map(segment => [segment]);
-			// 		}
-
-			// 		// If the length is greater than 1, find all combinations of the segments
-			// 		let combinations = [];
-			// 		for (let i = 0; i < segments.length; i++) {
-			// 			const segment = segments[i]; // The current segment
-			// 			const remainingSegments = segments.slice(i + 1); // The remaining segments
-			// 			const smallerCombinations = findCombinations(remainingSegments, length - 1); // The combinations of the remaining segments
-
-			// 			for (let j = 0; j < smallerCombinations.length; j++) {
-			// 				const smallerCombination = smallerCombinations[j]; // The current combination of the remaining segments
-			// 				combinations.push([segment, ...smallerCombination]); // Add the current segment to the combination of the remaining segments
-			// 			}
-			// 		}
-
-			// 		// Return all the combinations
-			// 		return combinations;
-			// 	}
-
-
-				
-			// 	// Now we have all possible combinations of segments, we can test each one
-			// 		// We'll start will testing to see if any of the outcomes contains all the segments
-			// 		// If no outcomes are found, we'll check to see if this combination of all the possible segments was entirely present in the previous permutation
-			// 		// If they are, we'll randomly choose one of the possible outcomes
-			// 		// Otherwise, we'll test to see if any of the outcomes contains all but one of the segments
-			// 		// Then all but two, etc.
-			// 		// If there are multiple outcomes that match this number of segments, we'll randomly choose one
-			// 		// If an outcome is found, we'll stop the loop after testing all outcomes against that number of segments
-			// 		// If at the end no outcomes are found, we'll randomly choose one of the possible outcomes
-			// 	let matchingOutcomes = [];
-			// 	for (let i = segments.length; i >= 1; i--) {
-			// 		// Getting all combinations of segments of length i
-			// 		const combinations = findCombinations(segments, i);
-			// 		console.log(`Testing combinations of length ${i}:`, combinations);
-
-			// 		// Go through each combination
-			// 		for (let j = 0; j < combinations.length; j++) {
-			// 			const combination = combinations[j]; // The current combination
-			// 			console.log("Testing combination:", combination);
-
-			// 			// Check to see if the combination matches the previous permutation and doesn't contain any segments that aren't involved
-			// 			console.log(containsSet(prevPermSegments, combination), !containsSet(notInvolvedSegments, combination));
-			// 			if (containsSet(prevPermSegments, combination) && !containsSet(notInvolvedSegments, combination)) {
-			// 				console.log("Combination matches previous permutation and doesn't contain not involved segments:", combination);
-
-			// 				// If it does, check to see which (if any) of the possible outcomes contains the combination
-
-			// 				for (let k = 0; k < possibleOutcomes.length; k++) {
-			// 					const outcome = possibleOutcomes[k]; // The current outcome
-
-			// 					// If the outcome contains the combination and isn't already in the matchingOutcomes array
-			// 					if (containsSet(outcome, combination) && !matchingOutcomes.includes(outcome)) {
-			// 						// Add the outcome to the matchingOutcomes array
-			// 						matchingOutcomes.push(outcome);
-			// 					}
-			// 				}
-
-			// 			}
-			// 		}
-
-			// 		// If there are already any matching outcomes, stop the loop
-			// 		if (matchingOutcomes.length > 0) {
-			// 			break;
-			// 		}
-
-			// 		// If no outcomes are found and this is the combination with all the possible segments in it, check to see if the previous permutation contains all the segments
-			// 		if (i === segments.length && containsSet(prevPermSegments, segments)) {
-			// 			console.log("Previous permutation contains all segments");
-			// 			// If it does, randomly choose one of the possible outcomes
-			// 			const chosenOutcome = randomlyChoose(...possibleOutcomes);
-			// 			console.log("Randomly chosen outcome:", chosenOutcome);
-			// 			return chosenOutcome;
-			// 		}
-			// 	}
-
-
-
-
-			// 	console.log("Matching outcomes:", matchingOutcomes);
-
-			// 	// If there are no matching outcomes, randomly pick one of the possible outcomes
-			// 	if (matchingOutcomes.length === 0) {
-			// 		console.log("No matching outcomes found, randomly choosing one of the possible outcomes");
-			// 		const chosenOutcome = randomlyChoose(...possibleOutcomes);
-			// 		console.log("Randomly chosen outcome (const):", chosenOutcome);
-
-			// 		// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
-			// 		// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-			// 		console.log("TESTING: " + !containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
-			// 		if (!containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
-			// 			console.log("Outcome is optionally visible and randomly chosen not to be visible");
-			// 			return [];
-			// 		}
-
-			// 		return chosenOutcome;
-			// 	} else if (matchingOutcomes.length === 1) {
-			// 		// If there is only one matching outcome
-
-			// 		// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
-			// 		// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-			// 		console.log("TESTING: " + containsSet(prevPermSegments, [matchingOutcomes[0]]), optionalVisibility, Math.random() < 0.5)
-			// 		if (containsSet(prevPermSegments, [matchingOutcomes[0]]) && optionalVisibility && Math.random() < 0.5) {
-			// 			console.log("Outcome is optionally visible and randomly chosen not to be visible");
-			// 			return [];
-			// 		}
-
-			// 		console.log("One matching outcome found:", matchingOutcomes[0]);
-			// 		return matchingOutcomes[0];
-			// 	} else {
-			// 		// If there are multiple matching outcomes, randomly choose one
-			// 		const chosenOutcome = randomlyChoose(...matchingOutcomes);
-			// 		console.log("Multiple matching outcomes found, randomly chosen  (const):", chosenOutcome);
-
-			// 		// If the outcome is already entirely present in the previous permutation, it can't be optionally visible
-			// 		// If it's not entirely present and optionallyVisible is true, there's a 50% chance it won't be visible
-			// 		console.log("TESTING: " + containsSet(prevPermSegments, chosenOutcome), optionalVisibility, Math.random() < 0.5)
-			// 		if (containsSet(prevPermSegments, chosenOutcome) && optionalVisibility && Math.random() < 0.5) {
-			// 			console.log("Outcome is optionally visible and randomly chosen not to be visible");
-			// 			return [];
-			// 		}
-					
-			// 		return chosenOutcome;
-			// 	}
-			// }
 
 
 
@@ -393,13 +235,19 @@ export default function LetterGrid() {
 						// "Up": Arc
 						// "Down": Arc
 						// "Horizontal": Horizontal
+					// For centre-corners: (e.g., the inner hook of G)
+						// "Round": Arc
+						// "Square": Horizontal and Vertical
+					
 
 				// Turning possibleOutcomes into a format that stateChooser can use
 				let possibleOutcomesSegments = [];
 				for (let i = 0; i < possibleOutcomes.length; i++) {
 					const outcome = possibleOutcomes[i]; // The current outcome
-					console.log("Processing outcome:", outcome);
-					let outcomeSegments = [];
+					console.log("Processing outcome:", outcome);//TEMP
+					let outcomeSegments = []; // The segments for this outcome
+
+					// If being used for a corner
 					if (type === "corner") {
 						let NorS;
 						if (location === "Nw" || location === "Ne") {
@@ -433,6 +281,7 @@ export default function LetterGrid() {
 								break;
 						}   
 					}
+					// If being used for a centre
 					if (type === "centre") {
 						let north;
 						let south;
@@ -468,6 +317,7 @@ export default function LetterGrid() {
 								break;
 						}
 					}
+					// If being used for a centre-corner
 					if (type === "centre-corner") {
 						let EorW;
 						if (location === "Nw" || location === "Sw") {
@@ -489,14 +339,14 @@ export default function LetterGrid() {
 								break;
 						}
 					}
-					console.log("Outcome segments:", outcomeSegments);
+					console.log("Outcome segments:", outcomeSegments);//TEMP
 					possibleOutcomesSegments.push(outcomeSegments);
 				}
-				console.log("Possible outcomes segments:", possibleOutcomesSegments);
+				console.log("Possible outcomes segments:", possibleOutcomesSegments);//TEMP
 				
 				// Using the chooseState function to choose the state
 				const chosenState = chooseState(prevPerm, possibleOutcomesSegments, optionalVisibility);
-				console.log("Chosen state:", chosenState);
+				console.log("Chosen state:", chosenState);//TEMP
 				return chosenState;
 			}
 			
@@ -1064,7 +914,7 @@ export default function LetterGrid() {
 					break;
 				case "w":
 				case "W":
-					// W has 1 variable: the bottom, which is custom
+					// W is a fixed letter - no calculations needed
 
 					// Adding the constant segments
 					newPerm.push(
@@ -1080,77 +930,10 @@ export default function LetterGrid() {
 						"oSeV",
 					);
 
-					// // VARIABLE SEGMENTS
-					// 	// BOTTOM is custom:
-					// 	// Possible outcomes:
-					// 		// Facing out on left, facing out on right
-					// 		// Facing out on left, facing in on right
-					// 		// Facing in on left, facing out on right
-					// 	newPerm.push(...chooseState(prevPerm, [
-					// 		["oSwV", "oSwInv", "oSeV", "oSeInv"],
-					// 		["oSwV", "oSwInv", "oSV", "oSeArc"],
-					// 		["oSwArc", "oSV", "oSeInv", "oSeV"]
-					// 	]));
-
-					//!Could add more variables
-
 					break;
 				case "x":
 				case "X":
-					// X has 3 variables: the entire shape is custom, and is done manually
-
-					// let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
-
-					// const outcome1 = ["oNwInv", "oNeInv", "iNV", "iSV", "oSwInv", "oSeInv"];
-					// const outcome2 = ["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"];
-					// const outcome3 = ["oNwInv", "iNV", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeInv", "iSV"];
-
-					// // Count how many of the segments in the first shape are already visible
-					// let count1 = 0;
-					// for (let segment of outcome1) {
-					// 	if (prevPermSegments.includes(segment)) {
-					// 		count1++;
-					// 	}
-					// }
-					// // Count how many of the segments in the second shape are already visible
-					// let count2 = 0;
-					// for (let segment of outcome2) {
-					// 	if (prevPermSegments.includes(segment)) {
-					// 		count2++;
-					// 	}
-					// }
-					// // Count how many of the segments in the third shape are already visible
-					// let count3 = 0;
-					// for (let segment of outcome3) {
-					// 	if (prevPermSegments.includes(segment)) {
-					// 		count3++;
-					// 	}
-					// }
-					// console.log("Count 1:", count1);
-					// console.log("Count 2:", count2);
-					// console.log("Count 3:", count3);
-
-					// // Choose the shape with the most visible segments - if two shapes have the same number of visible segments, randomly choose between them
-					// let chosenShape;
-					// if (count1 > count2 && count1 > count3) {
-					// 	chosenShape = outcome1;
-					// } else if (count2 > count1 && count2 > count3) {
-					// 	chosenShape = outcome2;
-					// } else if (count3 > count1 && count3 > count2) {
-					// 	chosenShape = outcome3;
-					// } else if (count1 === count2 && count1 > count3) {
-					// 	chosenShape = randomlyChoose(outcome1, outcome2);
-					// } else if (count1 === count3 && count1 > count2) {
-					// 	chosenShape = randomlyChoose(outcome1, outcome3);
-					// } else if (count2 === count3 && count2 > count1) {
-					// 	chosenShape = randomlyChoose(outcome2, outcome3);
-					// } else {
-					// 	chosenShape = randomlyChoose(outcome1, outcome2, outcome3);
-					// }
-
-					// console.log("Chosen shape:", chosenShape);
-
-					// newPerm.push(...chosenShape);
+					// X is complex, and is done completely customly
 
 					newPerm.push(...chooseState(prevPerm, [
 						["oNwV", "iNwArc", "oNeV", "iNeArc", "oSwV", "iSwArc", "oSeV", "iSeArc"],
@@ -1195,17 +978,6 @@ export default function LetterGrid() {
 				case "Z":
 					// Z is a fixed letter - no calculations needed
 
-					// newPerm.push(
-					// 	"oNwH",
-					// 	"oNeH",
-					// 	"oNeV",
-					// 	"iNeArc",
-					// 	"iSwArc",
-					// 	"oSwV",
-					// 	"oSwH",
-					// 	"oSeH"
-					// );
-
 					newPerm.push(
 						"oNwH",
 						"oNeH",
@@ -1218,7 +990,6 @@ export default function LetterGrid() {
 					break;
 				default:
 					// (For now) the default option is to clear the grid
-
 
 					newPerm = [];
 
@@ -1252,7 +1023,7 @@ export default function LetterGrid() {
 			
 			// Getting the array of segments that are being added
 			let addedSegments = newPerm.filter(segment => !existingPermSegments.includes(segment));
-			let groupedAddedSegments = groupSegments(addedSegments);
+			let groupedAddedSegments = groupSegments(addedSegments, letter);
 			console.log("Added: ", addedSegments);//TEMP
 			console.log("Grouped Added: ", groupedAddedSegments);//TEMP
 
@@ -1263,6 +1034,7 @@ export default function LetterGrid() {
 
 			// Getting the array of segments that are being kept
 			let keptSegments = existingPermSegments.filter(segment => !removedSegments.includes(segment));
+
 
 			// Changing the added colour
 			// Getting a list of the colours currently visible
@@ -1295,15 +1067,15 @@ export default function LetterGrid() {
 
 			
 
-			if (addedSegments.length > 0) {
-				if (colourIndex === COLOUR_CYCLE.length - 1) {
-					colourIndex = 0;
-				} else {
-					colourIndex++;
-				}	
-			}
+			// if (addedSegments.length > 0) {
+			// 	if (colourIndex === COLOUR_CYCLE.length - 1) {
+			// 		colourIndex = 0;
+			// 	} else {
+			// 		colourIndex++;
+			// 	}	
+			// }
 
-
+			// The hierarchy of the segments; this dictates the order in which the segments are drawn
 			const segmentsHierarchy = [
 				"oNwV",
 				"iNwV",
@@ -1454,34 +1226,8 @@ export default function LetterGrid() {
 						duration: tl.duration(),
 						ease: ease,
 					}, `>${dur * -1.3}`);
-
-					/* let tl = gsap.timeline({
-						defaults: {
-							duration: dur * 2,
-							ease: "power3.inOut"
-						}
-					});
-
-					let segmentDuration = dur / group.length;
-
-					for (let segment of group) {
-						// Change the status of the segment to visible
-						currentPerm[segment] = true;
-
-						tl.to(eval(segment).current, {
-							strokeDashoffset: 0
-						});
-					}
-
-					letterChangeTl.to(tl, `<${dur / 3}`); */
 				}
 			}
-
-			
-
-			// Updating the timeline
-			// letterChangeTl.add(removeTl);
-			// letterChangeTl.add(addTl);
 
 			// Play the timeline
 			letterChangeTl.play();
@@ -1490,10 +1236,17 @@ export default function LetterGrid() {
 
 
 
-		function groupSegments(segments) {
+		function groupSegments(segments, letter) {
 			// Create a copy of the segments array
 			let groupedSegments = [...segments];
 			console.log("Segments copy: ", groupedSegments);//TEMP
+
+			// Special cases
+			// R and K hook
+			if ((letter === "r" || letter === "R" || letter === "k" || letter === "K") && containsSet(segments, ["iSeArc", "oSeV"])) {
+				groupedSegments = removeValues(groupedSegments, ["iSeArc", "oSeV"]);
+				groupedSegments.push(["iSeArc", "oSeV"]);
+			}
 
 			// Straight line, centre
 			switch (true) {
@@ -1821,12 +1574,47 @@ export default function LetterGrid() {
 					groupedSegments.push(["oNeV", "iNeV", "iSeV", "oSeV"]);
 					break;
 				case containsSet(segments, [
+					"oNeArc",
+					"iNeV",
+					"iSeV",
+					"oSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV", "iSeV", "oSeV"]);
+					groupedSegments.push(["oNeArc", "iNeV", "iSeV", "oSeV"]);
+					break;
+				case containsSet(segments, [
+					"oNeV",
+					"iNeV",
+					"iSeV",
+					"oSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV", "oSeArc"]);
+					groupedSegments.push(["oNeV", "iNeV", "iSeV", "oSeArc"]);
+					break;
+				case containsSet(segments, [
+					"oNeArc",
+					"iNeV",
+					"iSeV",
+					"oSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV", "iSeV", "oSeArc"]);
+					groupedSegments.push(["oNeArc", "iNeV", "iSeV", "oSeArc"]);
+					break;
+				case containsSet(segments, [
 					"oNeV",
 					"iNeV",
 					"iSeV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV"]);
 					groupedSegments.push(["oNeV", "iNeV", "iSeV"]);
+					break;
+				case containsSet(segments, [
+					"oNeArc",
+					"iNeV",
+					"iSeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV", "iSeV"]);
+					groupedSegments.push(["oNeArc", "iNeV", "iSeV"]);
 					break;
 				case containsSet(segments, [
 					"iNeV",
@@ -1837,11 +1625,26 @@ export default function LetterGrid() {
 					groupedSegments.push(["iNeV", "iSeV", "oSeV"]);
 					break;
 				case containsSet(segments, [
+					"iNeV",
+					"iSeV",
+					"oSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iNeV", "iSeV", "oSeArc"]);
+					groupedSegments.push(["iNeV", "iSeV", "oSeArc"]);
+					break;
+				case containsSet(segments, [
 					"oNeV",
 					"iNeV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV"]);
 					groupedSegments.push(["oNeV", "iNeV"]);
+					break;
+				case containsSet(segments, [
+					"oNeArc",
+					"iNeV"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV"]);
+					groupedSegments.push(["oNeArc", "iNeV"]);
 					break;
 				case containsSet(segments, [
 					"iNeV",
@@ -1856,6 +1659,13 @@ export default function LetterGrid() {
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iSeV", "oSeV"]);
 					groupedSegments.push(["iSeV", "oSeV"]);
+					break;
+				case containsSet(segments, [
+					"iSeV",
+					"oSeArc"
+				]):
+					groupedSegments = removeValues(groupedSegments, ["iSeV", "oSeArc"]);
+					groupedSegments.push(["iSeV", "oSeArc"]);
 					break;
 			};
 
@@ -1872,192 +1682,6 @@ export default function LetterGrid() {
 			
 			return groupedSegments;
 		}
-
-		// // This is the function that will find routes (strings, snakes, paths, etc.) in the removed and added segments for animation purposes
-		// function routesFinder(segments) {
-		// 	// segments is an array of segments that are being added or removed
-
-		// 	// Create the array to store the routes - note, routes are arrays of segments, so only arrays should be added to this array
-		// 	let routes = [];
-
-		// 	// Create an array of segments which have been accounted for
-		// 	let accountedSegments = [];
-
-		// 	const segmentsHierarchy = [
-		// 		"oNwV",
-		// 		"iNwV",
-		// 		"iSwV",
-		// 		"oSwV",
-		// 		"oNwH",
-		// 		"NwDiag",
-		// 		"oNwArc",
-		// 		"iNwArc",
-		// 		"iWH",
-		// 		"oNV",
-		// 		"iNV",
-		// 		"oNeH",
-		// 		"oNeV",
-		// 		"oNeArc",
-		// 		"NeDiag",
-		// 		"iNeV",
-		// 		"iNeArc",
-		// 		"iEH",
-		// 		"SwDiag",
-		// 		"iSV",
-		// 		"SeDiag",
-		// 		"iSwArc",
-		// 		"iSeV",
-		// 		"iSeArc",
-		// 		"oSwArc",
-		// 		"oSeV",
-		// 		"oSeArc",
-		// 		"oSwH",
-		// 		"oSV",
-		// 		"oSeH"
-		// 	]
-
-		// 	for (let i = 0; i < segmentsHierarchy.length; i++) {
-		// 		const rank = segmentsHierarchy[i];
-				
-		// 		// Finding the most highly ranked segment in the segments array
-		// 		if (segments.includes(rank)) {
-		// 			// Checking if it's a valid route starter
-		// 			let validNeighbours = findValidNeighbours(rank);
-		// 		}
-		// 	}
-
-		// 	function findValidNeighbours(startingSegment, validSegments, accountedSegments, currentRoute) {
-				
-		// 	}
-
-
-		// 	// Create a function to find the route of a segment
-		// 	function findRoute(segment) {
-		// 		// Create an array to store the route
-		// 		let route = [segment];
-
-		// 		// First, this route will conduct a search through the potential segments
-		// 		// The segments have a defined hierarchy of which ones should start a route first (since some drawing directions look more natural than others)
-		// 		// This will search through them in that order
-		// 		// For a segment to pass to the next stage, it must be valid as a route starter, meaning it must have at most one valid route neighbour
-		// 		// (it can have more neighbours, but only one neighbour that could be used as the next part of a route--this is so a route isn't started from what could be the middle of a longer route)
-
-
-		// 		// First we'll explore 'forwards'
-		// 		let forwardsRoute = []; // This will be the array to store the 'forwards' part of the route
-
-		// 		// This loop will find the full route forwards fromt the segment in question 
-		// 		let noMoreOptions = false;
-		// 		while (noMoreOptions === false) {
-		// 			// Find the best neighbour for the route to continue forwards with
-		// 			// This function will weed out any invalid neighbours (i.e., those which can't be proceeded to or those which are already accounted for, etc.)
-		// 			let nextNeighbour = findBestNeighbour(segment, segments, accountedSegments, forwardsRoute);
-	
-		// 			// If there are no more valid neighbours, then this segment is the end of the route (for this direction)
-		// 			if (nextNeighbour === false) {
-		// 				noMoreOptions = true;
-		// 			} else {
-		// 				// If there is a valid segment for the route to continue with, push it to the forwardsRoute and accountedSegments 
-		// 				forwardsRoute.push(nextNeighbour);
-		// 				accountedSegments.push(nextNeighbour);
-		// 			}
-		// 		}
-
-		// 		// After 
-				
-
-		// 	}
-
-			
-
-		// 	function findBestNeighbour(startingSegment, validSegments, accountedSegments, currentRoute) {
-		// 		let potentialNeighbour; // This stores the potential chosen neigbour
-		// 		// switch (startingSegment) {
-		// 		// 	case "oNwV":
-		// 		// 		if (checkNeighbourValidity("iNwV")) {
-		// 		// 			return "iNwV";
-		// 		// 		} else if (checkNeighbourValidity("iNwArc")) {
-		// 		// 			return "iNwArc";
-		// 		// 		} else {
-		// 		// 			return false;
-		// 		// 		}
-		// 		// 		break
-		// 		// 	case "oNwH":
-		// 		// 		if (checkNeighbourValidity("oNeH")) {
-		// 		// 			return "oNeH";
-		// 		// 		} else if (checkNeighbourValidity("oNeArc")) {
-		// 		// 			return "oNeArc";
-		// 		// 		} else {
-		// 		// 			return false;
-		// 		// 		}
-		// 		// 		break;
-		// 		// 	case "oNwArc":
-		// 		// 		if (checkNeighbourValidity("oNwH") && )
-		// 		// 	default:
-		// 		// 		break;
-		// 		// }
-
-		// 		function checkNeighbourValidity(segment) {
-		// 			if (validSegments.includes(segment) && accountedSegments.includes(segment)) {
-		// 				return true;
-		// 			} else {
-		// 				return false;
-		// 			}
-		// 		}
-
-
-		// 		// // Filter out any neighbours which aren't in the segments array
-		// 		// 	let forwardsConsideredNeighbours = forwardsAllNeighbours.filter(neighbour => segments.includes(neighbour));
-	
-		// 		// 	// Filter out any neighbours which are already accounted for
-		// 		// 	let forwardsFilteredNeighbours = forwardsConsideredNeighbours.filter(neighbour => accountedSegments.includes(neighbour));
-		// 	}
-
-		// 	// function findRoute(segment) {
-		// 	// 	// segment is the segment to find the route for
-		// 	// 	// Find the segment in the segments array
-		// 	// 	let segmentIndex = segments.indexOf(segment);
-
-		// 	// 	// If the segment is not in the array, return an empty array
-		// 	// 	if (segmentIndex === -1) {
-		// 	// 		return [];
-		// 	// 	}
-
-		// 	// 	// Create an array to store the route
-		// 	// 	let route = [segment];
-
-		// 	// 	// Add the segment to the accountedSegments array
-		// 	// 	accountedSegments.push(segment);
-
-		// 	// 	// Find the segment's neighbours
-		// 	// 	let neighbours = findNeighbours(segment);
-
-		// 	// 	// Find the neighbours that are in the segments array
-		// 	// 	let activeNeighbours = neighbours.filter(neighbour => segments.includes(neighbour));
-
-		// 	// 	// If there are no active neighbours, return the route
-		// 	// 	if (activeNeighbours.length === 0) {
-		// 	// 		return route;
-		// 	// 	}
-
-		// 	// 	// For each active neighbour
-		// 	// 	for (let neighbour of activeNeighbours) {
-		// 	// 		// If the neighbour is not already accounted for
-		// 	// 		if (!accountedSegments.includes(neighbour)) {
-		// 	// 			// Find the neighbour's route
-		// 	// 			let neighbourRoute = findRoute(neighbour);
-
-		// 	// 			// Add the neighbour's route to the route
-		// 	// 			route.push(...neighbourRoute);
-		// 	// 		}
-		// 	// 	}
-
-		// 	// 	// Return the route
-		// 	// 	return route;
-		// 	// }
-
-
-		// }
 
 
 		
@@ -2083,7 +1707,7 @@ export default function LetterGrid() {
 
 
 	return (
-		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 401">
+		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 401" preserveAspectRatio='none'>
 			<path 
 				className="oSeArc" 
 				ref={ oSeArc } 
