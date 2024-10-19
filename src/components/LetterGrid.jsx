@@ -1130,11 +1130,17 @@ export default function LetterGrid() {
 					// 8 is complex, and is done completely customly
 
 					// THE CENTRE
-					newPerm.push(...chooseState(prevPerm, [
-						["iNwArc", "iNeArc", "iSeArc", "iSwArc"],
-						["iNwV", "iWH", "iSwArc", "iSeV", "iEH", "iNeArc"],
-						["iSwV", "iWH", "iNwArc", "iNeV", "iEH", "iSeArc"]
-					]));
+					newPerm.push(
+						"iNwArc", 
+						"iNeArc", 
+						"iSeArc", 
+						"iSwArc"
+					);
+					// newPerm.push(...chooseState(prevPerm, [
+					// 	["iNwArc", "iNeArc", "iSeArc", "iSwArc"],
+					// 	["iNwV", "iWH", "iSwArc", "iSeV", "iEH", "iNeArc"],
+					// 	["iSwV", "iWH", "iNwArc", "iNeV", "iEH", "iSeArc"]
+					// ]));
 
 					// THE TOP-LEFT AND BOTTOM-RIGHT CORNERS
 					newPerm.push(...chooseState(prevPerm, [
@@ -1391,7 +1397,7 @@ export default function LetterGrid() {
 
 			// Removing the removed segments
 			for (let group of groupedRemovedSegments) {
-				console.log("Group: ", group);//TEMP
+				// console.log("Group: ", group);//TEMP
 				// Use GSAP to animate the erasing of the group
 				if (group.length === 1) {
 					let segment = group[0];
@@ -1455,7 +1461,7 @@ export default function LetterGrid() {
 						duration: dur,
 						strokeDashoffset: 0,
 						ease: ease,
-					}, `>${dur * -1.3}`);
+					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.25}`);
 
 					// Changing the colour of the segment
 					if (controllerColour) {
@@ -1492,7 +1498,7 @@ export default function LetterGrid() {
 						time: tl.duration(),
 						duration: tl.duration(),
 						ease: ease,
-					}, `>${dur * -1.3}`);
+					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.25}`);
 				}
 			}
 
@@ -1510,14 +1516,14 @@ export default function LetterGrid() {
 
 			// Special cases
 			// R and K hook
-			if ((letter === "r" || letter === "R" || letter === "k" || letter === "K") && containsSet(segments, ["iSeArc", "oSeV"])) {
+			if ((letter === "r" || letter === "R" || letter === "k" || letter === "K") && containsSet(groupedSegments, ["iSeArc", "oSeV"])) {
 				groupedSegments = removeValues(groupedSegments, ["iSeArc", "oSeV"]);
 				groupedSegments.push(["iSeArc", "oSeV"]);
 			}
 
 			// Straight line, centre
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNV",
 					"iNV",
 					"iSV",
@@ -1526,7 +1532,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNV", "iNV", "iSV", "oSV"]);
 					groupedSegments.push(["oNV", "iNV", "iSV", "oSV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNw",
 					"iNV",
 					"iSV"
@@ -1534,7 +1540,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNw", "iNV", "iSV"]);
 					groupedSegments.push(["oNw", "iNV", "iSV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNV",
 					"iSV",
 					"oSV"
@@ -1542,21 +1548,21 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["iNV", "iSV", "oSV"]);
 					groupedSegments.push(["iNV", "iSV", "oSV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNw",
 					"iNV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNw", "iNV"]);
 					groupedSegments.push(["oNw", "iNV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNV",
 					"iSV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iNV", "iSV"]);
 					groupedSegments.push(["iNV", "iSV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSV",
 					"oSV"
 				]):
@@ -1567,7 +1573,7 @@ export default function LetterGrid() {
 
 			// Upper circle
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeArc",
 					"iNeArc",
 					"iNwArc",
@@ -1576,21 +1582,21 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeArc", "iNwArc", "oNwArc"]);
 					groupedSegments.push(["oNeArc", "iNeArc", "iNwArc", "oNwArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwArc",
 					"oNeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNwArc", "oNeArc"]);
 					groupedSegments.push(["oNwArc", "oNeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwH",
 					"oNeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNwH", "oNeArc"]);
 					groupedSegments.push(["oNwH", "oNeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwArc",
 					"oNeH"
 				]):
@@ -1601,7 +1607,7 @@ export default function LetterGrid() {
 
 			// Lower circle
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oSeArc",
 					"iSeArc",
 					"iSwArc",
@@ -1610,21 +1616,21 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oSeArc", "iSeArc", "iSwArc", "oSwArc"]);
 					groupedSegments.push(["oSeArc", "iSeArc", "iSwArc", "oSwArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oSwArc",
 					"oSeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oSwArc", "oSeArc"]);
 					groupedSegments.push(["oSwArc", "oSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oSwH",
 					"oSeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oSwH", "oSeArc"]);
 					groupedSegments.push(["oSwH", "oSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oSwArc",
 					"oSeH"
 				]):
@@ -1632,66 +1638,67 @@ export default function LetterGrid() {
 					groupedSegments.push(["oSwArc", "oSeH"]);
 					break;
 			};
+			console.log("Grouped Segments: ", groupedSegments);//TEMP
 
 			// Middle horizontal bar
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iWH",
 					"iEH"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iWH", "iEH"]);
 					groupedSegments.push(["iWH", "iEH"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNwArc",
 					"iNeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iNwArc", "iNeArc"]);
 					groupedSegments.push(["iNwArc", "iNeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSwArc",
 					"iSeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iSwArc", "iSeArc"]);
 					groupedSegments.push(["iSwArc", "iSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNwArc",
 					"iEH"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iNwArc", "iEH"]);
 					groupedSegments.push(["iNwArc", "iEH"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iWH",
 					"iNeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iWH", "iNeArc"]);
 					groupedSegments.push(["iWH", "iNeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSwArc",
 					"iEH"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iSwArc", "iEH"]);
 					groupedSegments.push(["iSwArc", "iEH"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iWH",
 					"iSeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iWH", "iSeArc"]);
 					groupedSegments.push(["iWH", "iSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNwArc",
 					"iSeArc"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iNwArc", "iSeArc"]);
 					groupedSegments.push(["iNwArc", "iSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSwArc",
 					"iNeArc"
 				]):
@@ -1702,7 +1709,7 @@ export default function LetterGrid() {
 
 			// Upper horizontal bar
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwH",
 					"oNeH"
 				]):
@@ -1713,7 +1720,7 @@ export default function LetterGrid() {
 
 			// Lower horizontal bar
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oSwH",
 					"oSeH"
 				]):
@@ -1724,7 +1731,7 @@ export default function LetterGrid() {
 
 			// Straight line, left
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwV",
 					"iNwV",
 					"iSwV",
@@ -1733,7 +1740,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV", "iSwV", "oSwV"]);
 					groupedSegments.push(["oNwV", "iNwV", "iSwV", "oSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwArc",
 					"iNwV",
 					"iSwV",
@@ -1742,7 +1749,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV", "iSwV", "oSwV"]);
 					groupedSegments.push(["oNwArc", "iNwV", "iSwV", "oSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwV",
 					"iNwV",
 					"iSwV",
@@ -1751,7 +1758,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV", "iSwV", "oSwArc"]);
 					groupedSegments.push(["oNwV", "iNwV", "iSwV", "oSwArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwArc",
 					"iNwV",
 					"iSwV",
@@ -1760,7 +1767,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV", "iSwV", "oSwArc"]);
 					groupedSegments.push(["oNwArc", "iNwV", "iSwV", "oSwArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwV",
 					"iNwV",
 					"iSwV"
@@ -1768,7 +1775,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV", "iSwV"]);
 					groupedSegments.push(["oNwV", "iNwV", "iSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwArc",
 					"iNwV",
 					"iSwV"
@@ -1776,7 +1783,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV", "iSwV"]);
 					groupedSegments.push(["oNwArc", "iNwV", "iSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNwV",
 					"iSwV",
 					"oSwV"
@@ -1784,7 +1791,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["iNwV", "iSwV", "oSwV"]);
 					groupedSegments.push(["iNwV", "iSwV", "oSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNwV",
 					"iSwV",
 					"oSwArc"
@@ -1792,35 +1799,35 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["iNwV", "iSwV", "oSwArc"]);
 					groupedSegments.push(["iNwV", "iSwV", "oSwArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwV",
 					"iNwV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNwV", "iNwV"]);
 					groupedSegments.push(["oNwV", "iNwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNwArc",
 					"iNwV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNwArc", "iNwV"]);
 					groupedSegments.push(["oNwArc", "iNwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNwV",
 					"iSwV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iNwV", "iSwV"]);
 					groupedSegments.push(["iNwV", "iSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSwV",
 					"oSwV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iSwV", "oSwV"]);
 					groupedSegments.push(["iSwV", "oSwV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSwV",
 					"oSwArc"
 				]):
@@ -1831,7 +1838,7 @@ export default function LetterGrid() {
 			
 			// Straight line, right
 			switch (true) {
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeV",
 					"iNeV",
 					"iSeV",
@@ -1840,7 +1847,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV", "oSeV"]);
 					groupedSegments.push(["oNeV", "iNeV", "iSeV", "oSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeArc",
 					"iNeV",
 					"iSeV",
@@ -1849,7 +1856,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV", "iSeV", "oSeV"]);
 					groupedSegments.push(["oNeArc", "iNeV", "iSeV", "oSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeV",
 					"iNeV",
 					"iSeV",
@@ -1858,7 +1865,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV", "oSeArc"]);
 					groupedSegments.push(["oNeV", "iNeV", "iSeV", "oSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeArc",
 					"iNeV",
 					"iSeV",
@@ -1867,7 +1874,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV", "iSeV", "oSeArc"]);
 					groupedSegments.push(["oNeArc", "iNeV", "iSeV", "oSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeV",
 					"iNeV",
 					"iSeV"
@@ -1875,7 +1882,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV", "iSeV"]);
 					groupedSegments.push(["oNeV", "iNeV", "iSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeArc",
 					"iNeV",
 					"iSeV"
@@ -1883,7 +1890,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV", "iSeV"]);
 					groupedSegments.push(["oNeArc", "iNeV", "iSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNeV",
 					"iSeV",
 					"oSeV"
@@ -1891,7 +1898,7 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["iNeV", "iSeV", "oSeV"]);
 					groupedSegments.push(["iNeV", "iSeV", "oSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNeV",
 					"iSeV",
 					"oSeArc"
@@ -1899,35 +1906,35 @@ export default function LetterGrid() {
 					groupedSegments = removeValues(groupedSegments, ["iNeV", "iSeV", "oSeArc"]);
 					groupedSegments.push(["iNeV", "iSeV", "oSeArc"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeV",
 					"iNeV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNeV", "iNeV"]);
 					groupedSegments.push(["oNeV", "iNeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"oNeArc",
 					"iNeV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["oNeArc", "iNeV"]);
 					groupedSegments.push(["oNeArc", "iNeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iNeV",
 					"iSeV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iNeV", "iSeV"]);
 					groupedSegments.push(["iNeV", "iSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSeV",
 					"oSeV"
 				]):
 					groupedSegments = removeValues(groupedSegments, ["iSeV", "oSeV"]);
 					groupedSegments.push(["iSeV", "oSeV"]);
 					break;
-				case containsSet(segments, [
+				case containsSet(groupedSegments, [
 					"iSeV",
 					"oSeArc"
 				]):
@@ -1935,6 +1942,7 @@ export default function LetterGrid() {
 					groupedSegments.push(["iSeV", "oSeArc"]);
 					break;
 			};
+			console.log("Grouped Segments: ", groupedSegments);//TEMP
 
 			// For any segments that are not part of a group, put each one into an array of its own (so it can be animated individually) and add it to the groupedSegments array
 			let ungroupedSegments = groupedSegments.filter(segment => !Array.isArray(segment));
@@ -1956,6 +1964,8 @@ export default function LetterGrid() {
 		// A keypress event listener is added to the window to allow the user to change the letter
 		const handleKeyPress = (e) => {
 			// The key that was pressed is stored in the variable 'key'
+			// alert("Key pressed: " + e.key);
+			console.log("KEY PRESSED: ", e.key);//TEMP
 			let key = e.key;
 			changeToLetter(key);
 		};
