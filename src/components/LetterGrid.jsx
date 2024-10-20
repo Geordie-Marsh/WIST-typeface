@@ -9,7 +9,8 @@
 	import { gsap } from 'gsap';
 
 
-export default function LetterGrid(mode = "singleLetter") {
+export default function LetterGrid({reference = null, mode = "singleLetter", ...props}) {
+	console.log(reference);//TEMP
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
@@ -1978,6 +1979,16 @@ export default function LetterGrid(mode = "singleLetter") {
 				window.removeEventListener("keypress", handleKeyPress);
 			};
 		}
+		if (mode === "wordSnake") {
+			// Add a listener for a letter change from a custom event
+			const handleLetterChange = (e) => {
+				console.log("LETTER CHANGE: ", e.detail);//TEMP
+				let letter = e.detail;
+				changeToLetter(letter);
+			};
+
+			window.addEventListener(("letterChange" + reference), handleLetterChange);
+		}
 
 
 	}, []);
@@ -1986,7 +1997,7 @@ export default function LetterGrid(mode = "singleLetter") {
 
 
 	return (
-		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 189.179 400.5" preserveAspectRatio='none'>
+		<svg className={ "LetterGrid LetterGrid" + reference }  xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 189.179 400.5" preserveAspectRatio='none'>
 			<path 
 				className="oSeArc" 
 				ref={ oSeArc } 
