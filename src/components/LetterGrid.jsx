@@ -9,7 +9,7 @@
 	import { gsap } from 'gsap';
 
 
-export default function LetterGrid() {
+export default function LetterGrid(mode = "singleLetter") {
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
@@ -1961,21 +1961,23 @@ export default function LetterGrid() {
 
 		
 
-		// A keypress event listener is added to the window to allow the user to change the letter
-		const handleKeyPress = (e) => {
-			// The key that was pressed is stored in the variable 'key'
-			// alert("Key pressed: " + e.key);
-			console.log("KEY PRESSED: ", e.key);//TEMP
-			let key = e.key;
-			changeToLetter(key);
-		};
-
-		window.addEventListener("keypress", handleKeyPress);
-
-		// Cleanup function to remove the event listener
-		return () => {
-			window.removeEventListener("keypress", handleKeyPress);
-		};
+		if (mode === "singleLetter") {
+			// A keypress event listener is added to the window to allow the user to change the letter
+			const handleKeyPress = (e) => {
+				// The key that was pressed is stored in the variable 'key'
+				// alert("Key pressed: " + e.key);
+				console.log("KEY PRESSED: ", e.key);//TEMP
+				let key = e.key;
+				changeToLetter(key);
+			};
+	
+			window.addEventListener("keypress", handleKeyPress);
+	
+			// Cleanup function to remove the event listener
+			return () => {
+				window.removeEventListener("keypress", handleKeyPress);
+			};
+		}
 
 
 	}, []);
@@ -1984,7 +1986,7 @@ export default function LetterGrid() {
 
 
 	return (
-		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 189.679 401" preserveAspectRatio='none'>
+		<svg className="LetterGrid" xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 189.179 400.5" preserveAspectRatio='none'>
 			<path 
 				className="oSeArc" 
 				ref={ oSeArc } 

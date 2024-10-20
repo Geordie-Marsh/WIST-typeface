@@ -3,6 +3,10 @@
 
 // Importing page stylesheets
 @import '../pages/Home';
+@import '../pages/Test';
+// Importing mode page stylesheets
+@import '../pages/modes/Sentencer';
+@import '../pages/modes/WordSnake';
 
 body {
 	margin: 0;
@@ -17,7 +21,7 @@ body {
 	* {
 		fill: none;
 		stroke: #000;
-		stroke-width: 20;
+		stroke-width: 21;
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		stroke-dasharray: 101;
