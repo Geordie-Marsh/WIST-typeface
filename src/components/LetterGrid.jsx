@@ -3,20 +3,21 @@
 	import { useEffect, useRef } from 'react';
 
 	// Importing defs
-	import { hide, show, randomlyChoose, containsExactSet, containsSet, removeValues, rgbToHex } from '../defs';
+	import { hide, show, randomlyChoose, containsExactSet, containsSet, removeValues, rgbToHex, $$ } from '../defs';
 
 	// Importing GSAP
 	import { gsap } from 'gsap';
 
 
-export default function LetterGrid({reference = null, mode = "singleLetter", ...props}) {
-	console.log(reference);//TEMP
+export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, ...props}) {
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
 		// Then the segment type is specified: V = vertical line, H = horizontal line, Arc = a segment of circle, Diag = diagonal line
 
 	// Refs are used for each segment (remember: you'll have to use .current after the ref to access the element)
+	const svg    = useRef(null);
+
 	const oNwV   = useRef(null);
 	const oNwH   = useRef(null);
 	const oNwArc = useRef(null);
@@ -55,6 +56,10 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 		// CONTROLLERS
 		let controllerColour = false;
 		let controllerDur = 0.8;
+		let controllerStartDisplayed = startDisplayed;
+
+		// Tracking
+		let reset = false;
 
 
 		// This is an array of all the segments
@@ -93,37 +98,38 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 
 		// This object will be used to keep track of the current permutation, i.e., which segments are currently visible
 		let currentPerm = {
-			oNwV: true,
-			oNwH: true,
-			oNwArc: true,
-			oNV: true,
-			oNeV: true,
-			oNeH: true,
-			oNeArc: true,
-			iNwV: true,
-			iNwArc: true,
-			iNV: true,
-			iNeV: true,
-			iNeArc: true,
-			NwDiag: true,
-			NeDiag: true,
-			iWH: true,
-			iEH: true,
-			SwDiag: true,
-			SeDiag: true,
-			iSwV: true,
-			iSwArc: true,
-			iSV: true,
-			iSeV: true,
-			iSeArc: true,
-			oSwV: true,
-			oSwH: true,
-			oSwArc: true,
-			oSV: true,
-			oSeV: true,
-			oSeH: true,
-			oSeArc: true,
+			oNwV: startDisplayed,
+			oNwH: startDisplayed,
+			oNwArc: startDisplayed,
+			oNV: startDisplayed,
+			oNeV: startDisplayed,
+			oNeH: startDisplayed,
+			oNeArc: startDisplayed,
+			iNwV: startDisplayed,
+			iNwArc: startDisplayed,
+			iNV: startDisplayed,
+			iNeV: startDisplayed,
+			iNeArc: startDisplayed,
+			NwDiag: startDisplayed,
+			NeDiag: startDisplayed,
+			iWH: startDisplayed,
+			iEH: startDisplayed,
+			SwDiag: startDisplayed,
+			SeDiag: startDisplayed,
+			iSwV: startDisplayed,
+			iSwArc: startDisplayed,
+			iSV: startDisplayed,
+			iSeV: startDisplayed,
+			iSeArc: startDisplayed,
+			oSwV: startDisplayed,
+			oSwH: startDisplayed,
+			oSwArc: startDisplayed,
+			oSV: startDisplayed,
+			oSeV: startDisplayed,
+			oSeH: startDisplayed,
+			oSeArc: startDisplayed,
 		};
+		console.log(currentPerm)
 
 		// The cycle of colours to go through
 		const COLOUR_CYCLE = [
@@ -131,6 +137,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 			"#ff6b00",
 			"#fcb500",
 			"#9ce500",
+			"#00b072",
 			"#0ac8f2",
 			"#1e6bff",
 			"#743ee6",
@@ -157,15 +164,12 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 			
 			// This function is used to choose segments to show based on the previous permutation and the possible outcomes
 			function chooseState(prevPerm, possibleOutcomes, optionalVisibility = false) {
-				console.log("chooseState called with:", prevPerm, possibleOutcomes);//TEMP
-				
 				// PrevPerm is an object with the previous permutation
 				// Sample possibleOutcomes: [["oNwV", "oNwH"], ["oNwArc"], ["oNwV", "oNwArc"]] (Square, Round, VStem)
 				// optionalVisibility is a boolean for if the segment is optional to be visible (chosen from a 50% chance)
 
 				// Turning the prevPerm object into an array of segments
 				let prevPermSegments = Object.keys(prevPerm).filter(key => prevPerm[key]);
-				console.log("Previous permutation segments:", prevPermSegments);//TEMP
 
 				// For each possible outcome, we'll count how many of its segments are in the previous permutation
 				// We'll then choose the outcome with the most segments in the previous permutation
@@ -175,7 +179,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 				// Go through each possible outcome
 				for (let i = 0; i < possibleOutcomes.length; i++) {
 					const outcome = possibleOutcomes[i]; // The current outcome
-					console.log("Processing outcome:", outcome);//TEMP
 
 					// Count how many segments in the outcome are in the previous permutation
 					let count = 0;
@@ -185,24 +188,20 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 							count++;
 						}
 					}
-					console.log(`Outcome: ${outcome}, Count: ${count}`);//TEMP
 
 					// The count may be equal to the best outcome count, in which case we'll add it to the best outcome array
 					if (count === bestOutcomeCount) {
 						bestOutcome.push(outcome);
-						console.log(`Added to bestOutcome: ${outcome}`);//TEMP
 					}
 					// If the count is greater than the best outcome count, we'll replace the best outcome array with this outcome
 					if (count > bestOutcomeCount) {
 						bestOutcome = [outcome];
 						bestOutcomeCount = count;
-						console.log(`New bestOutcome: ${outcome}, bestOutcomeCount: ${bestOutcomeCount}`);//TEMP
 					}
 				}
 
 				// If there are multiple best outcomes, we'll randomly choose one
 				const chosenOutcome = randomlyChoose(...bestOutcome);
-				console.log("Chosen outcome:", chosenOutcome);//TEMP
 
 				// If it is optionally visible and none of the segments were already visible, we'll return an empty array 50% of the time
 				if (optionalVisibility && bestOutcomeCount === 0) {
@@ -220,8 +219,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 			// There are some commonly used presets for corners and centres
 			// This function is used to invoke the stateChooser by using presets instead of arrays of segments
 			function chooseStatePresets(prevPerm, type, location, possibleOutcomes, optionalVisibility = false) {
-				console.log("chooseStatePresets called with:", prevPerm, type, location, possibleOutcomes);
-				
 				// Type is the type of segment: corner, centre, etc.
 				// Location is the location of the segment: Ne, Se, Sw, Nw, E, W
 
@@ -245,7 +242,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 				let possibleOutcomesSegments = [];
 				for (let i = 0; i < possibleOutcomes.length; i++) {
 					const outcome = possibleOutcomes[i]; // The current outcome
-					console.log("Processing outcome:", outcome);//TEMP
 					let outcomeSegments = []; // The segments for this outcome
 
 					// If being used for a corner
@@ -343,14 +339,11 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 								break;
 						}
 					}
-					console.log("Outcome segments:", outcomeSegments);//TEMP
 					possibleOutcomesSegments.push(outcomeSegments);
 				}
-				console.log("Possible outcomes segments:", possibleOutcomesSegments);//TEMP
 				
 				// Using the chooseState function to choose the state
 				const chosenState = chooseState(prevPerm, possibleOutcomesSegments, optionalVisibility);
-				console.log("Chosen state:", chosenState);//TEMP
 				return chosenState;
 			}
 			
@@ -1286,25 +1279,25 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 
 		// This is the function to change to a new letter (or number, punctuation, etc.)
 		function changeToLetter(letter) {
+			// If the element no longer exists, then return
+			if (!svg.current) {
+				return;
+			}
+
 			// Store the existing permutation of the grid
 			let existingPerm = Object.assign({}, currentPerm);
 			let existingPermSegments = Object.keys(existingPerm).filter(key => existingPerm[key]);
-			console.log("existingPerm: ", existingPerm, existingPermSegments);//TEMP
 
 			// Getting the array of segments that should be visible for the new letter
 			let newPerm = letterMaker(letter, existingPerm);
-			console.log("newPerm: ", newPerm);//TEMP
 			
 			// Getting the array of segments that are being added
 			let addedSegments = newPerm.filter(segment => !existingPermSegments.includes(segment));
 			let groupedAddedSegments = groupSegments(addedSegments, letter);
-			console.log("Added: ", addedSegments);//TEMP
-			console.log("Grouped Added: ", groupedAddedSegments);//TEMP
 
 			// Getting the array of segments that are being removed
 			let removedSegments = existingPermSegments.filter(segment => !newPerm.includes(segment));
 			let groupedRemovedSegments = groupSegments(removedSegments);
-			console.log("Removed: ", removedSegments, groupedRemovedSegments);//TEMP
 
 			// Getting the array of segments that are being kept
 			let keptSegments = existingPermSegments.filter(segment => !removedSegments.includes(segment));
@@ -1315,29 +1308,24 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 			let visibleColours = [];
 			for (let segment of existingPermSegments) {
 				let colour = eval(segment).current.style.stroke;
-				console.log("Segment: ", segment, "Colour: ", colour);//TEMP
 				
 				// The colour is represented as an RGB string, e.g. "rgb(116, 62, 230)", so we need to convert it to a hex string
 				// The rgbToHex function takes the RGB values as input, so we need to extract them from the string
 				if (colour) {
 					let rgb = colour.match(/\d+/g).map(Number);
 					let colourHex = rgbToHex(...rgb);
-					console.log("Colour: ", colourHex);//TEMP
 	
 					if (!visibleColours.includes(colourHex)) {
 						visibleColours.push(colourHex);
 					}
 				}
 			}
-			console.log("Visible Colours: ", visibleColours);//TEMP
 
 			// Getting a list of colours that could be used
 			let availableColours = COLOUR_CYCLE.filter(colour => !visibleColours.includes(colour));
-			console.log("Available Colours: ", availableColours);//TEMP
 
 			// Choosing a new colour
 			let newColour = randomlyChoose(...availableColours);
-			console.log("New Colour: ", newColour);//TEMP
 
 			
 
@@ -1386,7 +1374,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 			// Ordering the groupedAddedSegments and groupedRemovedSegments arrays based on the segmentsHierarchy array
 			groupedAddedSegments.sort((a, b) => segmentsHierarchy.indexOf(a[0]) - segmentsHierarchy.indexOf(b[0]));
 			groupedRemovedSegments.sort((a, b) => segmentsHierarchy.indexOf(a[0]) - segmentsHierarchy.indexOf(b[0]));
-			console.log("Ordered Added: ", groupedAddedSegments);//TEMP
 
 			
 			// Updating the permutation to reflect the new letter and showing/hiding segments as necessary
@@ -1398,7 +1385,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 
 			// Removing the removed segments
 			for (let group of groupedRemovedSegments) {
-				// console.log("Group: ", group);//TEMP
 				// Use GSAP to animate the erasing of the group
 				if (group.length === 1) {
 					let segment = group[0];
@@ -1449,7 +1435,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 
 			// Adding the added segments
 			for (let group of groupedAddedSegments) {
-				console.log("Group: ", group);//TEMP
 				// Use GSAP to animate the drawing of the group
 				if (group.length === 1) {
 					let segment = group[0];
@@ -1462,7 +1447,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 						duration: dur,
 						strokeDashoffset: 0,
 						ease: ease,
-					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.25}`);
+					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.2}`);
 
 					// Changing the colour of the segment
 					if (controllerColour) {
@@ -1499,12 +1484,20 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 						time: tl.duration(),
 						duration: tl.duration(),
 						ease: ease,
-					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.25}`);
+					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.2}`);
 				}
 			}
 
 			// Play the timeline
 			letterChangeTl.play();
+			if (mode === "tessellation" && !reset) {
+				letterChangeTl.add(() => {
+					changeToLetter(randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'));
+				}, `>-=${dur * 0.2}`);
+			}
+			if (reset) {
+				reset = false;
+			}
 		}
 
 
@@ -1513,7 +1506,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 		function groupSegments(segments, letter) {
 			// Create a copy of the segments array
 			let groupedSegments = [...segments];
-			console.log("Segments copy: ", groupedSegments);//TEMP
 
 			// Special cases
 			// R and K hook
@@ -1639,7 +1631,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 					groupedSegments.push(["oSwArc", "oSeH"]);
 					break;
 			};
-			console.log("Grouped Segments: ", groupedSegments);//TEMP
 
 			// Middle horizontal bar
 			switch (true) {
@@ -1943,7 +1934,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 					groupedSegments.push(["iSeV", "oSeArc"]);
 					break;
 			};
-			console.log("Grouped Segments: ", groupedSegments);//TEMP
 
 			// For any segments that are not part of a group, put each one into an array of its own (so it can be animated individually) and add it to the groupedSegments array
 			let ungroupedSegments = groupedSegments.filter(segment => !Array.isArray(segment));
@@ -1960,6 +1950,14 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 		}
 
 
+
+		// If the letter is to be blank at the start (i.e., not fully displayed), hide all the segments
+		if (!controllerStartDisplayed) {
+			for (let segment in currentPerm) {
+				eval(segment).current.style.strokeDashoffset = 101;
+			}
+		}
+
 		
 
 		if (mode === "singleLetter") {
@@ -1967,7 +1965,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 			const handleKeyPress = (e) => {
 				// The key that was pressed is stored in the variable 'key'
 				// alert("Key pressed: " + e.key);
-				console.log("KEY PRESSED: ", e.key);//TEMP
 				let key = e.key;
 				changeToLetter(key);
 			};
@@ -1982,12 +1979,31 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 		if (mode === "wordSnake") {
 			// Add a listener for a letter change from a custom event
 			const handleLetterChange = (e) => {
-				console.log("LETTER CHANGE: ", e.detail);//TEMP
 				let letter = e.detail;
 				changeToLetter(letter);
 			};
 
 			window.addEventListener(("letterChange" + reference), handleLetterChange);
+		}
+		if (mode === "tessellation") {
+			// Add a listener for a letter change from a custom event
+			const handleLetterChange = (e) => {
+				let letter = e.detail;
+				changeToLetter(letter);
+			};
+
+			const handleLetterChangeStop = () => {
+				// Killing any existing gsap for this element
+				reset = true;
+			}
+
+			$$(`.LetterGrid--${reference}`).addEventListener("letterChange", handleLetterChange);
+			$$(`.LetterGrid--${reference}`).addEventListener("letterChangeStop", handleLetterChangeStop);
+
+			// Cleanup function to remove the event listener
+			return () => {
+				// $$(`.LetterGrid--${reference}`).removeEventListener("letterChange", handleLetterChange);
+			};
 		}
 
 
@@ -1997,7 +2013,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", ...
 
 
 	return (
-		<svg className={ "LetterGrid LetterGrid" + reference }  xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 189.179 400.5" preserveAspectRatio='none'>
+		<svg className={ "LetterGrid LetterGrid--" + reference } ref={ svg } xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 189.179 400.5" preserveAspectRatio='none'>
 			<path 
 				className="oSeArc" 
 				ref={ oSeArc } 

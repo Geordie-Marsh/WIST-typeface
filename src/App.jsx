@@ -15,6 +15,7 @@
 	// Importing mode pages
 	import Sentencer from './pages/modes/Sentencer';
 	import WordSnake from './pages/modes/WordSnake';
+	import Tessellation from './pages/modes/Tessellation';
 	
 
 
@@ -28,6 +29,7 @@ function AnimatedRoutes() {
 				<Route path='test' element={<Test />} />
 				<Route path='sentencer' element={<Sentencer />} />
 				<Route path='word-snake' element={<WordSnake />} />
+				<Route path='tessellation' element={<Tessellation />} />
 			</Route>
 		</Routes>
 	);

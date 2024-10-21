@@ -1,12 +1,26 @@
 .WordSnake {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	position: relative;
+	
 
-	.LetterGrid {
-		height: 50vh;
-		margin: 0 auto;
+	.letters-cont,
+	.duplicate-letters-cont {
+		position: absolute;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		width: 100%;
+
+		.letter-cont {
+			padding: 0 2.5rem;
+			width: 100%;
+
+			.LetterGrid {
+				width: 100%;
+			}
+		}
+	}
+
+	.duplicate-letters-cont {
+		left: 100%;
 	}
 }

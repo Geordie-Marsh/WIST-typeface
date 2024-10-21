@@ -1,0 +1,44 @@
+// Defining layout variables
+	// The space unit used - adjusting this one value will adjust all the others accordingly
+	$unit: 1rem;
+
+	// The website uses two spacer systems: 
+		// a micro scale, used for smaller, more refined spacing, particularly within components;
+		// and a macro scale, used for larger spacing, like positioning components on a page
+	/* The space units for each scale are different so that they can be independently adjusted if needed */
+	$spacer-unit--mi: $unit;
+	$spacer-unit--ma: $unit;
+
+	/* SMALL SCALE */		
+		$spacer-mi-01:  0.25  *  $spacer-unit--mi; //  4px, 0.25rem
+		$spacer-mi-02:  0.5   *  $spacer-unit--mi; //  8px,  0.5rem
+		$spacer-mi-03:  1     *  $spacer-unit--mi; // 16px,    1rem
+		$spacer-mi-04:  1.5   *  $spacer-unit--mi; // 24px,  1.5rem
+		$spacer-mi-05:  2     *  $spacer-unit--mi; // 32px,    2rem
+		$spacer-mi-06:  3     *  $spacer-unit--mi; // 48px,    3rem
+		
+	/* LARGE SCALE */
+		$spacer-ma-01:  2     *  $spacer-unit--ma; // 32px,    2rem
+		$spacer-ma-02:  3     *  $spacer-unit--ma; // 48px,    3rem
+		$spacer-ma-03:  4     *  $spacer-unit--ma; // 64px,    4rem
+		$spacer-ma-04:  6     *  $spacer-unit--ma; // 96px,    6rem
+		$spacer-ma-05:  8     *  $spacer-unit--ma; // 128px,   8rem
+
+	
+	// The spacer used as the default padding size of the site, like the padding of the body or betweeen sections
+	$spacer-padder: 2 * $spacer-unit--ma; // Same as $spacer-ma-03
+
+
+
+// Defining page layout
+	section, 
+	footer {
+		// Box model
+		min-height: 100vh; // Ensuring that each section takes up at least the full height of the viewport
+		padding: $spacer-padder; // Adding padding to each section
+		position: relative;;
+	}
+
+	// .page-cont {
+	// 	transition: opacity $transition-duration;
+	// }
