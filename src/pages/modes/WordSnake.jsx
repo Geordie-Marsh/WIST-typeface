@@ -202,6 +202,8 @@ export default function WordSnake(WordSnake) {
 		}, dur * 1000 * 1.9);
 	}
 
+	//!Double letters don't work, they mess up something
+
 
 
 	return (
