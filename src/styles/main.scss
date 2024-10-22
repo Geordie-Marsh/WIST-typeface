@@ -1,5 +1,6 @@
 // Importing global stylesheets
 @import 'layout';
+@import 'colours';
 @import 'typography';
 @import 'utils';
 
@@ -23,7 +24,7 @@ body {
 .LetterGrid {
 	overflow: visible;
 	aspect-ratio: 1 / 2;
-	// transform: scaleX(1.06);//TEMP
+	shape-rendering: geometricPrecision;
 
 	* {
 		fill: none;

@@ -26,6 +26,9 @@ export default function Tessellation() {
 	// Movement consts
 	const totalDur = 12;
 
+	// The movement interval
+	let movementInterval;
+
 
 
 	function getGridColumns() {
@@ -65,7 +68,14 @@ export default function Tessellation() {
 				</div>
 			);
 		}
-		setItems(newItems);
+
+		let itemsReturn = (
+			<div className='letters-cont'>
+				{ newItems }
+			</div>
+		)
+
+		setItems(itemsReturn);
 
 		setTimeout(() => {
 			// Running the tessellation engine
@@ -96,6 +106,16 @@ export default function Tessellation() {
 			)
 		});
 
+		// Killing the GSAP for the movement
+		gsap.killTweensOf('.letters-cont');
+		$$(".letters-cont").style.transform = "translateY(0%)";
+		$$all(".letters-row").forEach(element => {
+			element.style.transform = "translateY(" + 0 + "%)";
+		});
+
+		// Clearing the movement interval (from the movementEngine)
+		clearInterval(movementInterval);
+
 		// Resetting the items
 		setItems([]);
 
@@ -122,6 +142,8 @@ export default function Tessellation() {
 
 	function movementEngine(rowCount) {
 		const repeatNo = 100;
+		let movedRows = 0;
+		let timesOver = 1;
 
 		// Moving the rows
 		gsap.to('.letters-cont', {
@@ -131,12 +153,8 @@ export default function Tessellation() {
 			repeat: -1,
 		});
 
-		let movedRows = 0;
-		let timesOver = 1;
-
 		// Moving the individual rows to the bottom when they've reached the top
-		setInterval(() => {
-			console.log(movedRows % rowCount)
+		movementInterval = setInterval(() => {
 			if (movedRows % rowCount === 0 && movedRows > 0) {
 				if (timesOver === repeatNo) {
 					timesOver = 1;
@@ -202,25 +220,7 @@ export default function Tessellation() {
 	return (
 		<div className='Tessellation mode-page'>
 			<div className='mode-cont Tessellation__mode-cont'>
-				<div className='letters-cont'>
-					{/* <div className='letter-cont'><LetterGrid reference={ "letter1" } mode="tessellation" /></div> */}
-					{/* Dynamically adding in the grid elements from the useState items list */}
-					{/* { items.map((item, index) => (
-						<div className='letter-cont' key={ index }>
-							{ item }
-						</div>
-					))} */}
-					{ items }
-
-
-					{/* {[...Array(3)].map((_, i) => (
-						<div className='letters-row'>
-							{[...Array(9)].map((_, j) => (
-								<div className='letter-cont' key={ i + "-" + j }><LetterGrid reference={ "letter" + (i + 1) + "-" + (j + 1) } mode="tessellation" /></div>
-							))}
-						</div>
-					))} */}
-				</div>
+				{ items }
 			</div>
 		</div>
 	);

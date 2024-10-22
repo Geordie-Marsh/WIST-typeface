@@ -95,6 +95,21 @@
 }
 
 
+// Gap properties (used in flex and grid layouts)
+.gap--xs {
+	gap: $spacer-mi-02;
+}
+.gap--sm {
+	gap: $spacer-mi-03;
+}
+.gap--md {
+	gap: $spacer-mi-05;
+}
+.gap--lg {
+	gap: $spacer-mi-06;
+}
+
+
 // Text properties
 .text-l {
 	text-align: left;

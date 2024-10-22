@@ -54,7 +54,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 	// useEffect will run once the component has mounted
 	useEffect(() => {
 		// CONTROLLERS
-		let controllerColour = false;
+		let controllerColour = true;
 		let controllerDur = 0.8;
 		let controllerStartDisplayed = startDisplayed;
 
@@ -138,7 +138,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			"#fcb500",
 			"#9ce500",
 			"#00b072",
-			"#0ac8f2",
+			"#0abcf2",
 			"#1e6bff",
 			"#743ee6",
 			"#ff458f"
