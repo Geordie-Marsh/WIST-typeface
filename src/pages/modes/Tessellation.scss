@@ -33,5 +33,9 @@
 
 	.options-cont {
 		margin: auto;
+
+		.Button {
+			margin-top: 0.5 * $unit;
+		}
 	}
 }

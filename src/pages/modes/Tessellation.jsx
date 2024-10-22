@@ -15,6 +15,7 @@
 	// Importing components
 	import LetterGrid from '../../components/LetterGrid';
 	import Radio from '../../components/Radio';
+	import Button from '../../components/Button';
 
 
 
@@ -67,6 +68,9 @@ export default function Tessellation() {
 	// The movement interval
 	let movementInterval;
 
+	// Keeping track of whether the tessellation has been initialised
+	let tessellationInitialised = false;
+
 
 
 	function getGridColumns() {
@@ -82,7 +86,6 @@ export default function Tessellation() {
 	}
 
 	function updateGrid() {
-		console.log("Updating grid");
 		// Directly calculate the number of columns and rows
 		const columns = getGridColumns();
 		const rows = getGridRows();
@@ -139,6 +142,9 @@ export default function Tessellation() {
 
 			// Running the movement engine
 			movementEngine(rows);
+
+			// Setting the tessellation initialised flag
+			tessellationInitialised = true;
 		}, 1000);
 	}
 
@@ -210,21 +216,23 @@ export default function Tessellation() {
 
 		// Killing the GSAP for the movement
 		gsap.killTweensOf('.letters-cont');
-		$$(".letters-cont").style.transform = "translateY(0%)";
-		$$all(".letters-row").forEach(element => {
-			element.style.transform = "translateY(" + 0 + "%)";
-		});
+		if (tessellationInitialised) {
+			$$(".letters-cont").style.transform = "translateY(0%)";
+			$$all(".letters-row").forEach(element => {
+				element.style.transform = "translateY(" + 0 + "%)";
+			});
 
-		// Clearing the movement interval (from the movementEngine)
-		clearInterval(movementInterval);
-
-		// Resetting the items
-		setItems([]);
-
-		// Remaking the grid
-		setTimeout(() => {
-			updateGrid();
-		}, 1);
+			// Clearing the movement interval (from the movementEngine)
+			clearInterval(movementInterval);
+	
+			// Resetting the items
+			setItems([]);
+	
+			// Remaking the grid
+			setTimeout(() => {
+				updateGrid();
+			}, 1);
+		}
 	}, 300);
 
 	// Add window resize event listener on component mount
@@ -280,7 +288,7 @@ export default function Tessellation() {
 						/>
 					</div>
 					
-					<button onClick={InitTessellation}>Tessellate!</button>
+					<Button onClick={InitTessellation}>Tessellate!</Button>
 				</div>
 			</div>
 		</div>

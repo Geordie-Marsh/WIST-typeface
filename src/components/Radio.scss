@@ -2,9 +2,14 @@
 	.Radio__option {
 		padding: (0.7 * $unit) (1.1 * $unit);
 		border-radius: 3 * $unit;
+		box-sizing: border-box;
+		cursor: pointer;
+		transition: outline 0.2s;
+		outline: 2px solid transparent;
 
 		&.selected {
-			background-color: #e0e0e0;
+			// background-color: $white-secondary;
+			outline: 2px solid $white-secondary;
 
 			p {
 

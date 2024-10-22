@@ -1,0 +1,24 @@
+.Button {
+	background-color: $white-secondary;
+	border: none;
+	border-radius: 3 * $unit;
+	padding: (1.15 * $unit) (1.5 * $unit);
+	cursor: pointer;
+	transition: background-color 0.2s;
+
+	* {
+		transition: color 0.2s;
+	}
+
+	&:hover {
+		background-color: $grey;
+
+		* {
+			color: #000;
+		}
+	}
+
+	h2 {
+		margin-bottom: -0.05 * $unit; // This is to make the baseline of the text align with the bottom
+	}
+}
