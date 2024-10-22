@@ -9,7 +9,7 @@
 	import { gsap } from 'gsap';
 
 
-export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, ...props}) {
+export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, program = null, ...props}) {
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
@@ -60,6 +60,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 		// Tracking
 		let reset = false;
+		let programIndex = 0;
 
 
 		// This is an array of all the segments
@@ -1492,7 +1493,18 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			letterChangeTl.play();
 			if (mode === "tessellation" && !reset) {
 				letterChangeTl.add(() => {
-					changeToLetter(randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'));
+					// If there's a program, then change to the next letter in the program
+					if (program) {
+						// If the program is finished, then restart it
+						if (programIndex === program.length - 1) {
+							programIndex = 0;
+						} else {
+							programIndex++;
+						}
+					}
+					console.log(program, programIndex, program[programIndex]);
+					changeToLetter(program[programIndex]);
+					// changeToLetter(randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'));
 				}, `>-=${dur * 0.2}`);
 			}
 			if (reset) {

@@ -7,7 +7,7 @@
 	import { $$, $$all, randomlyChoose } from '../../defs.js';
 
 	// Importing constants
-	import { TRANSITION_DURATION } from '../../constants.js';
+	import { TRANSITION_DURATION, WORDS } from '../../constants.js';
 
 	// Importing GSAP
 	import { gsap } from 'gsap';
@@ -79,9 +79,21 @@ export default function Tessellation() {
 			let newItemsRow = [];
 
 			for (let j = 0; j < columns; j++) {
+				// Making the program for the letter
+				// This is done by randomly selecting 5 words from the WORDS constant
+				let program = [];
+				for (let k = 0; k < 5; k++) {
+					// Randomly selecting a word from the WORDS constant
+					let word = randomlyChoose(...WORDS);
+					// Turning the word into an array of letters
+					let letters = word.split("");
+					// Adding the letters to the program
+					program.push(...letters);
+				}
+
 				newItemsRow.push(
 					<div className='letter-cont' key={ (i + 1) + "-" + (j + 1) }>
-						<LetterGrid reference={ "--" + (i + 1) + "-" + (j + 1) } mode="tessellation" startDisplayed={ false } />
+						<LetterGrid reference={ "--" + (i + 1) + "-" + (j + 1) } mode="tessellation" startDisplayed={ false } program={ program } />
 					</div>
 				)
 			}
@@ -115,7 +127,6 @@ export default function Tessellation() {
 	function tessellationEngine(letterElements) {
 		// Updating the letters -- this is done by broadcasting a custom event for each letter
 		letterElements.forEach(element => {
-			// console.log(element.querySelector(".LetterGrid"));
 			element.querySelector(".LetterGrid").dispatchEvent(
 				new CustomEvent("letterChange", {
 					// For now, return a random letter
