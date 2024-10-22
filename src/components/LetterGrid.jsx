@@ -2057,23 +2057,21 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			window.addEventListener(("letterChange" + reference), handleLetterChange);
 		}
 		if (mode === "tessellation") {
-			// Add a listener for a letter change from a custom event
-			const handleLetterChange = (e) => {
-				let letter = e.detail;
-				changeToLetter(letter);
-			};
+			// Start the program
+			setTimeout(() => {
+				changeToLetter(program[programIndex]);
+			}, 500);
 
 			const handleLetterChangeStop = () => {
 				// Killing any existing gsap for this element
 				reset = true;
 			}
 
-			$$(`.LetterGrid--${reference}`).addEventListener("letterChange", handleLetterChange);
 			$$(`.LetterGrid--${reference}`).addEventListener("letterChangeStop", handleLetterChangeStop);
 
 			// Cleanup function to remove the event listener
 			return () => {
-				// $$(`.LetterGrid--${reference}`).removeEventListener("letterChange", handleLetterChange);
+				$$(`.LetterGrid--${reference}`).removeEventListener("letterChangeStop", handleLetterChangeStop);
 			};
 		}
 

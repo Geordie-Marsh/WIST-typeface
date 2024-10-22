@@ -138,29 +138,29 @@ export default function Tessellation() {
 
 		setTimeout(() => {
 			// Running the tessellation engine
-			tessellationEngine($$all('.letter-cont'));
+			// tessellationEngine($$all('.letter-cont'));
 
 			// Running the movement engine
 			movementEngine(rows);
 
 			// Setting the tessellation initialised flag
 			tessellationInitialised = true;
-		}, 1000);
+		}, 500);
 	}
 
 
 
-	function tessellationEngine(letterElements) {
-		// Updating the letters -- this is done by broadcasting a custom event for each letter
-		letterElements.forEach(element => {
-			element.querySelector(".LetterGrid").dispatchEvent(
-				new CustomEvent("letterChange", {
-					// For now, return a random letter
-					detail: randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
-				})
-			);
-		});
-	}
+	// function tessellationEngine(letterElements) {
+	// 	// Updating the letters -- this is done by broadcasting a custom event for each letter
+	// 	letterElements.forEach(element => {
+	// 		element.querySelector(".LetterGrid").dispatchEvent(
+	// 			new CustomEvent("letterChange", {
+	// 				// For now, return a random letter
+	// 				detail: randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
+	// 			})
+	// 		);
+	// 	});
+	// }
 
 	function movementEngine(rowCount) {
 		const repeatNo = 100;

@@ -1,6 +1,10 @@
 // Imports
 	// Importing components
-	import LetterGrid from '../components/LetterGrid';
+	import { useEffect } from 'react';
+import LetterGrid from '../components/LetterGrid';
+
+	// Importing defs
+	import { randomlyChoose } from '../defs.js';
 
 
 
