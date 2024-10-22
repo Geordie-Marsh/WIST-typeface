@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/WIST-typeface/static/css/main.b83c6779.css",
-    "main.js": "/WIST-typeface/static/js/main.35f463f5.js",
+    "main.js": "/WIST-typeface/static/js/main.47b1c9b2.js",
     "static/js/453.2b945ed6.chunk.js": "/WIST-typeface/static/js/453.2b945ed6.chunk.js",
     "index.html": "/WIST-typeface/index.html",
     "main.b83c6779.css.map": "/WIST-typeface/static/css/main.b83c6779.css.map",
-    "main.35f463f5.js.map": "/WIST-typeface/static/js/main.35f463f5.js.map",
+    "main.47b1c9b2.js.map": "/WIST-typeface/static/js/main.47b1c9b2.js.map",
     "453.2b945ed6.chunk.js.map": "/WIST-typeface/static/js/453.2b945ed6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b83c6779.css",
-    "static/js/main.35f463f5.js"
+    "static/js/main.47b1c9b2.js"
   ]
 }
