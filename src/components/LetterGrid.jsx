@@ -1956,6 +1956,10 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			for (let segment in currentPerm) {
 				eval(segment).current.style.strokeDashoffset = 101;
 			}
+		} else {
+			for (let segment in currentPerm) {
+				eval(segment).current.style.strokeDashoffset = 0;
+			}
 		}
 
 		
@@ -2013,7 +2017,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 
 	return (
-		<svg className={ "LetterGrid LetterGrid--" + reference } ref={ svg } xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 189.179 400.5" preserveAspectRatio='none'>
+		<svg className={ "LetterGrid LetterGrid--" + reference } ref={ svg } xmlns="http://www.w3.org/2000/svg" viewBox="0.6 0.5 189.1 400.5" preserveAspectRatio='none'>
 			<path 
 				className="oSeArc" 
 				ref={ oSeArc } 

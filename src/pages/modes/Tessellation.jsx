@@ -6,22 +6,46 @@
 	// Importing defs
 	import { $$, $$all, randomlyChoose } from '../../defs.js';
 
+	// Importing constants
+	import { TRANSITION_DURATION } from '../../constants.js';
+
 	// Importing GSAP
 	import { gsap } from 'gsap';
 	
 	// Importing components
 	import LetterGrid from '../../components/LetterGrid';
+	import Radio from '../../components/Radio';
 
 
 
 export default function Tessellation() {
 	const location = useLocation();
 
+	// Radio functionality
+	// Density radio
+	const [radioDensity, setRadioDensity] = useState("medium"); // Default value
+	const densityOptions = [ // Options
+		{ name: "low", label: "Low" },
+		{ name: "medium", label: "Medium" },
+		{ name: "high", label: "High" }
+	];
+	const handleDensityChange = (name) => {
+		setRadioDensity(name);
+	}
+
+
+
+
+
 	// The number of rows and columns is dependent on the viewport size
 	const [items, setItems] = useState([]);
 
-	// Column width
-	const columnWidth = 60;
+	// CONTROLLERS
+	let controllerDensity = {
+		low: 140,
+		medium: 100,
+		high: 60
+	};
 
 	// Movement consts
 	const totalDur = 12;
@@ -32,13 +56,13 @@ export default function Tessellation() {
 
 
 	function getGridColumns() {
-		const gridItemWidth = columnWidth;
+		const gridItemWidth = controllerDensity[radioDensity];
 		const newColumns = Math.floor(window.innerWidth / gridItemWidth);
 		return newColumns;
 	}
 
 	function getGridRows() {
-		const gridItemHeight = columnWidth * 2;
+		const gridItemHeight = controllerDensity[radioDensity] * 2;
 		const newRows = Math.ceil(window.innerHeight / gridItemHeight) + 1;
 		return newRows;
 	}
@@ -57,7 +81,7 @@ export default function Tessellation() {
 			for (let j = 0; j < columns; j++) {
 				newItemsRow.push(
 					<div className='letter-cont' key={ (i + 1) + "-" + (j + 1) }>
-						<LetterGrid reference={ "--" + (i + 1) + "-" + (j + 1) } mode="tessellation" />
+						<LetterGrid reference={ "--" + (i + 1) + "-" + (j + 1) } mode="tessellation" startDisplayed={ false } />
 					</div>
 				)
 			}
@@ -85,45 +109,6 @@ export default function Tessellation() {
 			movementEngine(rows);
 		}, 1000);
 	}
-
-	// Debounce function
-	function debounce(func, timeout = 2000) {
-		let timer;
-		return (...args) => {
-			clearTimeout(timer);
-			timer = setTimeout(() => { 
-				func.apply(this, args); 
-			}, timeout);
-		};
-	}
-	
-	// Resize event listener
-	const handleResize = debounce(() => {
-		// Killing all GSAP
-		$$all(".LetterGrid").forEach(element => {
-			element.dispatchEvent(
-				new CustomEvent("letterChangeStop")
-			)
-		});
-
-		// Killing the GSAP for the movement
-		gsap.killTweensOf('.letters-cont');
-		$$(".letters-cont").style.transform = "translateY(0%)";
-		$$all(".letters-row").forEach(element => {
-			element.style.transform = "translateY(" + 0 + "%)";
-		});
-
-		// Clearing the movement interval (from the movementEngine)
-		clearInterval(movementInterval);
-
-		// Resetting the items
-		setItems([]);
-
-		// Remaking the grid
-		setTimeout(() => {
-			updateGrid();
-		}, 1);
-	}, 300);
 
 
 
@@ -171,56 +156,88 @@ export default function Tessellation() {
 	}
 
 
+
+	// Debounce function
+	function debounce(func, timeout = 2000) {
+		let timer;
+		return (...args) => {
+			clearTimeout(timer);
+			timer = setTimeout(() => { 
+				func.apply(this, args); 
+			}, timeout);
+		};
+	}
+	
+	// Resize event listener
+	const handleResize = debounce(() => {
+		// Killing all GSAP
+		$$all(".LetterGrid").forEach(element => {
+			element.dispatchEvent(
+				new CustomEvent("letterChangeStop")
+			)
+		});
+
+		// Killing the GSAP for the movement
+		gsap.killTweensOf('.letters-cont');
+		$$(".letters-cont").style.transform = "translateY(0%)";
+		$$all(".letters-row").forEach(element => {
+			element.style.transform = "translateY(" + 0 + "%)";
+		});
+
+		// Clearing the movement interval (from the movementEngine)
+		clearInterval(movementInterval);
+
+		// Resetting the items
+		setItems([]);
+
+		// Remaking the grid
+		setTimeout(() => {
+			updateGrid();
+		}, 1);
+	}, 300);
+
 	// Add window resize event listener on component mount
 	useEffect(() => {
-		updateGrid();
+		// updateGrid();
 		window.addEventListener("resize", handleResize);
 	
 		// Cleanup event listener on component unmount
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
+
+
+
+	function InitTessellation() {
+		gsap.to(".options-cont", {
+			opacity: 0,
+			duration: TRANSITION_DURATION,
+			onComplete: () => {
+				$$(".options-cont").style.display = "none";
+				updateGrid();
+			}
+		});
+	}
 	
-	  // Simulate adding items dynamically
 
-
-
-	useEffect(() => {
-		
-
-		// Setting up the interval
-		// let interval = setInterval(tessellationEngine, dur * 1000);
-		
-
-		// Adding the movement animation
-		// gsap.to('.letters-cont', {
-		// 	x: '-=100%',
-		// 	duration: moveDur,
-		// 	ease: 'none',
-		// 	repeat: -1
-		// });
-
-		// Cleanup
-		return () => {
-			// clearInterval(interval);
-
-			// // Removing the event listeners
-			// for (let i = 0; i < currentPerm.length; i++) {
-			// 	window.removeEventListener(("letterChangeletter" + (i + 1)), wordSnakeEngine);
-			// }
-			// letterElements.forEach(element => {
-			// 	element.removeEventListener("letterChange", tessellationEngine);
-			// });
-		};
-	}, [location]);
-
-	// ! PROBLEMS:
-	// - The letters and duplicate letters will be different because they are both left to random chance independently
-	// - The letters are not in sync with the movement of the letters
 
 	return (
 		<div className='Tessellation mode-page'>
 			<div className='mode-cont Tessellation__mode-cont'>
+				{/* The grid of letters */}
 				{ items }
+				
+				<div className='options-cont d-flex flex-v ai-c gap--sm'>
+					<h1>Tessellation options</h1>
+					<h2>Density</h2>
+					<Radio
+						options={ densityOptions }
+						selectedValue={ radioDensity }
+						onChange={ handleDensityChange }
+					/>
+					<>You have selected: { radioDensity }</>
+					
+					<button onClick={InitTessellation}>Tessellate!</button>
+				</div>
 			</div>
 		</div>
 	);
