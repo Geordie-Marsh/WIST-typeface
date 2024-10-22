@@ -3,7 +3,7 @@
 	import React from 'react';
 
 	// Importing the Routes and Route components
-	import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+	import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
 
 	// Importing styles
 	import './styles/main.scss';
@@ -38,8 +38,8 @@ function AnimatedRoutes() {
 export default function App() {
 
 	return (
-		<BrowserRouter>
+		<HashRouter>
 			<AnimatedRoutes />
-		</BrowserRouter>
+		</HashRouter>
 	);
 }
