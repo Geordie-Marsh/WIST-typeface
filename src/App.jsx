@@ -11,8 +11,8 @@
 	// Importing pages
 	import Base from './pages/Base';
 	import Home from './pages/Home';
-	import Test from './pages/Test';
 	// Importing mode pages
+	import IndividualLetter from './pages/modes/IndividualLetter';
 	import Sentencer from './pages/modes/Sentencer';
 	import WordSnake from './pages/modes/WordSnake';
 	import Tessellation from './pages/modes/Tessellation';
@@ -26,7 +26,7 @@ function AnimatedRoutes() {
 		<Routes key={ location.pathname } location={ location }>
 			<Route path='/' element={ <Base /> }>
 				<Route index element={<Home />} />
-				<Route path='test' element={<Test />} />
+				<Route path='individual-letter' element={<IndividualLetter />} />
 				<Route path='sentencer' element={<Sentencer />} />
 				<Route path='word-snake' element={<WordSnake />} />
 				<Route path='tessellation' element={<Tessellation />} />

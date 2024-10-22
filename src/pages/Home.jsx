@@ -17,9 +17,9 @@ export default function Home() {
 					<h2>By Geordie Marsh</h2>
 				</div>
 				<div className='pages-cont d-flex flex-v jc-btwn gap--sm'>
-					<Link to="/test"><p>&gt; Test</p></Link>
+					<Link to="/individual-letter"><p>Individual letter</p></Link>
 					<Link to="/tessellation"><p>Tessellation</p></Link>
-					<Link to="/word-snake?word=esfox"><p>Word snake</p></Link>
+					<Link to="/word-snake"><p>Word snake</p></Link>
 				</div>
 				<div className='about-cont d-flex flex-h jc-start gap--sm'>
 					<Link to="/what"><p>What?</p></Link>
