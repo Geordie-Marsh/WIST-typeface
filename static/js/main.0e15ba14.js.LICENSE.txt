@@ -82,3 +82,5 @@
  */
 
 //!Could add more variables
+
+//!Double letters don't work, they mess up something
