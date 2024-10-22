@@ -1,0 +1,12 @@
+.Input {
+	// margin-bottom: 1 * $unit;
+
+	input {
+		text-align: center;
+		transition: color 0.2s;
+		
+		&.invalid {
+			color: $red;
+		}
+	}
+}

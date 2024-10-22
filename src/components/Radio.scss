@@ -6,15 +6,15 @@
 		cursor: pointer;
 		transition: outline 0.2s;
 		outline: 2px solid transparent;
-
+		
 		&.selected {
-			// background-color: $white-secondary;
 			outline: 2px solid $white-secondary;
+		}
 
-			p {
-
-				// color: #fff;
-			}
+		&:hover,
+		&:focus,
+		&:hover.selected {
+			outline: 2px solid $black;
 		}
 	}
 }

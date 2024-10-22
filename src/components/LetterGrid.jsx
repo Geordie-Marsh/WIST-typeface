@@ -63,6 +63,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 		// Tracking
 		let reset = false;
 		let programIndex = 0;
+		let currentlyChanging = false;
 
 
 		// This is an array of all the segments
@@ -132,7 +133,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			oSeH: startDisplayed,
 			oSeArc: startDisplayed,
 		};
-		console.log(currentPerm)
 
 		// The cycle of colours to go through
 		// const colourCycle = [
@@ -414,7 +414,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 
 			// The switch statement will calculate the new permutation based on the letter
-			// . ! ? , ' " : ; - + = ( ) [ ] { } < > / \ | @ # $ % ^ & * ~ ` _ =  +diacritics
+			// +diacritics
 			switch (letter) {
 				case "a":
 				case "A":
@@ -1315,6 +1315,434 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 					);
 
 					break;
+				case "!":
+					//. ! is fixed - no calculations needed
+
+					newPerm.push(
+						"oNV",
+						"iNV",
+						"oSV"
+					);
+
+					break;
+				case "?":
+					//. ? has 1 variable: the top-left corner
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNeArc",
+						"iNeArc",
+						"oSV"
+					);
+
+					// VARIABLE SEGMENTS
+						// TOP-LEFT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Nw", ["Horizontal", "Round"]));
+
+					break;
+				case ".":
+					// . is fixed - no calculations needed
+
+					newPerm.push(
+						"oSV"
+					);
+
+					break;
+				case ",":
+					// , is fixed - no calculations needed
+
+					newPerm.push(
+						"oSwH",
+						"oSV"
+					);
+
+					break;
+				case "'":
+				case "’":
+				case "`":
+				case "‘":
+					// ' is fixed - no calculations needed
+
+					newPerm.push(
+						"oNV"
+					);
+
+					break;
+				case '"':
+				case "“":
+				case "”":
+					// " is fixed - no calculations needed
+
+					newPerm.push(
+						"oNV",
+						"oNeV"
+					);
+
+					break;
+				case ":":
+					// : is fixed - no calculations needed
+
+					newPerm.push(
+						"iNV",
+						"oSV"
+					);
+
+					break;
+				case ";":
+					// ; is fixed - no calculations needed
+
+					newPerm.push(
+						"iNV",
+						"oSV",
+						"oSwH"
+					);
+
+					break;
+				case "-":
+				case "–":
+				case "—":
+					// - is fixed - no calculations needed
+
+					newPerm.push(
+						"iWH",
+						"iEH"
+					);
+
+					break;
+				case "_":
+					// _ is fixed - no calculations needed
+					
+					newPerm.push(
+						"oSwH",
+						"oSeH"
+					);
+
+					break;
+				case "+":
+					// + is fixed - no calculations needed
+
+					newPerm.push(
+						"iNV",
+						"iSV",
+						"iWH",
+						"iEH"
+					);
+
+					break;
+				case "=":
+					// = is fixed - no calculations needed
+
+					newPerm.push(
+						"iWH",
+						"iEH",
+						"oSwH",
+						"oSeH"
+					);
+
+					break;
+				case "/":
+					// / is fixed - no calculations needed
+
+					newPerm.push(
+						"NeDiag",
+						"SwDiag"
+					);
+
+					break;
+				case "\\":
+					// \ is fixed - no calculations needed
+
+					newPerm.push(
+						"NwDiag",
+						"SeDiag"
+					);
+
+					break;
+				case "|":
+					// | is fixed - no calculations needed
+
+					newPerm.push(
+						"iNV",
+						"iSV"
+					);
+
+					break;
+				case "(":
+					// ( is fixed - no calculations needed
+
+					newPerm.push(
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwArc"
+					);
+
+					break;
+				case ")":
+					// ) is fixed - no calculations needed
+
+					newPerm.push(
+						"oNeArc",
+						"iNeV",
+						"iSeV",
+						"oSeArc"
+					);
+
+					break;
+				case "[":
+					// [ is fixed - no calculations needed
+
+					newPerm.push(
+						"oNwH",
+						"oNwV",
+						"iNwV",
+						"iSwV",
+						"oSwV",
+						"oSwH"
+					);
+
+					break;
+				case "]":
+					// ] is fixed - no calculations needed
+
+					newPerm.push(
+						"oNeH",
+						"oNeV",
+						"iNeV",
+						"iSeV",
+						"oSeV",
+						"oSeH"
+					);
+
+					break;
+				case "{":
+					// { is fixed - no calculations needed
+
+					// newPerm.push(
+					// 	"oNwH",
+					// 	"NwDiag",
+					// 	"iWH",
+					// 	"SwDiag",
+					// 	"oSwH"
+					// );
+					newPerm.push(
+						"oNwArc",
+						"iNwArc",
+						"iWH",
+						"iSwArc",
+						"oSwArc"
+					);
+
+					break;
+				case "}":
+					// } is fixed - no calculations needed
+
+					// newPerm.push(
+					// 	"oNeH",
+					// 	"NeDiag",
+					// 	"iEH",
+					// 	"SeDiag",
+					// 	"oSeH"
+					// );
+					newPerm.push(
+						"oNeArc",
+						"iNeArc",
+						"iEH",
+						"iSeArc",
+						"oSeArc"
+					);
+
+					break;
+				case "<":
+					// < is fixed - no calculations needed
+
+					newPerm.push(
+						"NeDiag",
+						"SeDiag"
+					);
+
+					break;
+				case ">":
+					// > is fixed - no calculations needed
+
+					newPerm.push(
+						"NwDiag",
+						"SwDiag"
+					);
+
+					break;
+				case "$":
+					// $ has 2 variables: the top-right and bottom-left corners
+
+					// Adding the constant segments
+					newPerm.push(
+						"oNwArc",
+						"iNwArc",
+						"iSeArc",
+						"oSeArc",
+						"oNV",
+						"iNV",
+						"iSV",
+						"oSV"
+					);
+
+					// VARIABLE SEGMENTS
+						// TOP-RIGHT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Ne", ["Horizontal", "Round"]));
+						// BOTTOM-LEFT CORNER is variable: Horizontal or Round
+						newPerm.push(...chooseStatePresets(prevPerm, "corner", "Sw", ["Horizontal", "Round"]));
+
+					break;
+				case "£":
+					// £ is fixed - no calculations needed
+
+					newPerm.push(
+						"oNeArc",
+						"oNwArc",
+						"iNwArc",
+						"iWH",
+						"iEH",
+						"iSwArc",
+						"oSwV",
+						"oSwH",
+						"oSeH"
+					);
+
+					break;
+				case "€":
+					// € is fixed - no calculations needed
+
+					newPerm.push(
+						"oNeArc",
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwArc",
+						"oSeArc",
+						"iWH",
+						"iSwArc"
+					);
+
+					break;
+				case "¥":
+					// ¥ is fixed - no calculations needed
+
+					newPerm.push(
+						"NwDiag",
+						"NeDiag",
+						"iWH",
+						"iEH",
+						"iSV",
+						"oSV"
+					);
+
+					break;
+				case "¢":
+					// ¢ is fixed - no calculations needed
+
+					// Adding the constant segments
+					newPerm.push(
+						"iEH",
+						"iSwArc",
+						"oSwArc",
+						"oSeArc",
+						"oSV",
+						"iSV",
+						"iNV"
+					);
+
+					break;
+				case "&":
+					// & is fixed - no calculations needed
+
+					newPerm.push(
+						"oNeArc",
+						"oNwArc",
+						"iNwArc",
+						"iSwArc",
+						"oSwArc",
+						"oSeArc",
+						"SeDiag"
+					);
+
+					break;
+				case "*":
+					//. * is fixed - no calculations needed
+
+					newPerm.push(
+						"iNwArc",
+						"iNeArc",
+						"iSwArc",
+						"iSeArc",
+						"iNV",
+						"iSV"
+					);
+
+					break;
+				case "#":
+					// # is fixed - no calculations needed
+
+					newPerm.push(
+						"oNV",
+						"iNV",
+						"iSV",
+						"oSV",
+						"oNeV",
+						"iNeV",
+						"iSeV",
+						"oSeV",
+						"iWH",
+						"iEH",
+						"oSwH",
+						"oSeH"
+					);
+
+					break;
+				case "~":
+					// ~ is fixed - no calculations needed
+
+					newPerm.push(
+						"iSwArc",
+						"iNeArc"
+					);
+
+					break;
+				case "%":
+					// % is fixed - no calculations needed
+
+					newPerm.push(
+						"SwDiag",
+						"NeDiag",
+						"oNwArc",
+						"oSeArc"
+					);
+
+					break;
+				case "@":
+					// @ is fixed - no calculations needed
+
+					newPerm.push(
+						"iNV",
+						"iSV",
+						"iNeArc",
+						"oNeArc",
+						"oNwArc",
+						"iNwV",
+						"iSwV",
+						"oSwArc",
+						"oSeArc"
+					);
+
+					break;
+				case "^":
+					// ^ is fixed - no calculations needed
+
+					newPerm.push(
+						"oNwArc",
+						"oNeArc"
+					);
+
+					break;
 				default:
 					// (For now) the default option is to clear the grid
 
@@ -1339,17 +1767,25 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 		// This is the function to change to a new letter (or number, punctuation, etc.)
 		function changeToLetter(letter) {
-			// If the element no longer exists, then return
-			if (!svg.current) {
+			// If the element no longer exists or the letter is already changing, then return
+			if (!svg.current || currentlyChanging) {
 				return;
 			}
+
+			// Updating the tracker
+			currentlyChanging = true;
 
 			// Store the existing permutation of the grid
 			let existingPerm = Object.assign({}, currentPerm);
 			let existingPermSegments = Object.keys(existingPerm).filter(key => existingPerm[key]);
 
 			// Getting the array of segments that should be visible for the new letter
-			let newPerm = letterMaker(letter, existingPerm);
+			let newPerm;
+			if (Array.isArray(letter)) {
+				newPerm = letter.flatMap(l => letterMaker(l, existingPerm));
+			} else {
+				newPerm = letterMaker(letter, existingPerm);
+			}
 			
 			// Getting the array of segments that are being added
 			let addedSegments = newPerm.filter(segment => !existingPermSegments.includes(segment));
@@ -1546,6 +1982,13 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 			// Play the timeline
 			letterChangeTl.play();
+
+			// When the animation is finished, update the tracker
+			letterChangeTl.add(() => {
+				currentlyChanging = false;
+			}, `>-=${dur * 0.4}`);
+
+
 			if (mode === "tessellation" && !reset) {
 				letterChangeTl.add(() => {
 					// If there's a program, then change to the next letter in the program
