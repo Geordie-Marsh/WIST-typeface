@@ -8,7 +8,7 @@
 
 
 // Defining some basic properties that to apply to all text (by default)
-	h1, h2, h3, h4, p, a {
+	* {
 		font-family: $font;
 		color: $black;
 		text-decoration: none;
@@ -40,12 +40,11 @@ h2 {
 
 p {
 	// Box model
-	// margin-top: 0;
-	// margin-bottom: 0;
+	margin-top: 0;
 
 	// Typography
 	font-weight: 300;
 	font-size: 1 * $unit;
 	line-height: 100%;
-	margin-bottom: -0.15 * $unit; // This is to make the baseline of the text align with the bottom
+	margin-bottom: -0.1 * $unit; // This is to make the baseline of the text align with the bottom
 }

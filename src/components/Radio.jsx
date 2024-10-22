@@ -6,14 +6,14 @@ export default function Radio({ options, selectedValue, onChange }) {
 	}
 
 	return (
-		<div className='Radio d-flex jc-btwn'>
+		<div className='Radio d-flex jc-btwn gap--xs'>
 			{ options.map(option => (
 				<div
 					key={option.name}
 					className={`Radio__option ${selectedValue === option.name ? 'selected' : ''}`}
 					onClick={() => handleOptionClick(option.name)}
 				>
-					{ option.label }
+					<p >{ option.label }</p>
 				</div>
 			)) }
 		</div>

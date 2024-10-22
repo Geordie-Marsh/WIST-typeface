@@ -25,13 +25,27 @@ export default function Tessellation() {
 	// Density radio
 	const [radioDensity, setRadioDensity] = useState("medium"); // Default value
 	const densityOptions = [ // Options
-		{ name: "low", label: "Low" },
-		{ name: "medium", label: "Medium" },
-		{ name: "high", label: "High" }
+		{ name: "low", label: "L" },
+		{ name: "medium", label: "M" },
+		{ name: "high", label: "H" }
 	];
 	const handleDensityChange = (name) => {
 		setRadioDensity(name);
-	}
+	};
+	// Colour radio
+	const [radioColour, setRadioColour] = useState("rainbow"); // Default value
+	const colourOptions = [ // Options
+		{ name: "black", label: "Black" },
+		{ name: "rainbow", label: "Rainbow" },
+		{ name: "morning", label: "Morning" },
+		{ name: "daylight", label: "Daylight" },
+		{ name: "sunset", label: "Sunset" },
+		{ name: "twilight", label: "Twilight" },
+	];
+	const handleColourChange = (name) => {
+		setRadioColour(name);
+	};
+
 
 
 
@@ -93,7 +107,13 @@ export default function Tessellation() {
 
 				newItemsRow.push(
 					<div className='letter-cont' key={ (i + 1) + "-" + (j + 1) }>
-						<LetterGrid reference={ "--" + (i + 1) + "-" + (j + 1) } mode="tessellation" startDisplayed={ false } program={ program } />
+						<LetterGrid 
+							reference={ "--" + (i + 1) + "-" + (j + 1) } 
+							mode="tessellation" 
+							startDisplayed={ false } 
+							program={ program } 
+							colour={ radioColour }
+						/>
 					</div>
 				)
 			}
@@ -212,8 +232,11 @@ export default function Tessellation() {
 		// updateGrid();
 		window.addEventListener("resize", handleResize);
 	
-		// Cleanup event listener on component unmount
-		return () => window.removeEventListener("resize", handleResize);
+		// Cleanup event listener and interval on component unmount
+		return () => {
+			window.removeEventListener("resize", handleResize);
+			clearInterval(movementInterval);
+		};
 	}, []);
 
 
@@ -237,15 +260,25 @@ export default function Tessellation() {
 				{/* The grid of letters */}
 				{ items }
 				
-				<div className='options-cont d-flex flex-v ai-c gap--sm'>
+				<div className='options-cont d-flex flex-v ai-c gap--md'>
 					<h1>Tessellation options</h1>
-					<h2>Density</h2>
-					<Radio
-						options={ densityOptions }
-						selectedValue={ radioDensity }
-						onChange={ handleDensityChange }
-					/>
-					<>You have selected: { radioDensity }</>
+
+					<div className='d-flex flex-v ai-c'>
+						<h2>Density</h2>
+						<Radio
+							options={ densityOptions }
+							selectedValue={ radioDensity }
+							onChange={ handleDensityChange }
+						/>
+					</div>
+					<div className='d-flex flex-v ai-c'>
+						<h2>Colour</h2>
+						<Radio
+							options={ colourOptions }
+							selectedValue={ radioColour }
+							onChange={ handleColourChange }
+						/>
+					</div>
 					
 					<button onClick={InitTessellation}>Tessellate!</button>
 				</div>

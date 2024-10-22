@@ -3,6 +3,23 @@ export const TRANSITION_DURATION = 0.5;
 
 
 
+// The list of colours
+export const COLOURS = {
+	red:    "#f52929",
+	orange: "#ff6b00",
+	yellow: "#fcb500",
+	green:  "#9ce500",
+	jade:   "#00b072",
+	aqua:   "#0abcf2",
+	blue:   "#1e6bff",
+	purple: "#743ee6",
+	pink:   "#ff458f",
+
+	black:  "#121212"
+};
+
+
+
 // A list of words related to the project
 export const WORDS = [
 	"word",

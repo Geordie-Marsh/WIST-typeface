@@ -5,11 +5,14 @@
 	// Importing defs
 	import { hide, show, randomlyChoose, containsExactSet, containsSet, removeValues, rgbToHex, $$ } from '../defs';
 
+	// Importing constants
+	import { COLOURS } from '../constants';
+
 	// Importing GSAP
 	import { gsap } from 'gsap';
 
 
-export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, program = null, ...props}) {
+export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, colour = "black", program = null, ...props}) {
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
@@ -54,7 +57,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 	// useEffect will run once the component has mounted
 	useEffect(() => {
 		// CONTROLLERS
-		let controllerColour = true;
 		let controllerDur = 0.8;
 		let controllerStartDisplayed = startDisplayed;
 
@@ -133,18 +135,75 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 		console.log(currentPerm)
 
 		// The cycle of colours to go through
-		const COLOUR_CYCLE = [
-			"#f52929",
-			"#ff6b00",
-			"#fcb500",
-			"#9ce500",
-			"#00b072",
-			"#0abcf2",
-			"#1e6bff",
-			"#743ee6",
-			"#ff458f"
-		];
-		let colourIndex = COLOUR_CYCLE.length - 2; // The index of the colour to start on
+		// const colourCycle = [
+		// 	"#f52929",
+		// 	"#ff6b00",
+		// 	"#fcb500",
+		// 	"#9ce500",
+		// 	"#00b072",
+		// 	"#0abcf2",
+		// 	"#1e6bff",
+		// 	"#743ee6",
+		// 	"#ff458f"
+		// ];
+		let colourCycle = [];
+		switch (colour) {
+			case "rainbow":
+				colourCycle = [
+					COLOURS.red,
+					COLOURS.orange,
+					COLOURS.yellow,
+					COLOURS.green,
+					COLOURS.jade,
+					COLOURS.aqua,
+					COLOURS.blue,
+					COLOURS.purple,
+					COLOURS.pink
+				];
+				break;
+			case "morning":
+				colourCycle = [
+					COLOURS.red,
+					COLOURS.orange,
+					COLOURS.yellow,
+					COLOURS.green,
+					COLOURS.jade
+				];
+				break;
+			case "daylight":
+				colourCycle = [
+					COLOURS.yellow,
+					COLOURS.green,
+					COLOURS.jade,
+					COLOURS.aqua,
+					COLOURS.blue
+				];
+				break;
+			case "sunset":
+				colourCycle = [
+					COLOURS.red,
+					COLOURS.orange,
+					COLOURS.yellow,
+					COLOURS.pink,
+					COLOURS.purple
+				];
+				break;
+			case "twilight":
+				colourCycle = [
+					COLOURS.aqua,
+					COLOURS.blue,
+					COLOURS.purple,
+					COLOURS.pink,
+					COLOURS.red
+				];
+				break;
+			case "black":
+			default:
+				colourCycle = [COLOURS.black];
+				break;
+		};
+		
+		let colourIndex = colourCycle.length - 2; // The index of the colour to start on
 
 
 
@@ -1323,15 +1382,15 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			}
 
 			// Getting a list of colours that could be used
-			let availableColours = COLOUR_CYCLE.filter(colour => !visibleColours.includes(colour));
+			let availableColours = colourCycle.filter(colour => !visibleColours.includes(colour));
 
-			// Choosing a new colour
-			let newColour = randomlyChoose(...availableColours);
+			// Choosing a new colour (if availableColours is empty, then the colour will be randomly chosen from colourCycle)
+			let newColour = (availableColours.length > 0) ? randomlyChoose(...availableColours) : randomlyChoose(...colourCycle);
 
 			
 
 			// if (addedSegments.length > 0) {
-			// 	if (colourIndex === COLOUR_CYCLE.length - 1) {
+			// 	if (colourIndex === colourCycle.length - 1) {
 			// 		colourIndex = 0;
 			// 	} else {
 			// 		colourIndex++;
@@ -1451,9 +1510,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.2}`);
 
 					// Changing the colour of the segment
-					if (controllerColour) {
-						eval(segment).current.style.stroke = newColour;
-					}
+					eval(segment).current.style.stroke = newColour;
 				} else {
 					// If the group has multiple segments, string together the drawing of the segments
 					let segmentDuration = dur * 2 / group.length;
@@ -1475,10 +1532,8 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 						});
 
 						// Changing the colour of the segment
-						// eval(segment).current.style.stroke = COLOUR_CYCLE[colourIndex];
-						if (controllerColour) {
-							eval(segment).current.style.stroke = newColour;
-						}
+						// eval(segment).current.style.stroke = colourCycle[colourIndex];
+						eval(segment).current.style.stroke = newColour;
 					}
 
 					letterChangeTl.to(tl, {

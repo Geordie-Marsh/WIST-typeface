@@ -1,0 +1,15 @@
+.Radio {
+	.Radio__option {
+		padding: (0.7 * $unit) (1.1 * $unit);
+		border-radius: 3 * $unit;
+
+		&.selected {
+			background-color: #e0e0e0;
+
+			p {
+
+				// color: #fff;
+			}
+		}
+	}
+}

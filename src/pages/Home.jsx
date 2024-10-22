@@ -16,7 +16,7 @@ export default function Home() {
 					<h1>Cascadence</h1>
 					<h2>By Geordie Marsh</h2>
 				</div>
-				<div className='pages-cont d-flex flex-v jc-btwn gap--xs'>
+				<div className='pages-cont d-flex flex-v jc-btwn gap--sm'>
 					<Link to="/test"><p>&gt; Test</p></Link>
 					<Link to="/tessellation"><p>Tessellation</p></Link>
 					<Link to="/word-snake?word=esfox"><p>Word snake</p></Link>
