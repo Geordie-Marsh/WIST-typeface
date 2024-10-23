@@ -3,10 +3,19 @@
 
 	input {
 		text-align: center;
-		transition: color 0.2s;
+		transition: color 0.2s, border 0.2s;
+		padding: (0.6 * $unit) (1.1 * $unit);
+		border-radius: 3 * $unit;
+		box-sizing: border-box;
+		border: 2px solid $white-secondary;
 		
 		&.invalid {
 			color: $red;
+		}
+
+		&:focus {
+			outline: none;
+			border: 2px solid $black;
 		}
 	}
 }
