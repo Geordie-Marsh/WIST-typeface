@@ -6,11 +6,14 @@
 
 // Importing page stylesheets
 @import '../pages/Home';
+@import '../pages/ModeBase';
 // Importing mode page stylesheets
 @import '../pages/modes/IndividualLetter';
 @import '../pages/modes/Sentencer';
 @import '../pages/modes/WordSnake';
 @import '../pages/modes/Tessellation';
+@import '../pages/modes/Departures';
+@import '../pages/modes/DeparturesLogic';
 
 // Importing component stylesheets
 @import '../components/Radio';
@@ -41,16 +44,6 @@ body {
 		stroke-dasharray: 101;
 		stroke-dashoffset: 101;
 	}
-}
-
-.mode-page {
-	position: relative;
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 32px;
 }
 
 .mode-cont {

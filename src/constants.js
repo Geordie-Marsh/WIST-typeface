@@ -15,7 +15,8 @@ export const COLOURS = {
 	purple: "#743ee6",
 	pink:   "#ff458f",
 
-	black:  "#121212"
+	black:  "#1e1e1e",
+	white:  "#eeeeee"
 };
 
 

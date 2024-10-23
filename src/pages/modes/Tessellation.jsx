@@ -263,33 +263,31 @@ export default function Tessellation() {
 
 
 	return (
-		<div className='Tessellation mode-page'>
-			<div className='mode-cont Tessellation__mode-cont'>
-				{/* The grid of letters */}
-				{ items }
-				
-				<div className='options-cont d-flex flex-v ai-c gap--md'>
-					<h1>Tessellation options</h1>
+		<div className='Tessellation mode-cont'>
+			{/* The grid of letters */}
+			{ items }
+			
+			<div className='options-cont d-flex flex-v ai-c gap--md'>
+				<h1>Tessellation options</h1>
 
-					<div className='d-flex flex-v ai-c'>
-						<h2>Density</h2>
-						<Radio
-							options={ densityOptions }
-							selectedValue={ radioDensity }
-							onChange={ handleDensityChange }
-						/>
-					</div>
-					<div className='d-flex flex-v ai-c'>
-						<h2>Colour</h2>
-						<Radio
-							options={ colourOptions }
-							selectedValue={ radioColour }
-							onChange={ handleColourChange }
-						/>
-					</div>
-					
-					<Button onClick={InitTessellation}>Tessellate!</Button>
+				<div className='d-flex flex-v ai-c gap--sm'>
+					<h2>Density</h2>
+					<Radio
+						options={ densityOptions }
+						selectedValue={ radioDensity }
+						onChange={ handleDensityChange }
+					/>
 				</div>
+				<div className='d-flex flex-v ai-c gap--sm'>
+					<h2>Colour</h2>
+					<Radio
+						options={ colourOptions }
+						selectedValue={ radioColour }
+						onChange={ handleColourChange }
+					/>
+				</div>
+				
+				<Button onClick={InitTessellation}>Tessellate!</Button>
 			</div>
 		</div>
 	);

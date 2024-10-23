@@ -202,56 +202,52 @@ export default function WordSnake(WordSnake) {
 		}, dur * 1000 * 1.9);
 	}
 
-	//!Double letters don't work, they mess up something
-
 
 
 	return (
-		<div className='WordSnake mode-page'>
-			<div className='mode-cont'>
-				<div className='letters-cont'>
-					{ letters }
+		<div className='WordSnake mode-cont'>
+			<div className='letters-cont'>
+				{ letters }
+			</div>
+			<div className='duplicate-letters-cont'>
+				{ letters }
+			</div>
+			
+			<div className='options-cont d-flex flex-v ai-c gap--md'>
+				<h1>Word snake options</h1>
+
+				<div className='d-flex flex-v ai-c gap--sm'>
+					<h2>Word</h2>
+					<Input 
+						placeholder="Enter a word..."
+						value={ inputWord }
+						onChange={ handleWordChange }
+						minLength={ 4 }
+						maxLength={ 8 }
+					/>
+					{
+						// If the word is too long or too short, show an error message
+						((inputWord.length < 4 || inputWord.length > 8) && !validWord) ? <p className='wordInputError'>(Word must be between 4-8 characters long)</p> : ''
+					}
 				</div>
-				<div className='duplicate-letters-cont'>
-					{ letters }
+				<div className='d-flex flex-v ai-c gap--sm'>
+					<h2>Colour</h2>
+					<Radio
+						options={ colourOptions }
+						selectedValue={ radioColour }
+						onChange={ handleColourChange }
+					/>
+				</div>
+				<div className='d-flex flex-v ai-c gap--sm'>
+					<h2>Gap between letters</h2>
+					<Radio
+						options={ gapOptions }
+						selectedValue={ radioGap }
+						onChange={ handleGapChange }
+					/>
 				</div>
 				
-				<div className='options-cont d-flex flex-v ai-c gap--md'>
-					<h1>Word snake options</h1>
-
-					<div className='d-flex flex-v ai-c'>
-						<h2>Word</h2>
-						<Input 
-							placeholder="Enter a word..."
-							value={ inputWord }
-							onChange={ handleWordChange }
-							minLength={ 4 }
-							maxLength={ 8 }
-						/>
-						{
-							// If the word is too long or too short, show an error message
-							((inputWord.length < 4 || inputWord.length > 8) && !validWord) ? <p className='wordInputError'>(Word must be between 4-8 characters long)</p> : ''
-						}
-					</div>
-					<div className='d-flex flex-v ai-c'>
-						<h2>Colour</h2>
-						<Radio
-							options={ colourOptions }
-							selectedValue={ radioColour }
-							onChange={ handleColourChange }
-						/>
-					</div>
-					<div className='d-flex flex-v ai-c'>
-						<h2>Gap between letters</h2>
-						<Radio
-							options={ gapOptions }
-							selectedValue={ radioGap }
-							onChange={ handleGapChange }
-						/>
-					</div>
-					
-					<Button onClick={InitWordSnake}>Start word snake</Button>
-				</div>
+				<Button onClick={InitWordSnake}>Start word snake</Button>
 			</div>
 		</div>
 	);

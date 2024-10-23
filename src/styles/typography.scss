@@ -1,10 +1,16 @@
 // Importing the fonts
-	// The font: Poppins
-	@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+	// // The font: Poppins
+	// @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+	// // The font: Inter
+	// @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+	// The font: Montserrat
+	@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 
 // Defining the font variables
-	$font: "Poppins", sans-serif;
+	// $font: "Poppins", sans-serif;
+	// $font: "Inter", sans-serif;
+	$font: "Montserrat", sans-serif;
 
 
 // Defining some basic properties that to apply to all text (by default)
@@ -22,29 +28,29 @@ h1 {
 	margin-bottom: $unit;
 
 	// Typography
-	font-weight: 500;
+	font-weight: 550;
 	font-size: 2 * $unit;
 	line-height: 100%;
 }
 
 h2 {
 	// Box model
-	margin-top: 0;
-	// margin-bottom: 0;
+	margin-top: 0.15 * $unit;
+	margin-bottom: 0.1 * $unit;
 
 	// Typography
-	font-weight: 500;
+	font-weight: 550;
 	font-size: 1 * $unit;
 	line-height: 100%;
 }
 
 p {
 	// Box model
-	margin-top: 0;
+	margin-top: 0.15 * $unit;
+	margin-bottom: 0.1 * $unit;
 
 	// Typography
-	font-weight: 300;
+	font-weight: 350;
 	font-size: 1 * $unit;
 	line-height: 100%;
-	margin-bottom: -0.1 * $unit; // This is to make the baseline of the text align with the bottom
 }

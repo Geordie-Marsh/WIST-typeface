@@ -1,35 +1,29 @@
 .Tessellation {
-	position: relative;
-	
-	.Tessellation__mode-cont {
-		align-items: start;
+	align-items: start;
 
-		.letters-cont {
-			position: absolute;
+	.letters-cont {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		width: 100%;
+
+		.letters-row {
 			display: flex;
-			flex-direction: column;
-			align-items: start;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
 			width: 100%;
-	
-			.letters-row {
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-				justify-content: center;
+			
+			.letter-cont {
+				// padding: 0 2.5rem;
 				width: 100%;
-				
-				.letter-cont {
-					// padding: 0 2.5rem;
+	
+				.LetterGrid {
 					width: 100%;
-		
-					.LetterGrid {
-						width: 100%;
-						display: block;
-					}
+					display: block;
 				}
 			}
 		}
 	}
-
-
 }

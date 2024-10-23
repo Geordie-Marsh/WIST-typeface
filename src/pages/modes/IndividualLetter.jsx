@@ -10,7 +10,7 @@ import LetterGrid from '../../components/LetterGrid.jsx';
 
 export default function IndividualLetter() {
 	return (
-		<div className='IndividualLetter'>
+		<div className='IndividualLetter mode-cont'>
 			<LetterGrid />
 		</div>
 	);

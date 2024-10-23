@@ -2,9 +2,9 @@
 	width: 100vw;
 	height: 100vh;
 
-	.LetterGrid {
-		height: 80vh;
-		// transform: scaleX(1.1);
-	
+	.pages-cont {
+		.link {
+			margin-left: 1.5 * $unit;
+		}
 	}
 }

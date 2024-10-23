@@ -12,7 +12,7 @@
 	import { gsap } from 'gsap';
 
 
-export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, colour = "black", program = null, ...props}) {
+export default function LetterGrid({reference = null, mode = "singleLetter", startDisplayed = false, colour = "black", program = null, initialLetter = null, ...props}) {
 	// Guide to the naming system for the segments:
 		// First letter 'o' or 'i' is short for 'outer' or 'inner' - the top- and bottom-most eights are 'outer' and the other four are 'inner'
 		// Then the direction is specified, e.g., Nw for North-West
@@ -196,6 +196,9 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 					COLOURS.pink,
 					COLOURS.red
 				];
+				break;
+			case "white":
+				colourCycle = [COLOURS.white];
 				break;
 			case "black":
 			default:
@@ -1795,9 +1798,14 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			let removedSegments = existingPermSegments.filter(segment => !newPerm.includes(segment));
 			let groupedRemovedSegments = groupSegments(removedSegments);
 
+			// If the new permutation is the same as the existing permutation, then return
+			if (addedSegments.length === 0 && removedSegments.length === 0) {
+				currentlyChanging = false;
+				return;
+			}
+
 			// Getting the array of segments that are being kept
 			let keptSegments = existingPermSegments.filter(segment => !removedSegments.includes(segment));
-
 
 			// Changing the added colour
 			// Getting a list of the colours currently visible
@@ -1822,16 +1830,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 			// Choosing a new colour (if availableColours is empty, then the colour will be randomly chosen from colourCycle)
 			let newColour = (availableColours.length > 0) ? randomlyChoose(...availableColours) : randomlyChoose(...colourCycle);
-
-			
-
-			// if (addedSegments.length > 0) {
-			// 	if (colourIndex === colourCycle.length - 1) {
-			// 		colourIndex = 0;
-			// 	} else {
-			// 		colourIndex++;
-			// 	}	
-			// }
 
 			// The hierarchy of the segments; this dictates the order in which the segments are drawn
 			const segmentsHierarchy = [
@@ -1871,7 +1869,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			groupedAddedSegments.sort((a, b) => segmentsHierarchy.indexOf(a[0]) - segmentsHierarchy.indexOf(b[0]));
 			groupedRemovedSegments.sort((a, b) => segmentsHierarchy.indexOf(a[0]) - segmentsHierarchy.indexOf(b[0]));
 
-			
 			// Updating the permutation to reflect the new letter and showing/hiding segments as necessary
 			let letterChangeTl = gsap.timeline({ paused: true });
 			
@@ -1943,7 +1940,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 						duration: dur,
 						strokeDashoffset: 0,
 						ease: ease,
-					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.2}`);
+					}, `<${dur * 0.2}`);
 
 					// Changing the colour of the segment
 					eval(segment).current.style.stroke = newColour;
@@ -1968,7 +1965,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 						});
 
 						// Changing the colour of the segment
-						// eval(segment).current.style.stroke = colourCycle[colourIndex];
 						eval(segment).current.style.stroke = newColour;
 					}
 
@@ -1976,7 +1972,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 						time: tl.duration(),
 						duration: tl.duration(),
 						ease: ease,
-					}, /* `>${dur * -1.3}` */ /* "<" */ `<${dur * 0.2}`);
+					}, `<${dur * 0.2}`);
 				}
 			}
 
@@ -1987,7 +1983,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			letterChangeTl.add(() => {
 				currentlyChanging = false;
 			}, `>-=${dur * 0.4}`);
-
 
 			if (mode === "tessellation" && !reset) {
 				letterChangeTl.add(() => {
@@ -2000,9 +1995,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 							programIndex++;
 						}
 					}
-					console.log(program, programIndex, program[programIndex]);
 					changeToLetter(program[programIndex]);
-					// changeToLetter(randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'));
 				}, `>-=${dur * 0.2}`);
 			}
 			if (reset) {
@@ -2461,16 +2454,32 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 
 
-		// If the letter is to be blank at the start (i.e., not fully displayed), hide all the segments
-		if (!controllerStartDisplayed) {
-			for (let segment in currentPerm) {
-				eval(segment).current.style.strokeDashoffset = 101;
-			}
-		} else {
-			for (let segment in currentPerm) {
-				eval(segment).current.style.strokeDashoffset = 0;
+		// If there's a letter to start with, change to that letter
+		if (initialLetter) {
+			changeToLetter(initialLetter);
+
+			if (initialLetter === " ") {
+				controllerStartDisplayed = false;
+				currentlyChanging = false;
 			}
 		}
+
+
+		// If the letter is to be blank at the start (i.e., not fully displayed) and there isn't an initial letter, hide all the segments
+		if (!initialLetter) {
+			if (!controllerStartDisplayed) {
+				for (let segment in currentPerm) {
+					eval(segment).current.style.strokeDashoffset = 101;
+				}
+			} else {
+				for (let segment in currentPerm) {
+					eval(segment).current.style.strokeDashoffset = 0;
+				}
+			}
+		}
+
+
+
 
 		
 
@@ -2490,7 +2499,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 				window.removeEventListener("keypress", handleKeyPress);
 			};
 		}
-		if (mode === "wordSnake") {
+		if (mode === "wordSnake" || mode === "set") {
 			// Add a listener for a letter change from a custom event
 			const handleLetterChange = (e) => {
 				let letter = e.detail;
