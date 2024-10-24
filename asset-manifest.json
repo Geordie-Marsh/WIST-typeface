@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/WIST-typeface/static/css/main.f387f3fe.css",
-    "main.js": "/WIST-typeface/static/js/main.132a9f26.js",
+    "main.css": "/WIST-typeface/static/css/main.858e45d2.css",
+    "main.js": "/WIST-typeface/static/js/main.ec8d247f.js",
     "static/js/453.2b945ed6.chunk.js": "/WIST-typeface/static/js/453.2b945ed6.chunk.js",
     "static/media/mockup-departures.mp4": "/WIST-typeface/static/media/mockup-departures.8b0bb7f64b19206746a2.mp4",
     "static/media/airline-qantas.png": "/WIST-typeface/static/media/airline-qantas.a017abc7e2a16c4367b4.png",
     "index.html": "/WIST-typeface/index.html",
-    "main.f387f3fe.css.map": "/WIST-typeface/static/css/main.f387f3fe.css.map",
-    "main.132a9f26.js.map": "/WIST-typeface/static/js/main.132a9f26.js.map",
+    "main.858e45d2.css.map": "/WIST-typeface/static/css/main.858e45d2.css.map",
+    "main.ec8d247f.js.map": "/WIST-typeface/static/js/main.ec8d247f.js.map",
     "453.2b945ed6.chunk.js.map": "/WIST-typeface/static/js/453.2b945ed6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f387f3fe.css",
-    "static/js/main.132a9f26.js"
+    "static/css/main.858e45d2.css",
+    "static/js/main.ec8d247f.js"
   ]
 }
