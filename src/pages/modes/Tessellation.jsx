@@ -1,7 +1,7 @@
 // Imports
 	// Importing components
 	import { React, useEffect, useRef, useState } from 'react';
-	import { useLocation } from "react-router-dom";
+	import { useLocation, useNavigate } from "react-router-dom";
 
 	// Importing defs
 	import { $$, $$all, randomlyChoose } from '../../defs.js';
@@ -148,19 +148,7 @@ export default function Tessellation() {
 		}, 500);
 	}
 
-
-
-	// function tessellationEngine(letterElements) {
-	// 	// Updating the letters -- this is done by broadcasting a custom event for each letter
-	// 	letterElements.forEach(element => {
-	// 		element.querySelector(".LetterGrid").dispatchEvent(
-	// 			new CustomEvent("letterChange", {
-	// 				// For now, return a random letter
-	// 				detail: randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
-	// 			})
-	// 		);
-	// 	});
-	// }
+	
 
 	function movementEngine(rowCount) {
 		const repeatNo = 100;
@@ -259,6 +247,7 @@ export default function Tessellation() {
 			}
 		});
 	}
+
 	
 
 

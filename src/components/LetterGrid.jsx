@@ -1771,7 +1771,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 		// This is the function to change to a new letter (or number, punctuation, etc.)
 		function changeToLetter(letter) {
 			// If the element no longer exists or the letter is already changing, then return
-			if (!svg.current || currentlyChanging) {
+			if (!svg.current || (currentlyChanging && mode !== "tessellation")) {
 				return;
 			}
 
@@ -1983,6 +1983,8 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 			letterChangeTl.add(() => {
 				currentlyChanging = false;
 			}, `>-=${dur * 0.4}`);
+
+			console.log(mode === "tessellation" && !reset && programIndex === program.length - 1);
 
 			if (mode === "tessellation" && !reset) {
 				letterChangeTl.add(() => {

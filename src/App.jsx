@@ -17,7 +17,6 @@
 	import Sentencer from './pages/modes/Sentencer';
 	import WordSnake from './pages/modes/WordSnake';
 	import Tessellation from './pages/modes/Tessellation';
-	import Mockups from './pages/modes/Mockups';
 	import Departures from './pages/modes/Departures';
 	import DeparturesLogic from './pages/modes/DeparturesLogic';
 	
@@ -37,7 +36,7 @@ function AnimatedRoutes() {
 					<Route path='tessellation'       element={ <ModeBase><Tessellation /></ModeBase> } />
 				</Route>
 				<Route path='mock-up'>
-					<Route path='departures-board'         element={ <ModeBase><Departures /></ModeBase> } />
+					<Route path='departures-board'   element={ <ModeBase><Departures /></ModeBase> } />
 				</Route>
 				<Route path='departures-logic' element={<DeparturesLogic />} />
 			</Route>
