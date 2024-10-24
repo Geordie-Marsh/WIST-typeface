@@ -14,7 +14,15 @@
 		background-color: $grey;
 
 		* {
-			color: #000;
+			color: #fff;
+		}
+	}
+
+	&:active {
+		background-color: $black;
+
+		* {
+			color: #fff;
 		}
 	}
 
