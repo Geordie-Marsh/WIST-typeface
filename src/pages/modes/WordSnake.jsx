@@ -86,6 +86,9 @@ export default function WordSnake(WordSnake) {
 	// The interval
 	let interval;
 
+	// Keeping track of whether the word snake has been initialised
+	let wordSnakeInitialised = false;
+
 
 
 	function wordSnakeEngine() {
@@ -119,16 +122,25 @@ export default function WordSnake(WordSnake) {
 	
 
 
+	function handlePopstate() {
+		if (wordSnakeInitialised) {
+			// Reloading the page
+			window.location.reload();
+		}
+	}
+
+
 
 	useEffect(() => {
+		// Adding the event lister for the popstate event
+		window.addEventListener("popstate", handlePopstate);
+
 		// Cleanup
 		return () => {
 			clearInterval(interval);
 
 			// Removing the event listeners
-			for (let i = 0; i < wordArray.length; i++) {
-				window.removeEventListener(("letterChangeletter" + (i)), wordSnakeEngine);
-			}
+			window.removeEventListener("popstate", handlePopstate);
 		};
 	}, []);
 
@@ -136,6 +148,12 @@ export default function WordSnake(WordSnake) {
 
 	// Init function
 	function InitWordSnake() {
+		// Setting the word snake initialised flag
+		wordSnakeInitialised = true;
+
+		// Pushing the history state
+		window.history.pushState({}, "", location.pathname);
+
 		if (inputWord.length < 4 || inputWord.length > 8) {
 			setValidWord(false);
 			return;

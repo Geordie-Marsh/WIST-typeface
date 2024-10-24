@@ -2525,7 +2525,9 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 
 			// Cleanup function to remove the event listener
 			return () => {
-				$$(`.LetterGrid--${reference}`).removeEventListener("letterChangeStop", handleLetterChangeStop);
+				if (svg.current) {
+					$$(`.LetterGrid--${reference}`).removeEventListener("letterChangeStop", handleLetterChangeStop);
+				}
 			};
 		}
 

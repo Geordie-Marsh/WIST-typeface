@@ -142,9 +142,6 @@ export default function Tessellation() {
 
 			// Running the movement engine
 			movementEngine(rows);
-
-			// Setting the tessellation initialised flag
-			tessellationInitialised = true;
 		}, 500);
 	}
 
@@ -223,14 +220,25 @@ export default function Tessellation() {
 		}
 	}, 300);
 
+	function handlePopstate() {
+		if (tessellationInitialised) {
+			// Reloading the page
+			window.location.reload();
+		}
+	}
+
 	// Add window resize event listener on component mount
 	useEffect(() => {
-		// updateGrid();
+		// Adding the event listener for the resize event
 		window.addEventListener("resize", handleResize);
+
+		// Adding the event lister for the popstate event
+		window.addEventListener("popstate", handlePopstate);
 	
 		// Cleanup event listener and interval on component unmount
 		return () => {
 			window.removeEventListener("resize", handleResize);
+			window.removeEventListener("popstate", handlePopstate);
 			clearInterval(movementInterval);
 		};
 	}, []);
@@ -238,6 +246,12 @@ export default function Tessellation() {
 
 
 	function InitTessellation() {
+		// Setting the tessellation initialised flag
+		tessellationInitialised = true;
+
+		// Pushing the history state
+		window.history.pushState({}, "", location.pathname);
+
 		gsap.to(".options-cont", {
 			opacity: 0,
 			duration: TRANSITION_DURATION,
