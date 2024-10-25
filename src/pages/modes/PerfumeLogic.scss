@@ -1,0 +1,29 @@
+$pUnit: 2rem;
+
+.PerfumeLogic {
+	
+
+	.ArianaGrande,
+	.Cloud,
+	.Colour {
+
+		margin: 3 * $pUnit;
+		
+
+		 * {
+			width: 2 * $pUnit;
+			margin: 0 0.5 * $pUnit;
+		 }
+	}
+
+	.Cloud, .Colour {
+		* {
+			width: 4 * $pUnit;
+			margin: 0 0.8 * $pUnit;
+
+			* {
+				stroke-width: 41;
+			}
+		}
+	}
+}

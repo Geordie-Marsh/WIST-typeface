@@ -21,7 +21,10 @@
 	import WordSnake from './pages/modes/WordSnake';
 	import Tessellation from './pages/modes/Tessellation';
 	import Departures from './pages/modes/Departures';
+	import Perfume from './pages/modes/Perfume';
+	import PerfumeTv from './pages/modes/PerfumeTv';
 	import DeparturesLogic from './pages/modes/DeparturesLogic';
+	import PerfumeLogic from './pages/modes/PerfumeLogic';
 	
 
 
@@ -72,8 +75,11 @@ function AnimatedRoutes() {
 					</Route>
 					<Route path='mock-up'>
 						<Route path='departures-board'   element={ <PageWrapper><ModeBase><Departures /></ModeBase> </PageWrapper>} />
+						<Route path='perfume-digital-ad'   element={ <PageWrapper><ModeBase><Perfume /></ModeBase> </PageWrapper>} />
+						<Route path='perfume-tv-ad'   element={ <PageWrapper><ModeBase><PerfumeTv /></ModeBase> </PageWrapper>} />
 					</Route>
 					<Route path='departures-logic' element={<DeparturesLogic />} />
+					<Route path='perfume-logic' element={<PerfumeLogic />} />
 				</Route>
 			</Routes>
 		</AnimatePresence>
