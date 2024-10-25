@@ -1,0 +1,33 @@
+.Temp {
+	width: 100vw;
+	height: 100vh;
+
+	.letters-cont {
+		// position: absolute;
+		display: grid;
+		// flex-direction: row;
+		align-items: start;
+		flex-wrap: wrap;
+		width: 100vw;
+		padding: 2rem;
+		// height: 100dvh;
+		
+		&.cover-page {
+			grid-template-columns: repeat(31, 1fr);
+		}
+
+		&.brief1 {
+			grid-template-columns: repeat(8, 1fr);
+		}
+
+		&.name {
+			grid-template-columns: repeat(10, 1fr);
+			// gap: 1.5%;
+		}
+
+			.LetterGrid {
+				width: 100%;
+				// display: block;
+			}
+	}
+}

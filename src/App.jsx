@@ -25,6 +25,7 @@
 	import PerfumeTv from './pages/modes/PerfumeTv';
 	import DeparturesLogic from './pages/modes/DeparturesLogic';
 	import PerfumeLogic from './pages/modes/PerfumeLogic';
+	import Temp from './pages/modes/Temp';
 	
 
 
@@ -80,6 +81,7 @@ function AnimatedRoutes() {
 					</Route>
 					<Route path='departures-logic' element={<DeparturesLogic />} />
 					<Route path='perfume-logic' element={<PerfumeLogic />} />
+					<Route path='temp' element={<Temp />} />
 				</Route>
 			</Routes>
 		</AnimatePresence>
