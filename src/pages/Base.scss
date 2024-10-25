@@ -1,0 +1,28 @@
+.Base {
+	transition: background 0.3s ease;
+
+	&.style--individual-letter {
+		background: #ffaaaa;
+	}
+
+	&.style--tessellation {
+		background: #dcffb5;
+	}
+
+	&.style--word-snake {
+		background: #fff599;
+	}
+
+
+	&.style--departures-board {
+		background: #d0c5c5;
+	}
+
+	&.style--perfume-digital-ad {
+		background: #ffc7ef;
+	}
+
+	&.style--perfume-tv-ad {
+		background: #ffd39d;
+	}
+}

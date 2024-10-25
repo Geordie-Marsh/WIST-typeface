@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 401 401">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #000;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <path id="CircleSe" class="cls-1" d="M400.5,200.5c0,110.457-89.543,200-200,200"/>
+  <path id="CircleSw" class="cls-1" d="M200.5,400.5C90.043,400.5.5,310.957.5,200.5"/>
+  <path id="CircleNe" class="cls-1" d="M200.5.5c110.457,0,200,89.543,200,200"/>
+  <path id="CircleNw" class="cls-1" d="M.5,200.5C.5,90.043,90.043.5,200.5.5"/>
+  <path id="ArcSeB" class="cls-1" d="M400.5,400.5c-110.457,0-200-89.543-200-200"/>
+  <path id="ArcSeT" class="cls-1" d="M200.5,200.5c110.457,0,200,89.543,200,200"/>
+  <path id="ArcSwB" class="cls-1" d="M200.5,200.5c0,110.457-89.543,200-200,200"/>
+  <path id="ArcSwT" class="cls-1" d="M.5,400.5c0-110.457,89.543-200,200-200"/>
+  <path id="ArcNeB" class="cls-1" d="M400.5.5c0,110.457-89.543,200-200,200"/>
+  <path id="ArcNeT" class="cls-1" d="M200.5,200.5C200.5,90.043,290.043.5,400.5.5"/>
+  <path id="ArcNwB" class="cls-1" d="M200.5,200.5C90.043,200.5.5,110.957.5.5"/>
+  <path id="ArcNwT" class="cls-1" d="M.5.5c110.457,0,200,89.543,200,200"/>
+  <line id="DiagSeW" class="cls-1" x1="400.5" y1="400.5" x2=".5" y2="200.5"/>
+  <line id="DiagSeN" class="cls-1" x1="400.5" y1="400.5" x2="200.5" y2=".5"/>
+  <line id="DiagSwE" class="cls-1" x1=".5" y1="400.5" x2="400.5" y2="200.5"/>
+  <line id="DiagSwN" class="cls-1" x1=".5" y1="400.5" x2="200.5" y2=".5"/>
+  <line id="DiagNeS" class="cls-1" x1="400.5" y1=".5" x2="200.5" y2="400.5"/>
+  <line id="DiagNeW" class="cls-1" x1="400.5" y1=".5" x2=".5" y2="200.5"/>
+  <line id="DiagNwS" class="cls-1" x1=".5" y1=".5" x2="200.5" y2="400.5"/>
+  <line id="DiagNwE" class="cls-1" x1=".5" y1=".5" x2="400.5" y2="200.5"/>
+  <polyline id="HorizontalB" class="cls-1" points=".5 300.5 100.5 300.5 200.5 300.5 300.5 300.5 400.5 300.5"/>
+  <polyline id="HorizontalC" class="cls-1" points=".5 200.5 100.5 200.5 200.5 200.5 300.5 200.5 400.5 200.5"/>
+  <polyline id="HorizontalT" class="cls-1" points=".5 100.5 100.5 100.5 200.5 100.5 300.5 100.5 400.5 100.5"/>
+  <polyline id="VerticalR" class="cls-1" points="300.5 .5 300.5 100.5 300.5 200.5 300.5 300.5 300.5 400.5"/>
+  <polyline id="VerticalC" class="cls-1" points="200.5 .5 200.5 100.5 200.5 200.5 200.5 300.5 200.5 400.5"/>
+  <polyline id="VerticalL" class="cls-1" points="100.5 .5 100.5 100.5 100.5 200.5 100.5 300.5 100.5 400.5"/>
+</svg>
