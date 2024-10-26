@@ -52,7 +52,9 @@ export default function IndividualLetter() {
 		gsap.to(".options-cont", {
 			opacity: 0,
 			duration: TRANSITION_DURATION,
-			onComplete: () => {				
+			onComplete: () => {
+				$$(".options-cont").style.display = "none";
+
 				initialised.current = true;
 
 				// Broadcasting that the settings are now active
