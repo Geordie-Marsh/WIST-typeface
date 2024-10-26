@@ -71,7 +71,7 @@ export default function ModeBase({ page, children }) {
 					
 				/>
 			</div>
-			<div className='ModeBase__actions d-flex flex-h jc-btwn gap--sm' onMouseLeave={ handleMouseLeave }>
+			<div className='ModeBase__actions d-flex flex-v jc-btwn gap--sm' onMouseLeave={ handleMouseLeave }>
 				<Link to="/"><Icons.House /></Link>
 				{((page === "tessellation" || page === "individual-letter" || page === "word-snake") && !settingsActive) && 
 					<div onClick={ handleSettingClick }><Icons.Settings /></div>
