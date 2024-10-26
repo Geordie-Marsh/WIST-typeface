@@ -67,7 +67,7 @@ export default function WordSnake(WordSnake) {
 
 
 	// The word
-	let word;
+	const word = useRef(null);
 
 	// Breaking the word into an array of characters
 	let wordArray;
@@ -84,14 +84,18 @@ export default function WordSnake(WordSnake) {
 	let moveDur;
 
 	// The interval
-	let interval;
+	const interval = useRef(null);
 
 	// Keeping track of whether the word snake has been initialised
-	let wordSnakeInitialised = false;
+	const wordSnakeInitialised = useRef(false);
+
+	// Setting up the movement animation
+	const tl = gsap.timeline({ repeat: -1, paused: true });
 
 
 
 	function wordSnakeEngine() {
+		
 		if (currentPerm.length === 0) {
 			currentPerm = wordArray;
 		} else {
@@ -101,6 +105,7 @@ export default function WordSnake(WordSnake) {
 
 		// Updating the letters -- this is done by broadcasting a custom event for each letter
 		for (let i = 0; i < currentPerm.length; i++) {
+			console.log("Word snake engine running, ", currentPerm[i]);
 			// document.getElementById(letters[i]).dispatchEvent(new CustomEvent(('letterChangeletter' + (i + 1)), { detail: currentPerm[i] }));
 			// console.log(".LetterGridletter" + (i + 1))
 			// console.log(currentPerm);
@@ -117,42 +122,13 @@ export default function WordSnake(WordSnake) {
 
 
 
-	// Setting up the movement animation
-	const tl = gsap.timeline({ repeat: -1, paused: true });
-	
-
-
-	function handlePopstate() {
-		if (wordSnakeInitialised) {
-			// Reloading the page
-			window.location.reload();
-		}
-	}
-
-
-
-	useEffect(() => {
-		// Adding the event lister for the popstate event
-		window.addEventListener("popstate", handlePopstate);
-
-		// Cleanup
-		return () => {
-			clearInterval(interval);
-
-			// Removing the event listeners
-			window.removeEventListener("popstate", handlePopstate);
-		};
-	}, []);
-
-
-
 	// Init function
 	function InitWordSnake() {
 		// Setting the word snake initialised flag
-		wordSnakeInitialised = true;
+		wordSnakeInitialised.current = true;
 
 		// Pushing the history state
-		window.history.pushState({}, "", location.pathname);
+		window.history.pushState({}, "", "#" + location.pathname);
 
 		if (inputWord.length < 4 || inputWord.length > 8) {
 			setValidWord(false);
@@ -168,15 +144,23 @@ export default function WordSnake(WordSnake) {
 			}
 		});
 
-		// Getting the word
-		word = inputWord;
-		wordArray = word.split('');
+		// Ensuring the letter conts are visible
+		$$(".letters-cont").style.opacity = 1;
+		$$(".duplicate-letters-cont").style.opacity = 1;
 
+		// Broadcasting that the settings are now active
+		window.dispatchEvent(new CustomEvent('settingsInactive'));
+		
+		// Getting the word
+		word.current = inputWord;
+		wordArray = word.current.split('');
+		
 		// Setting the move duration
 		moveDur = dur * wordArray.length;
-
+		
 		// Setting up the interval
-		interval = setInterval(wordSnakeEngine, dur * 1000);
+		interval.current = setInterval(wordSnakeEngine, dur * 1000);
+		console.log(word, wordArray, moveDur, interval.current);
 
 		// Creating the letter elements
 		for (let i = 0; i < wordArray.length; i++) {
@@ -219,6 +203,76 @@ export default function WordSnake(WordSnake) {
 			tl.play();
 		}, dur * 1000 * 1.9);
 	}
+
+	function initSettings() {
+		// Setting the word snake initialised flag
+		wordSnakeInitialised.current = false;
+
+		// Clearing the interval
+		clearInterval(interval.current);
+
+		// Broadcasting that the settings are now active
+		window.dispatchEvent(new CustomEvent('settingsActive'));
+
+		// Hiding the items
+		gsap.to(".letters-cont, .duplicate-letters-cont", {
+			opacity: 0,
+			duration: TRANSITION_DURATION
+		});
+
+		setTimeout(() => {
+			// Resetting the items
+			setLetters([]);
+
+			// Resetting the variables
+			word.current = null;
+			wordArray = null;
+			currentPerm = [];
+			letterElements = [];
+
+			// Resetting the timeline
+			tl.pause(0);
+			tl.clear();
+		}, TRANSITION_DURATION * 1000);
+
+		// Showing the options
+		$$(".options-cont").style.display = "flex";
+		gsap.to(".options-cont", {
+			opacity: 1,
+			delay: TRANSITION_DURATION * 1.5,
+			duration: TRANSITION_DURATION
+		});
+	}
+	
+
+
+	function handlePopstate() {
+		if (wordSnakeInitialised.current) {
+			// Reloading the page
+			window.location.reload();
+		}
+	}
+
+
+
+	useEffect(() => {
+		// Adding the event lister for the popstate event
+		window.addEventListener("popstate", handlePopstate);
+
+		// Adding the event listener for the settingsClicked event
+		window.addEventListener("settingsClicked--word-snake", initSettings);
+
+		// Cleanup
+		return () => {
+			clearInterval(interval.current);
+
+			// Removing the event listeners
+			window.removeEventListener("popstate", handlePopstate);
+
+			// Removing the event listener for the settingsClicked event
+			window.removeEventListener("settingsClicked--word-snake", initSettings);
+		};
+	}, []);
 
 
 

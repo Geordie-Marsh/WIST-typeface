@@ -69,15 +69,15 @@ function AnimatedRoutes() {
 				<Route path='/' element={ <Base /> }>
 					<Route index element={<PageWrapper><Home /></PageWrapper>} />
 					<Route path='playground'>
-						<Route path='individual-letter'  element={ <PageWrapper><ModeBase><IndividualLetter /></ModeBase> </PageWrapper>} />
-						<Route path='sentencer'          element={ <PageWrapper><ModeBase><Sentencer /></ModeBase> </PageWrapper>} />
-						<Route path='word-snake'         element={ <PageWrapper><ModeBase><WordSnake /></ModeBase> </PageWrapper>} />
-						<Route path='tessellation'       element={ <PageWrapper><ModeBase><Tessellation /></ModeBase> </PageWrapper>} />
+						<Route path='individual-letter'  element={ <PageWrapper><ModeBase page={"individual-letter"}><IndividualLetter /></ModeBase> </PageWrapper>} />
+						{/* <Route path='sentencer'          element={ <PageWrapper><ModeBase page={"sentencer"}><Sentencer /></ModeBase> </PageWrapper>} /> */}
+						<Route path='word-snake'         element={ <PageWrapper><ModeBase page={"word-snake"}><WordSnake /></ModeBase> </PageWrapper>} />
+						<Route path='tessellation'       element={ <PageWrapper><ModeBase page={"tessellation"}><Tessellation /></ModeBase> </PageWrapper>} />
 					</Route>
 					<Route path='mock-up'>
-						<Route path='departures-board'   element={ <PageWrapper><ModeBase><Departures /></ModeBase> </PageWrapper>} />
-						<Route path='perfume-digital-ad'   element={ <PageWrapper><ModeBase><Perfume /></ModeBase> </PageWrapper>} />
-						<Route path='perfume-tv-ad'   element={ <PageWrapper><ModeBase><PerfumeTv /></ModeBase> </PageWrapper>} />
+						<Route path='departures-board'   element={ <PageWrapper><ModeBase page={"depeartures-board"}><Departures /></ModeBase> </PageWrapper>} />
+						<Route path='perfume-digital-ad'   element={ <PageWrapper><ModeBase page={"perfume-digital-ad"}><Perfume /></ModeBase> </PageWrapper>} />
+						<Route path='perfume-tv-ad'   element={ <PageWrapper><ModeBase page={"perfume-tv-ad"}><PerfumeTv /></ModeBase> </PageWrapper>} />
 					</Route>
 					<Route path='departures-logic' element={<DeparturesLogic />} />
 					<Route path='perfume-logic' element={<PerfumeLogic />} />

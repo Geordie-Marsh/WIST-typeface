@@ -49,14 +49,11 @@ export default function Tessellation() {
 
 
 
-
-
-
 	// The number of rows and columns is dependent on the viewport size
 	const [items, setItems] = useState([]);
 
 	// CONTROLLERS
-	let controllerDensity = {
+	const controllerDensity = {
 		low: 140,
 		medium: 100,
 		high: 60
@@ -66,10 +63,10 @@ export default function Tessellation() {
 	const totalDur = 12;
 
 	// The movement interval
-	let movementInterval;
+	const movementInterval = useRef(null);
 
 	// Keeping track of whether the tessellation has been initialised
-	let tessellationInitialised = false;
+	const tessellationInitialised = useRef(false);
 
 
 
@@ -86,6 +83,12 @@ export default function Tessellation() {
 	}
 
 	function updateGrid() {
+		// Setting the tessellation initialised flag
+		tessellationInitialised.current = true;
+
+		// Broadcasting that the settings are now inactive
+		window.dispatchEvent(new CustomEvent('settingsInactive'));
+
 		// Directly calculate the number of columns and rows
 		const columns = getGridColumns();
 		const rows = getGridRows();
@@ -137,9 +140,6 @@ export default function Tessellation() {
 		setItems(itemsReturn);
 
 		setTimeout(() => {
-			// Running the tessellation engine
-			// tessellationEngine($$all('.letter-cont'));
-
 			// Running the movement engine
 			movementEngine(rows);
 		}, 500);
@@ -161,7 +161,7 @@ export default function Tessellation() {
 		});
 
 		// Moving the individual rows to the bottom when they've reached the top
-		movementInterval = setInterval(() => {
+		movementInterval.current = setInterval(() => {
 			if (movedRows % rowCount === 0 && movedRows > 0) {
 				if (timesOver === repeatNo) {
 					timesOver = 1;
@@ -176,6 +176,54 @@ export default function Tessellation() {
 			movedRows++;
  		}, totalDur / rowCount * 1000);
 	}
+
+
+
+
+	function initTessellation() {
+		// Pushing the history state
+		window.history.pushState({}, "", "#" + location.pathname);
+
+		gsap.to(".options-cont", {
+			opacity: 0,
+			duration: TRANSITION_DURATION,
+			onComplete: () => {
+				$$(".options-cont").style.display = "none";
+				updateGrid();
+			}
+		});
+	}
+
+	function initSettings() {
+		// Setting the tessellation initialised flag
+		tessellationInitialised.current = false;
+		
+		// Clearing the movement interval (from the movementEngine)
+		clearInterval(movementInterval.current);
+
+		// Hiding the items
+		gsap.to(".letters-cont", {
+			opacity: 0,
+			duration: TRANSITION_DURATION
+		});
+
+		setTimeout(() => {
+			// Resetting the items
+			setItems([]);
+		}, TRANSITION_DURATION * 1000);		
+
+		// Broadcasting that the settings are now active
+		window.dispatchEvent(new CustomEvent('settingsActive'));
+
+		// Showing the settings
+		$$(".options-cont").style.display = "flex";
+		gsap.to(".options-cont", {
+			opacity: 1,
+			delay: TRANSITION_DURATION * 1.5,
+			duration: TRANSITION_DURATION
+		});
+	}
+
 
 
 
@@ -201,66 +249,56 @@ export default function Tessellation() {
 
 		// Killing the GSAP for the movement
 		gsap.killTweensOf('.letters-cont');
-		if (tessellationInitialised) {
+		if (tessellationInitialised.current) {
+			console.log("Resizing");
 			$$(".letters-cont").style.transform = "translateY(0%)";
 			$$all(".letters-row").forEach(element => {
 				element.style.transform = "translateY(" + 0 + "%)";
 			});
 
 			// Clearing the movement interval (from the movementEngine)
-			clearInterval(movementInterval);
-	
+			clearInterval(movementInterval.current);
+			
 			// Resetting the items
 			setItems([]);
 	
 			// Remaking the grid
 			setTimeout(() => {
 				updateGrid();
-			}, 1);
+			}, 50);
 		}
 	}, 300);
 
 	function handlePopstate() {
-		if (tessellationInitialised) {
+		if (tessellationInitialised.current) {
 			// Reloading the page
 			window.location.reload();
 		}
 	}
 
-	// Add window resize event listener on component mount
+	// Adding event listeners
 	useEffect(() => {
 		// Adding the event listener for the resize event
 		window.addEventListener("resize", handleResize);
 
 		// Adding the event lister for the popstate event
 		window.addEventListener("popstate", handlePopstate);
+
+		// Adding the event listener for the settingsClicked event
+		window.addEventListener("settingsClicked--tessellation", initSettings);
 	
 		// Cleanup event listener and interval on component unmount
 		return () => {
 			window.removeEventListener("resize", handleResize);
 			window.removeEventListener("popstate", handlePopstate);
-			clearInterval(movementInterval);
+			window.removeEventListener("settingsClicked--tessellation", initSettings);
+			clearInterval(movementInterval.current);
 		};
 	}, []);
 
 
 
-	function InitTessellation() {
-		// Setting the tessellation initialised flag
-		tessellationInitialised = true;
-
-		// Pushing the history state
-		window.history.pushState({}, "", location.pathname);
-
-		gsap.to(".options-cont", {
-			opacity: 0,
-			duration: TRANSITION_DURATION,
-			onComplete: () => {
-				$$(".options-cont").style.display = "none";
-				updateGrid();
-			}
-		});
-	}
+	
 
 	
 
@@ -290,7 +328,7 @@ export default function Tessellation() {
 					/>
 				</div>
 				
-				<Button onClick={InitTessellation}>Tessellate!</Button>
+				<Button onClick={initTessellation}>Tessellate!</Button>
 			</div>
 		</div>
 	);

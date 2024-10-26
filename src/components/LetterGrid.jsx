@@ -1984,8 +1984,6 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 				currentlyChanging = false;
 			}, `>-=${dur * 0.4}`);
 
-			console.log(mode === "tessellation" && !reset && programIndex === program.length - 1);
-
 			if (mode === "tessellation" && !reset) {
 				letterChangeTl.add(() => {
 					// If there's a program, then change to the next letter in the program
