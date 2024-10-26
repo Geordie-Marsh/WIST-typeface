@@ -1,13 +1,39 @@
-.sentences {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+.Sentences {
+	position: relative;
 
-	.LetterGrid {
-		height: 80vh;
-		// transform: scaleX(1.1);
-		margin: 0 auto;
+	.letters-cont,
+	.duplicate-letters-cont {
+		position: absolute;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		width: 100%;
+
+		.letter-cont {
+			// padding: 0 1rem;
+			width: 100%;
+
+			&.pad--small {
+				padding: 0 2.5%;
+			}
+
+			&.pad--large {
+				padding: 0 5%;
+			}
+
+			.LetterGrid {
+				width: 100%;
+			}
+		}
+	}
+
+	.duplicate-letters-cont {
+		left: 100%;
+	}
+
+	.options-cont {
+		.numberInputError {
+			// margin-top: 1 * $unit;
+		}
 	}
 }

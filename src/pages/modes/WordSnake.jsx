@@ -18,7 +18,7 @@
 	import LetterGrid from '../../components/LetterGrid';
 	import Radio from '../../components/Radio';
 	import Button from '../../components/Button';
-	import Input from '../../components/Input';
+	import * as Input from '../../components/Input';
 
 
 
@@ -290,7 +290,7 @@ export default function WordSnake(WordSnake) {
 
 				<div className='d-flex flex-v ai-c gap--sm'>
 					<h2>Word</h2>
-					<Input 
+					<Input.Text 
 						placeholder="Enter a word..."
 						value={ inputWord }
 						onChange={ handleWordChange }
