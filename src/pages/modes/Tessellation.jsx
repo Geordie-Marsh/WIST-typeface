@@ -318,6 +318,10 @@ export default function Tessellation() {
 						selectedValue={ radioDensity }
 						onChange={ handleDensityChange }
 					/>
+					{
+						// If the high density is selected, show a warning
+						(radioDensity === "high") ? <p className='densityWarning'><i>(Warning:  high density may cause performance issues)</i></p> : ''
+					}
 				</div>
 				<div className='d-flex flex-v ai-c gap--sm'>
 					<h2>Colour</h2>
