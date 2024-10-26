@@ -128,6 +128,37 @@
 					stroke-dashoffset: 101;
 				}
 			}
+			&.style--sentences {
+				.CircleSe,
+				.CircleSw,
+				.CircleNe,
+				.CircleNw,
+				.ArcSeB,
+				.ArcSeT,
+				.ArcSwB,
+				.ArcSwT,
+				.ArcNeB,
+				.ArcNeT,
+				.ArcNwB,
+				.ArcNwT,
+				.DiagSwE,
+				.DiagSwN,
+				.DiagNwE,
+				.DiagNwS,
+				.DiagNeW,
+				.DiagNeS,
+				.DiagSeW,
+				.DiagSeN,
+				// .HorizontalB,
+				// .HorizontalC,
+				// .HorizontalT,
+				.VerticalL,
+				// .VerticalC,
+				.VerticalR 
+				{
+					stroke-dashoffset: 101;
+				}
+			}
 
 			&.style--departures-board {
 				.CircleSe,

@@ -4,9 +4,9 @@
 
 
 
-export default function Sentencer(Sentencer) {
+export default function sentences(sentences) {
 	return (
-		<div className='Sentencer'>
+		<div className='sentences'>
 			<LetterGrid />
 			<LetterGrid />
 			<LetterGrid />

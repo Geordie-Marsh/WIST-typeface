@@ -17,7 +17,7 @@
 	import ModeBase from './pages/ModeBase';
 	// Importing mode pages
 	import IndividualLetter from './pages/modes/IndividualLetter';
-	import Sentencer from './pages/modes/Sentencer';
+	import Sentences from './pages/modes/Sentences';
 	import WordSnake from './pages/modes/WordSnake';
 	import Tessellation from './pages/modes/Tessellation';
 	import Departures from './pages/modes/Departures';
@@ -70,7 +70,7 @@ function AnimatedRoutes() {
 					<Route index element={<PageWrapper><Home /></PageWrapper>} />
 					<Route path='playground'>
 						<Route path='individual-letter'  element={ <PageWrapper><ModeBase page={"individual-letter"}><IndividualLetter /></ModeBase> </PageWrapper>} />
-						{/* <Route path='sentencer'          element={ <PageWrapper><ModeBase page={"sentencer"}><Sentencer /></ModeBase> </PageWrapper>} /> */}
+						<Route path='sentences'          element={ <PageWrapper><ModeBase page={"sentences"}><Sentences /></ModeBase> </PageWrapper>} />
 						<Route path='word-snake'         element={ <PageWrapper><ModeBase page={"word-snake"}><WordSnake /></ModeBase> </PageWrapper>} />
 						<Route path='tessellation'       element={ <PageWrapper><ModeBase page={"tessellation"}><Tessellation /></ModeBase> </PageWrapper>} />
 					</Route>

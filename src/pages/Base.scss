@@ -2,7 +2,7 @@
 	transition: background 0.3s ease;
 
 	&.style--individual-letter {
-		background: #ffaaaa;
+		background: #f4b9b9;
 	}
 
 	&.style--tessellation {
@@ -10,7 +10,11 @@
 	}
 
 	&.style--word-snake {
-		background: #fff599;
+		background: #f0e9b0;
+	}
+
+	&.style--sentences {
+		background: #bfbcf1;
 	}
 
 

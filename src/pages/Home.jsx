@@ -57,6 +57,12 @@ export default function Home() {
 						onMouseEnter={ () => handleMouseEnter('word-snake') }
 						onMouseLeave={ handleMouseLeave }
 					><p>Word snake</p></Link>
+					<Link 
+						className='link' 
+						to="/playground/sentences"
+						onMouseEnter={ () => handleMouseEnter('sentences') }
+						onMouseLeave={ handleMouseLeave }
+					><p>Sentences</p></Link>
 
 					<h2>Mock-ups</h2>
 					<Link 
