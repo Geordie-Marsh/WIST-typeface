@@ -13,10 +13,11 @@
 	import * as Input from '../../components/Input';
 
 	// Importing defs
-	import { $$ } from '../../defs.js';
+	import { $$, max, min } from '../../defs.js';
 
 	// Importing constants
 	import { TRANSITION_DURATION } from '../../constants.js';
+import { div } from 'framer-motion/client';
 
 
 
@@ -24,7 +25,7 @@ export default function Sentences() {
 	const location = useLocation();
 
 	// Input functionality
-	const [inputNumber, setInputNumber] = useState(7); // Default value
+	const [inputNumber, setInputNumber] = useState(9); // Default value
 	const handleNumberChange = (newValue) => {
 		setInputNumber(newValue);
 	};
@@ -33,7 +34,11 @@ export default function Sentences() {
 	const handleNumberValidity = (newValue) => {
 		setValidNumber(newValue);
 	};
-	const [inputSentence, setInputSentence] = useState(7); // Default value
+	// The min and max values for the number input
+	const minNumber = 7;
+	const maxNumber = 11;
+
+	const [inputSentence, setInputSentence] = useState("7"); // Default value
 	const handleSentenceChange = (newValue) => {
 		setInputSentence(newValue);
 	};
@@ -61,14 +66,49 @@ export default function Sentences() {
 	// The items
 	const [items, setItems] = useState(null);
 
+	// The sentence
+	const sentence = useRef("");
+
+	// The sentence as an array
+	let sentenceArray = [];
+
+	// The program
+	const program = useRef([]);
+
+	// The index of the current instance
+	const instanceIndex = useRef(0);
+	// The index of the current letter
+	const letterIndex = useRef(0);
+	// The flag for a pause
+	const pause = useRef(false);
+
+	// The interval
+	const interval = useRef(null);
+
+	// The number of displayed letters
+	const noOfDisplayedLetters = useRef(7);
+
+	// The duration of an entire instance (in seconds)
+	const instanceDuration = 2;
+
+	// The variable to store the letter elements
+	let letterElements = [];
+
+	// The initialised flag
 	const initialised = useRef(false);
+
+
+
+	function sentencesEngine() {
+
+	}
 
 
 
 	// Function to initialise the mode
 	function init() {
 		// Checking if the number is valid
-		if (inputNumber < 5 || inputNumber > 9) {
+		if (inputNumber < minNumber || inputNumber > maxNumber) {
 			setValidNumber(false);
 			return;
 		}
@@ -77,6 +117,9 @@ export default function Sentences() {
 			setValidSentence(false);
 			return;
 		}
+
+		// Setting the initialised flag
+		initialised.current = true;
 
 		// Pushing the history state
 		window.history.pushState({}, "", "#" + location.pathname);
@@ -87,33 +130,161 @@ export default function Sentences() {
 			onComplete: () => {
 				$$(".options-cont").style.display = "none";
 
-				initialised.current = true;
-
-				// Broadcasting that the settings are now active
-				window.dispatchEvent(new CustomEvent('settingsInactive'));
-
-				setItems(
-					<div className='letter'>
-						<LetterGrid colour={ radioColour } allowedToStart={ initialised.current } />
-					</div>
-				);
+				$$(".letters-cont").style.display = "flex";
 			}
 		});
-	}
+
+		// Ensuring the letter cont is visible
+		$$(".letters-cont").style.opacity = 1;
+
+		// Broadcasting that the settings are now inactive
+		window.dispatchEvent(new CustomEvent('settingsInactive'));
+
+
+		// Getting the sentence
+		sentence.current = inputSentence;
+		
+		// Getting the number of displayed letters
+		noOfDisplayedLetters.current = inputNumber;
+
+		// Setting up the sentence array
+		sentenceArray = sentence.current.split('');
+
+
+
+		// Creating the letter elements
+		for (let i = 0; i < noOfDisplayedLetters.current; i++) {
+			// Creating the letter elements
+			letterElements.push(
+				<div className="letter-cont" key={ i }>
+					<LetterGrid 
+						reference={ "letter" + i }
+						key={ i }
+						mode='sentences'
+						colour={ radioColour }
+					/>
+				</div>
+			)
+		}
+
+		// Splitting the sentence into words
+		let words = sentence.current.split(" ");
+		// Converting the words into arrays of letters
+		words = words.map(word => word.split(""));
+
+		// Making each instance and adding it to the program
+		while (words.length > 0) {
+			let instance = [];
+
+			// Getting the length of this word
+			let wordLength = words[0].length;
+
+			// Storing which words to remove from the wordlist
+			let wordsToRemove = [];
+
+			// Check if this word can fit wholely into the instance
+			if (wordLength <= noOfDisplayedLetters.current) {
+				// Adding the word to the instance
+				words[0].forEach(letter => {
+					instance.push(letter);
+				});
+				wordsToRemove.push(0);
+
+				// Seeing if any following words will also fit into the instance
+				for (let i = 1; i < words.length; i++) {
+					const word = words[i];
+					
+					const potentialNewLength = instance.length + 1 + word.length;
+
+					if (potentialNewLength <= noOfDisplayedLetters.current) {
+						instance.push(" ");
+						word.forEach(letter => {
+							instance.push(letter);
+						});
+						wordsToRemove.push(i);
+					} else {
+						break;
+					}
+				}
+
+				// Adding in trailing spaces
+				while (instance.length < noOfDisplayedLetters.current) {
+					instance.push(" ");
+				}
+			} else {
+				// If the word is longer than the number of letters in each instance, remove the first x number of letters from the word
+				let word = words[0];
+				let instanceLetters = word.slice(0, noOfDisplayedLetters.current);
+				instance.push(...instanceLetters);
+				words[0] = word.slice(noOfDisplayedLetters.current);
+			}
+
+			// Removing the words that have been added to the instance
+			words = words.filter((word, index) => !wordsToRemove.includes(index));
+
+			// Adding the instance to the program
+			program.current.push(instance);
+		}
+
+		// Setting the items
+		setItems(letterElements);
+
+		// Setting up the interval
+		interval.current = setInterval(() => {
+			// Checking if the pause flag is set
+			if (pause.current) {
+				pause.current = false;
+				return;
+			}
+
+			// Getting the current instance
+			let instance = program.current[instanceIndex.current];
+
+			// Setting the letter
+			// Broadcast the letter to the LetterGrid component
+			window.dispatchEvent(
+				new CustomEvent(('letterChangeletter' + letterIndex.current), {
+					detail: instance[letterIndex.current]
+				})
+			);
+
+			// Incrementing the letter index
+			letterIndex.current++;
+
+			// Resetting the letter index if it goes over the number of letters in the instance
+			if (letterIndex.current >= noOfDisplayedLetters.current) {
+				letterIndex.current = 0;
+
+				// Incrementing the instance index
+				instanceIndex.current++;
+
+				// Pausing the interval for one round
+				pause.current = true;
+			}
+			// Resetting the instance index if it goes over the number of instances
+			if (instanceIndex.current >= program.current.length) {
+				instanceIndex.current = 0;
+			}
+		}, instanceDuration * 1000 / noOfDisplayedLetters.current);
+	}	
 
 	function initSettings() {
-		// Setting the word snake initialised flag
+		// Setting the initialised flag
 		initialised.current = false;
 
 		// Broadcasting that the settings are now active
 		window.dispatchEvent(new CustomEvent('settingsActive'));
 
 		// Hiding the items
-		gsap.to(".letter", {
+		gsap.to(".letters-cont", {
 			opacity: 0,
 			duration: TRANSITION_DURATION,
 			onComplete: () => {
+				$$(".letters-cont").style.display = "none";
 				setItems(null);
+
+				// Clearing the interval
+				clearInterval(interval.current);
 			}
 		});
 
@@ -159,7 +330,9 @@ export default function Sentences() {
 
 	return (
 		<div className='Sentences mode-cont'>
-			{ items }
+			<div className='letters-cont'>
+				{ items }
+			</div>
 
 			<div className='options-cont d-flex flex-v ai-c gap--md'>
 				<h1>Sentences options</h1>
@@ -170,19 +343,19 @@ export default function Sentences() {
 						placeholder="7"
 						value={ inputNumber }
 						onChange={ handleNumberChange }
-						min={ 5 }
-						max={ 9 }
+						min={ minNumber }
+						max={ maxNumber }
 					/>
 					{
 						// If the number is too long or too short, show an error message
-						((inputNumber < 5 || inputNumber > 9) && !validNumber) ? <p className='numberInputError'>(Number must be between 5 and 9)</p> : ''
+						((inputNumber < minNumber || inputNumber > maxNumber) && !validNumber) ? <p className='numberInputError'>(Number must be between {minNumber} and {maxNumber})</p> : ''
 					}
 				</div>
 				
 				<div className='d-flex flex-v ai-c gap--sm'>
 					<h2>Sentence to print</h2>
 					<Input.TextArea 
-						placeholder="7"
+						placeholder="Type a sentence..."
 						value={ inputSentence }
 						onChange={ handleSentenceChange }
 						minLength={ 18 }

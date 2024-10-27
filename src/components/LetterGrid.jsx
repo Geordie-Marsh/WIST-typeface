@@ -2499,7 +2499,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 				window.removeEventListener("keypress", handleKeyPress);
 			};
 		}
-		if (mode === "wordSnake" || mode === "set") {
+		if (mode === "wordSnake" || mode === "set" || mode === "sentences") {
 			// Add a listener for a letter change from a custom event
 			const handleLetterChange = (e) => {
 				let letter = e.detail;

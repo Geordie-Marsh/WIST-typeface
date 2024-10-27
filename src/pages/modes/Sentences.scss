@@ -1,13 +1,14 @@
 .Sentences {
 	position: relative;
 
-	.letters-cont,
-	.duplicate-letters-cont {
+	.letters-cont {
 		position: absolute;
-		display: flex;
+		// display: flex;
 		flex-direction: row;
 		align-items: center;
 		width: 100%;
+		padding: 3rem;
+		display: none;
 
 		.letter-cont {
 			// padding: 0 1rem;

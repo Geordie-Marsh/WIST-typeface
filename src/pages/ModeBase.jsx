@@ -76,7 +76,7 @@ export default function ModeBase({ page, children }) {
 					<div onClick={ handleHistoryClick }><Icons.History /></div>
 				}
 				<Link to="/"><Icons.House /></Link>
-				{((page === "tessellation" || page === "individual-letter" || page === "word-snake") && !settingsActive) && 
+				{((page === "tessellation" || page === "individual-letter" || page === "word-snake" || page === "sentences") && !settingsActive) && 
 					<div onClick={ handleSettingClick }><Icons.Settings /></div>
 				}
 			</div>

@@ -124,16 +124,16 @@ export default function WordSnake(WordSnake) {
 
 	// Init function
 	function InitWordSnake() {
+		if (inputWord.length < 4 || inputWord.length > 8) {
+			setValidWord(false);
+			return;
+		}
+		
 		// Setting the word snake initialised flag
 		wordSnakeInitialised.current = true;
 
 		// Pushing the history state
 		window.history.pushState({}, "", "#" + location.pathname);
-
-		if (inputWord.length < 4 || inputWord.length > 8) {
-			setValidWord(false);
-			return;
-		}
 
 		// Hiding the options
 		gsap.to(".options-cont", {
@@ -148,7 +148,7 @@ export default function WordSnake(WordSnake) {
 		$$(".letters-cont").style.opacity = 1;
 		$$(".duplicate-letters-cont").style.opacity = 1;
 
-		// Broadcasting that the settings are now active
+		// Broadcasting that the settings are now inactive
 		window.dispatchEvent(new CustomEvent('settingsInactive'));
 		
 		// Getting the word
