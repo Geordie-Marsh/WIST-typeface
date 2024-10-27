@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/WIST-typeface/static/css/main.a1d4bb5d.css",
-    "main.js": "/WIST-typeface/static/js/main.b47da448.js",
+    "main.css": "/WIST-typeface/static/css/main.e2b72558.css",
+    "main.js": "/WIST-typeface/static/js/main.06516145.js",
     "static/js/453.2b945ed6.chunk.js": "/WIST-typeface/static/js/453.2b945ed6.chunk.js",
     "static/media/mockup-perfume-tv-ad.mp4": "/WIST-typeface/static/media/mockup-perfume-tv-ad.d0c6a6b501200b60ae34.mp4",
     "static/media/mockup-perfume-ad.mp4": "/WIST-typeface/static/media/mockup-perfume-ad.7345b9fb1dc85e999161.mp4",
     "static/media/mockup-departures.mp4": "/WIST-typeface/static/media/mockup-departures.8b0bb7f64b19206746a2.mp4",
     "static/media/airline-qantas.png": "/WIST-typeface/static/media/airline-qantas.a017abc7e2a16c4367b4.png",
     "index.html": "/WIST-typeface/index.html",
-    "main.a1d4bb5d.css.map": "/WIST-typeface/static/css/main.a1d4bb5d.css.map",
-    "main.b47da448.js.map": "/WIST-typeface/static/js/main.b47da448.js.map",
+    "main.e2b72558.css.map": "/WIST-typeface/static/css/main.e2b72558.css.map",
+    "main.06516145.js.map": "/WIST-typeface/static/js/main.06516145.js.map",
     "453.2b945ed6.chunk.js.map": "/WIST-typeface/static/js/453.2b945ed6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a1d4bb5d.css",
-    "static/js/main.b47da448.js"
+    "static/css/main.e2b72558.css",
+    "static/js/main.06516145.js"
   ]
 }
