@@ -67,8 +67,10 @@ body {
 
 .options-cont {
 	margin: auto;
+	max-height: 100%;
+	overflow-y: auto;
 
-	.Button {
+	.Button.Major {
 		margin-top: 01 * $unit;
 	}
 }

@@ -15,26 +15,16 @@
 			width: 100%;
 
 			&.pad--small {
-				padding: 0 2.5%;
+				padding: 0 1.5%;
 			}
 
 			&.pad--large {
-				padding: 0 5%;
+				padding: 0 3%;
 			}
 
 			.LetterGrid {
 				width: 100%;
 			}
-		}
-	}
-
-	.duplicate-letters-cont {
-		left: 100%;
-	}
-
-	.options-cont {
-		.numberInputError {
-			// margin-top: 1 * $unit;
 		}
 	}
 }

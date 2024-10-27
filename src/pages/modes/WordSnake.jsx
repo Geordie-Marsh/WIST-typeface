@@ -17,7 +17,7 @@
 	// Importing components
 	import LetterGrid from '../../components/LetterGrid';
 	import Radio from '../../components/Radio';
-	import Button from '../../components/Button';
+	import * as Button from '../../components/Button';
 	import * as Input from '../../components/Input';
 
 
@@ -163,16 +163,15 @@ export default function WordSnake(WordSnake) {
 		console.log(word, wordArray, moveDur, interval.current);
 
 		// Creating the letter elements
-		for (let i = 0; i < wordArray.length; i++) {
-			let paddingClass = (radioGap === "small") ? "pad--small" : (radioGap === "large") ? "pad--large" : "";
+		let paddingClass = (radioGap === "small") ? "pad--small" : (radioGap === "large") ? "pad--large" : "";
 
+		for (let i = 0; i < wordArray.length; i++) {
 			letterElements.push(
 				<div className={"letter-cont " + paddingClass} key={ i }>
 					<LetterGrid 
 						reference={ "letter" + i } 
 						mode="wordSnake" 
 						colour={ radioColour }
-						style={{ padding: radioGap === "small" ? "0 2rem" : radioGap === "large" ? "0 4rem" : "0" }}
 					/>
 				</div>
 			);
@@ -319,7 +318,7 @@ export default function WordSnake(WordSnake) {
 					/>
 				</div>
 				
-				<Button onClick={InitWordSnake}>Start word snake</Button>
+				<Button.Major onClick={InitWordSnake}>Start word snake</Button.Major>
 			</div>
 		</div>
 	);

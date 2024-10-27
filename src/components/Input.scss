@@ -22,4 +22,26 @@
 	input[type="number"] {
 		min-width: 5rem;
 	}
+
+	textarea {
+		display: block;
+		width: 20rem;
+		height: 35px + 4px;
+		padding: (0.6 * $unit) (1.1 * $unit);
+		border-radius: 1.5 * $unit;
+		box-sizing: border-box;
+		border: 2px solid $white-secondary;
+		transition: color 0.2s, border 0.2s;
+		resize: none;
+		overflow: hidden;
+
+		&.invalid {
+			color: $red;
+		}
+
+		&:focus {
+			outline: none;
+			border: 2px solid $black;
+		}
+	}
 }

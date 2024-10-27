@@ -1,7 +1,15 @@
-export default function Button({ children, onClick }) {
+export function Major({ children, onClick }) {
 	return (
-		<button className='Button' onClick={onClick}>
+		<button className='Button Major' onClick={onClick}>
 			<h2>{ children }</h2>
+		</button>
+	);
+}
+
+export function Minor ({ children, onClick }) {
+	return (
+		<button className='Button Minor' onClick={onClick}>
+			<p>{ children }</p>
 		</button>
 	);
 }

@@ -15,7 +15,7 @@
 	// Importing components
 	import LetterGrid from '../../components/LetterGrid';
 	import Radio from '../../components/Radio';
-	import Button from '../../components/Button';
+	import * as Button from '../../components/Button';
 
 
 
@@ -332,7 +332,7 @@ export default function Tessellation() {
 					/>
 				</div>
 				
-				<Button onClick={initTessellation}>Tessellate!</Button>
+				<Button.Major onClick={initTessellation}>Tessellate!</Button.Major>
 			</div>
 		</div>
 	);

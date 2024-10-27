@@ -9,7 +9,7 @@
 	// Importing components
 	import LetterGrid from '../../components/LetterGrid.jsx';
 	import Radio from '../../components/Radio.jsx';
-	import Button from '../../components/Button.jsx';
+	import * as Button from '../../components/Button.jsx';
 	import * as Input from '../../components/Input';
 
 	// Importing defs
@@ -38,7 +38,7 @@ export default function Sentences() {
 	const minNumber = 7;
 	const maxNumber = 11;
 
-	const [inputSentence, setInputSentence] = useState("7"); // Default value
+	const [inputSentence, setInputSentence] = useState(""); // Default value
 	const handleSentenceChange = (newValue) => {
 		setInputSentence(newValue);
 	};
@@ -47,6 +47,20 @@ export default function Sentences() {
 	const handleSentenceValidity = (newValue) => {
 		setValidSentence(newValue);
 	};
+	// The min and max values for the sentence input
+	const minSentence = 12;
+	const maxSentence = 200;
+	// The preset sentences
+	const presetSentences = [
+		"Letters are to words. And words are to sentences. And sentences are to ideas. And ideas are to being human.",
+		"I see a little silhouetto of a man, Scaramouche, Scaramouche, will you do the Fandango? Thunderbolt and lightning, very, very frightening me. (Galileo)",
+		"There's a starman waiting in the sky. He'd like to come and meet us but he thinks he'd blow our minds.",
+		"If you liked it then you shoulda put a ring on it. Don't be mad once you see that he want it.",
+		"Don't go wasting your emotion. Lay all your love on me. Don't go sharing your devotion. Lay all your love on me.",
+		"I'm that bad type, make your mama sad type, make your girlfriend mad tight, might seduce your dad type, I'm the bad guy... duh!",
+		"I'm a Barbie girl, in the Barbie world. Life in plastic, it's fantastic. You can brush my hair, undress me everywhere. Imagination, life is your creation!"
+	];
+	const [currentPreset, setCurrentPreset] = useState(0);
 
 	// Radio functionality
 	// Colour radio
@@ -62,6 +76,16 @@ export default function Sentences() {
 	const handleColourChange = (name) => {
 		setRadioColour(name);
 	};
+	// Gap radio
+	const [radioGap, setRadioGap] = useState("small"); // Default value
+	const gapOptions = [ // Options
+		{ name: "none", label: "None" },
+		{ name: "small", label: "Small" },
+		{ name: "large", label: "Large" }
+	];
+	const handleGapChange = (name) => {
+		setRadioGap(name);
+	}
 
 	// The items
 	const [items, setItems] = useState(null);
@@ -113,7 +137,7 @@ export default function Sentences() {
 			return;
 		}
 		// Checking if the sentence is valid
-		if (inputSentence.length < 18 || inputSentence.length > 100) {
+		if (inputSentence.length < minSentence || inputSentence.length > maxSentence) {
 			setValidSentence(false);
 			return;
 		}
@@ -153,13 +177,14 @@ export default function Sentences() {
 
 
 		// Creating the letter elements
+		let paddingClass = (radioGap === "small") ? "pad--small" : (radioGap === "large") ? "pad--large" : "";
+
 		for (let i = 0; i < noOfDisplayedLetters.current; i++) {
 			// Creating the letter elements
 			letterElements.push(
-				<div className="letter-cont" key={ i }>
+				<div className={"letter-cont " + paddingClass} key={ i }>
 					<LetterGrid 
 						reference={ "letter" + i }
-						key={ i }
 						mode='sentences'
 						colour={ radioColour }
 					/>
@@ -225,6 +250,7 @@ export default function Sentences() {
 			// Adding the instance to the program
 			program.current.push(instance);
 		}
+		console.log(program.current);
 
 		// Setting the items
 		setItems(letterElements);
@@ -285,6 +311,15 @@ export default function Sentences() {
 
 				// Clearing the interval
 				clearInterval(interval.current);
+
+				// Resetting the variables
+				sentence.current = "";
+				sentenceArray = [];
+				program.current = [];
+				instanceIndex.current = 0;
+				letterIndex.current = 0;
+				pause.current = false;
+				letterElements = [];
 			}
 		});
 
@@ -295,6 +330,19 @@ export default function Sentences() {
 			delay: TRANSITION_DURATION * 1.5,
 			duration: TRANSITION_DURATION
 		});
+	}
+
+	function initPresets() {
+		// Setting the sentence
+		setInputSentence(presetSentences[currentPreset]);
+
+		// Incrementing the current preset
+		setCurrentPreset((currentPreset + 1) % presetSentences.length);
+
+		setTimeout(() => {
+			// Make the textarea input detect the change
+			window.dispatchEvent(new Event('textareaUpdated'));
+		}, 4);
 	}
 
 
@@ -354,16 +402,19 @@ export default function Sentences() {
 				
 				<div className='d-flex flex-v ai-c gap--sm'>
 					<h2>Sentence to print</h2>
-					<Input.TextArea 
-						placeholder="Type a sentence..."
-						value={ inputSentence }
-						onChange={ handleSentenceChange }
-						minLength={ 18 }
-						maxLength={ 100 }
-					/>
+					<div className='sentence-input-cont d-flex flex-h jc-btwn ai-c gap--sm'>
+						<Input.TextArea 
+							placeholder="Type here..."
+							value={ inputSentence }
+							onChange={ handleSentenceChange }
+							minLength={ minSentence }
+							maxLength={ maxSentence }
+						/>
+						<Button.Minor onClick={ initPresets }>Cycle presets</Button.Minor>
+					</div>
 					{
 						// If the sentence is too long or too short, show an error message
-						((inputSentence.length < 18 || inputSentence.length > 100) && !validSentence) ? <p className='sentenceInputError'>(The sentence must be 18-100 characters long)</p> : ''
+						((inputSentence.length < minSentence || inputSentence.length > maxSentence) && !validSentence) ? <p className='sentenceInputError'>(The sentence must be {minSentence}-{maxSentence} characters long)</p> : ''
 					}
 				</div>
 
@@ -375,8 +426,16 @@ export default function Sentences() {
 						onChange={ handleColourChange }
 					/>
 				</div>
+				<div className='d-flex flex-v ai-c gap--sm'>
+					<h2>Gap between letters</h2>
+					<Radio
+						options={ gapOptions }
+						selectedValue={ radioGap }
+						onChange={ handleGapChange }
+					/>
+				</div>
 				
-				<Button onClick={init}>Start!</Button>
+				<Button.Major onClick={init}>Start!</Button.Major>
 			</div>
 		</div>
 	);

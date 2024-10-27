@@ -1,32 +1,60 @@
 .Button {
-	background-color: $white-secondary;
 	border: none;
 	border-radius: 3 * $unit;
-	padding: (1.15 * $unit) (1.5 * $unit);
 	cursor: pointer;
 	transition: background-color 0.2s;
-
+	
 	* {
 		transition: color 0.2s;
 	}
 
-	&:hover {
-		background-color: $grey;
-
-		* {
-			color: #fff;
+	&.Major {
+		background-color: $white-secondary;
+		padding: (1.15 * $unit) (1.5 * $unit);
+	
+		&:hover {
+			background-color: $grey;
+	
+			* {
+				color: #fff;
+			}
+		}
+	
+		&:active {
+			background-color: $black;
+	
+			* {
+				color: #fff;
+			}
+		}
+	
+		h2 {
+			margin-bottom: -0.05 * $unit; // This is to make the baseline of the text align with the bottom
 		}
 	}
 
-	&:active {
-		background-color: $black;
-
-		* {
-			color: #fff;
+	&.Minor {
+		background-color: $white;
+		padding: (0.7 * $unit) (1.3 * $unit);
+	
+		&:hover {
+			background-color: $grey;
+	
+			* {
+				color: #fff;
+			}
 		}
-	}
-
-	h2 {
-		margin-bottom: -0.05 * $unit; // This is to make the baseline of the text align with the bottom
+	
+		&:active {
+			background-color: $black;
+	
+			* {
+				color: #fff;
+			}
+		}
+	
+		p {
+			margin-bottom: -0.05 * $unit; // This is to make the baseline of the text align with the bottom
+		}
 	}
 }

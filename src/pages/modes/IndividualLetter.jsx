@@ -9,7 +9,7 @@
 	// Importing components
 	import LetterGrid from '../../components/LetterGrid.jsx';
 	import Radio from '../../components/Radio.jsx';
-	import Button from '../../components/Button.jsx';
+	import * as Button from '../../components/Button.jsx';
 
 	// Importing defs
 	import { $$ } from '../../defs.js';
@@ -141,7 +141,7 @@ export default function IndividualLetter() {
 					/>
 				</div>
 				
-				<Button onClick={init}>Start!</Button>
+				<Button.Major onClick={init}>Start!</Button.Major>
 			</div>
 		</div>
 	);
