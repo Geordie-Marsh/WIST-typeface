@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.js": "/WIST-typeface/static/js/main.7eb6ffa6.js",
+    "main.js": "/WIST-typeface/static/js/main.385fa9aa.js",
     "static/css/921.72780d8c.chunk.css": "/WIST-typeface/static/css/921.72780d8c.chunk.css",
     "static/js/921.59005317.chunk.js": "/WIST-typeface/static/js/921.59005317.chunk.js",
-    "static/js/357.dc7a3df5.chunk.js": "/WIST-typeface/static/js/357.dc7a3df5.chunk.js",
+    "static/js/357.995e23d5.chunk.js": "/WIST-typeface/static/js/357.995e23d5.chunk.js",
     "static/js/219.e7310409.chunk.js": "/WIST-typeface/static/js/219.e7310409.chunk.js",
     "static/js/979.6ae8ffd1.chunk.js": "/WIST-typeface/static/js/979.6ae8ffd1.chunk.js",
     "static/js/206.419dd6db.chunk.js": "/WIST-typeface/static/js/206.419dd6db.chunk.js",
@@ -23,10 +23,10 @@
     "static/media/loading-animation.webm": "/WIST-typeface/static/media/loading-animation.402745c52ea333ddf733.webm",
     "static/media/airline-qantas.png": "/WIST-typeface/static/media/airline-qantas.a017abc7e2a16c4367b4.png",
     "index.html": "/WIST-typeface/index.html",
-    "main.7eb6ffa6.js.map": "/WIST-typeface/static/js/main.7eb6ffa6.js.map",
+    "main.385fa9aa.js.map": "/WIST-typeface/static/js/main.385fa9aa.js.map",
     "921.72780d8c.chunk.css.map": "/WIST-typeface/static/css/921.72780d8c.chunk.css.map",
     "921.59005317.chunk.js.map": "/WIST-typeface/static/js/921.59005317.chunk.js.map",
-    "357.dc7a3df5.chunk.js.map": "/WIST-typeface/static/js/357.dc7a3df5.chunk.js.map",
+    "357.995e23d5.chunk.js.map": "/WIST-typeface/static/js/357.995e23d5.chunk.js.map",
     "219.e7310409.chunk.js.map": "/WIST-typeface/static/js/219.e7310409.chunk.js.map",
     "979.6ae8ffd1.chunk.js.map": "/WIST-typeface/static/js/979.6ae8ffd1.chunk.js.map",
     "206.419dd6db.chunk.js.map": "/WIST-typeface/static/js/206.419dd6db.chunk.js.map",
@@ -42,6 +42,6 @@
     "359.4881883a.chunk.js.map": "/WIST-typeface/static/js/359.4881883a.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.7eb6ffa6.js"
+    "static/js/main.385fa9aa.js"
   ]
 }
