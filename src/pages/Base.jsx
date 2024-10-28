@@ -1,4 +1,7 @@
 // Imports
+	// Importing styles
+	import '../styles/main.scss';
+
 	// Importing React
 	import { Outlet } from "react-router-dom";
 

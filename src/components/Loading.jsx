@@ -1,6 +1,6 @@
 // Imports
 	// Importing assets
-	import Animation from '../assets/loading-animation.webm';
+	// import Animation from '../assets/loading-animation.webm';
 
 
 

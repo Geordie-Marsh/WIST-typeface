@@ -13,9 +13,6 @@
 
 	// Importing defs
 	import { $$ } from './defs';
-
-	// Importing styles
-	import './styles/main.scss';
 	
 	// Importing assets
 	import Animation from './assets/loading-animation.webm';
