@@ -1,0 +1,16 @@
+.Loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: $white;
+	
+	.Loading__animation {
+		width: 4rem;
+		transform: scale(1.01);
+		
+		clip-path: fill-box;
+		border-radius: 0.01px;
+
+		image-rendering: optimizeQuality;
+	}
+}

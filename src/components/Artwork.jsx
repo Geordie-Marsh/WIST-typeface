@@ -1,6 +1,11 @@
 export default function Artwork({ className}) {
 	return (
 		<svg className={ "Artwork " + className } xmlns="http://www.w3.org/2000/svg" viewBox="0.5 0.5 400.5 400.5">
+			{/* <line	   className="BorderN"      pathLength={ 100 }  x1=".5" y1=".5" x2="400.5" y2=".5"/>
+			<line	   className="BorderE"      pathLength={ 100 }  x1="400.5" y1=".5" x2="400.5" y2="400.5"/>
+			<line	   className="BorderS"      pathLength={ 100 }  x1="400.5" y1="400.5" x2=".5" y2="400.5"/>
+			<line	   className="BorderW"      pathLength={ 100 }  x1=".5" y1="400.5" x2=".5" y2=".5"/> */}
+
 			<path      className="CircleSe"     pathLength={ 100 }  d="M400.5,200.5c0,110.457-89.543,200-200,200"/>
 			<path      className="CircleSw"     pathLength={ 100 }  d="M200.5,400.5C90.043,400.5.5,310.957.5,200.5"/>
 			<path      className="CircleNe"     pathLength={ 100 }  d="M200.5.5c110.457,0,200,89.543,200,200"/>

@@ -1,12 +1,18 @@
 // Imports
 	// Import React
-	import React, { useEffect } from 'react';
+	import React, { useEffect, useState } from 'react';
 
 	// Importing the Routes and Route components
 	import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
 
 	// Importing framer-motion
 	import { AnimatePresence, motion } from "framer-motion";
+
+	// Importing gsap
+	import { gsap } from 'gsap';
+
+	// Importing defs
+	import { $$ } from './defs';
 
 	// Importing styles
 	import './styles/main.scss';
@@ -26,6 +32,9 @@
 	import DeparturesLogic from './pages/modes/DeparturesLogic';
 	import PerfumeLogic from './pages/modes/PerfumeLogic';
 	import Temp from './pages/modes/Temp';
+
+	// Importing components
+	import Loading from "./components/Loading";
 	
 
 
@@ -89,10 +98,51 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+	// Logic for the loading screen
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		// Function to handle page load
+        function handlePageLoad() {
+			// Stopping the loading animation
+			$$(".Loading__animation").removeAttribute("loop");
+
+			// Adding an event listener for the end of the loading animation
+			window.addEventListener("loadingAnimationEnded", collapseLoadingScreen);
+        };
+
+		// Function to collapse the loading screen
+		function collapseLoadingScreen() {
+			// Hide the loading screen
+			gsap.to(".Loading", {
+				opacity: 0,
+				duration: 1,
+				onComplete: () => {
+					setLoading(false); // Set loading to false when page is fully loaded
+				}
+			});
+		}
+
+        // Check if page is already loaded
+        if (document.readyState === "complete") {
+            setLoading(false);
+        } else {
+            // Add an event listener for page load
+            window.addEventListener('load', handlePageLoad);
+        }
+
+        // Clean up event listener when component unmounts
+        return () => window.removeEventListener('load', handlePageLoad);
+	}, []);
 
 	return (
-		<HashRouter>
-			<AnimatedRoutes />
-		</HashRouter>
+		<>
+			<HashRouter>
+				<AnimatedRoutes />
+			</HashRouter>
+			{ loading &&
+				<Loading />
+			}
+		</>
 	);
 }
