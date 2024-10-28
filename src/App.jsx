@@ -62,6 +62,7 @@ function Loading() {
         // Check if page is already loaded
         if (document.readyState === "complete") {
             window.dispatchEvent(new Event('loaded'));
+			console.log("Page already loaded");
         } else {
             // Add an event listener for page load
             window.addEventListener('load', handlePageLoad);
