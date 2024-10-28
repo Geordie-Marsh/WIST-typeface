@@ -37,46 +37,6 @@
 
 // Loading screen component
 function Loading() {
-	// Function to handle page load
-	function handlePageLoad() {
-		// Stopping the loading animation
-		$$(".Loading__animation").removeAttribute("loop");
-	};
-
-	// Function to collapse the loading screen
-	function collapseLoadingScreen() {
-		// Hide the loading screen
-		gsap.to(".Loading", {
-			opacity: 0,
-			duration: 1,
-			onComplete: () => {
-				window.dispatchEvent(new Event('loaded')); // Set loading to false when page is fully loaded
-			}
-		});
-	}
-
-	// Function to check if the page is loaded
-	function checkLoaded() {
-		if (document.readyState === "complete") {
-			handlePageLoad();
-		}
-	}
-
-	useEffect(() => {
-
-        // Check if page is already loaded
-        if (document.readyState === "complete") {
-            window.dispatchEvent(new Event('loaded'));
-        } else {
-            // Add an event listener for page load
-            window.addEventListener('load', handlePageLoad);
-        }
-
-        // Clean up event listener when component unmounts
-        return () => window.removeEventListener('load', handlePageLoad);
-	}, []);
-
-
 	return (
 		<div className="Loading" style={{
 			width: "100vw",
@@ -92,8 +52,8 @@ function Loading() {
 			<video 
 				autoPlay loop muted 
 				className="Loading__animation"
-				onEnded={ collapseLoadingScreen }
-				onPlaying={ checkLoaded }
+				// onEnded={ collapseLoadingScreen }
+				// onPlaying={ checkLoaded }
 
 				style={{
 					width: "4rem",
@@ -175,12 +135,33 @@ function AnimatedRoutes() {
 export default function App() {
 	// Logic for the loading screen
 	const [loading, setLoading] = useState(true);
+	
+	// Function to handle page load
+	function handlePageLoad() {
+		// Hide the loading screen
+		gsap.to(".Loading", {
+			opacity: 0,
+			duration: 0.5,
+			onComplete: () => {
+				setLoading(false);
+			}
+		});
+	}
 
 	useEffect(() => {
-		// Adding an event listener for the end of the loading animation
-		window.addEventListener("loaded", () => {
+		// Check if page is already loaded
+        if (document.readyState === "complete") {
 			setLoading(false);
-		});
+        } else {
+            // Add an event listener for page load
+			window.addEventListener('load', handlePageLoad);
+        }
+
+		// Cleanup
+		return () => {
+			// Remove the event listener for page load
+			window.removeEventListener('load', handlePageLoad);
+		};
 	}, []);
 
 	return (

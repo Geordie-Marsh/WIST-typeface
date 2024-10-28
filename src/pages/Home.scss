@@ -2,6 +2,21 @@
 	width: 100vw;
 	height: 100vh;
 
+	.FontName {
+		width: 16rem;
+		margin: 0.4rem 0 0.6rem;
+		
+		overflow: visible;
+		fill: none;
+		stroke: $black;
+		stroke-width: 29;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-dasharray: 101;
+		stroke-dashoffset: 101;
+		transition: stroke-dashoffset 0.75s ease;
+	}
+
 	.pages-cont {
 		.link {
 			margin-left: 1.5 * $unit;

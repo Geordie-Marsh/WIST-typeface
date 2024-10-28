@@ -5,6 +5,7 @@
 
 	// Importing components
 	import Artwork from '../components/Artwork';
+	import FontName from '../components/FontName';
 
 
 
@@ -34,7 +35,8 @@ export default function Home() {
 			{/* <LetterGrid /> */}
 			<section className='panel--interaction cont-height d-flex flex-v jc-btwn'>
 				<div className='title-cont'>
-					<h1>Cascadence</h1>
+					{/* <h1>Cascadence</h1> */}
+					<FontName />
 					<h2>By Geordie Marsh</h2>
 				</div>
 				<div className='pages-cont d-flex flex-v jc-btwn gap--sm'>
