@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktypeface_program=self.webpackChunktypeface_program||[]).push([[921],{921:(e,a,s)=>{s.r(a),s.d(a,{default:()=>p});var r=s(216),c=s(579);function p(){return(0,c.jsx)("div",{className:"Base",children:(0,c.jsx)(r.sv,{})})}}}]);
+//# sourceMappingURL=921.59005317.chunk.js.map
