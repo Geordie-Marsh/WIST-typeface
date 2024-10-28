@@ -40,8 +40,8 @@ function Loading() {
 	// Function to handle page load
 	function handlePageLoad() {
 		// Stopping the loading animation
-		$$(".Loading__animation").removeAttribute("loop");
 		console.log("Page loaded");
+		$$(".Loading__animation").removeAttribute("loop");
 	};
 
 	// Function to collapse the loading screen
