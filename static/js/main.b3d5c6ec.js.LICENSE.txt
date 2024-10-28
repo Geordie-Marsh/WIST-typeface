@@ -80,5 +80,3 @@
  *
  * @license MIT
  */
-
-//!Could add more variables

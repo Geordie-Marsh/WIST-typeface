@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktypeface_program=self.webpackChunktypeface_program||[]).push([[599],{135:(e,c,r)=>{r.r(c),r.d(c,{default:()=>o});const a=r.p+"static/media/mockup-perfume-ad.7345b9fb1dc85e999161.mp4";var s=r(579);function o(){return(0,s.jsx)("div",{className:"Perfume mode-cont",children:(0,s.jsx)("video",{src:a,controls:!0,loop:!0})})}}}]);
+//# sourceMappingURL=599.829dda8a.chunk.js.map

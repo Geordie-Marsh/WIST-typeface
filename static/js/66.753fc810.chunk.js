@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktypeface_program=self.webpackChunktypeface_program||[]).push([[66],{187:(e,r,a)=>{a.r(r),a.d(r,{default:()=>t});const s=a.p+"static/media/mockup-departures.8b0bb7f64b19206746a2.mp4";var c=a(579);function t(){return(0,c.jsx)("div",{className:"Departures mode-cont",children:(0,c.jsx)("video",{src:s,controls:!0,loop:!0})})}}}]);
+//# sourceMappingURL=66.753fc810.chunk.js.map

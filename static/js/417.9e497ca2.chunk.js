@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktypeface_program=self.webpackChunktypeface_program||[]).push([[417],{942:(e,a,c)=>{c.r(a),c.d(a,{default:()=>t});const r=c.p+"static/media/mockup-perfume-tv-ad.d0c6a6b501200b60ae34.mp4";var s=c(579);function t(){return(0,s.jsx)("div",{className:"PerfumeTv mode-cont",children:(0,s.jsx)("video",{src:r,controls:!0,loop:!0})})}}}]);
+//# sourceMappingURL=417.9e497ca2.chunk.js.map
