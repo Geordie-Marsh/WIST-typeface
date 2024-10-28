@@ -40,13 +40,11 @@ function Loading() {
 	// Function to handle page load
 	function handlePageLoad() {
 		// Stopping the loading animation
-		console.log("Page loaded");
 		$$(".Loading__animation").removeAttribute("loop");
 	};
 
 	// Function to collapse the loading screen
 	function collapseLoadingScreen() {
-		console.log("Loading animation ended");
 		// Hide the loading screen
 		gsap.to(".Loading", {
 			opacity: 0,
@@ -69,7 +67,6 @@ function Loading() {
         // Check if page is already loaded
         if (document.readyState === "complete") {
             window.dispatchEvent(new Event('loaded'));
-			console.log("Page already loaded");
         } else {
             // Add an event listener for page load
             window.addEventListener('load', handlePageLoad);
