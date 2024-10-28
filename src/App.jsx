@@ -57,6 +57,13 @@ function Loading() {
 		});
 	}
 
+	// Function to check if the page is loaded
+	function checkLoaded() {
+		if (document.readyState === "complete") {
+			handlePageLoad();
+		}
+	}
+
 	useEffect(() => {
 
         // Check if page is already loaded
@@ -89,6 +96,7 @@ function Loading() {
 				autoPlay loop muted 
 				className="Loading__animation"
 				onEnded={ collapseLoadingScreen }
+				onPlaying={ checkLoaded }
 
 				style={{
 					width: "4rem",
@@ -174,12 +182,6 @@ export default function App() {
 	useEffect(() => {
 		// Adding an event listener for the end of the loading animation
 		window.addEventListener("loaded", () => {
-			setLoading(false);
-		});
-
-		// Add an event listener for page load
-		window.addEventListener('load', () => {
-			console.log("set false");
 			setLoading(false);
 		});
 	}, []);
