@@ -37,9 +37,40 @@
 
 // Loading screen component
 function Loading() {
-	function onAnimationEnded() {
-		window.dispatchEvent(new Event("loadingAnimationEnded"));
+	// Function to handle page load
+	function handlePageLoad() {
+		// Stopping the loading animation
+		$$(".Loading__animation").removeAttribute("loop");
+		console.log("Page loaded");
+	};
+
+	// Function to collapse the loading screen
+	function collapseLoadingScreen() {
+		console.log("Loading animation ended");
+		// Hide the loading screen
+		gsap.to(".Loading", {
+			opacity: 0,
+			duration: 1,
+			onComplete: () => {
+				window.dispatchEvent(new Event('loaded')); // Set loading to false when page is fully loaded
+			}
+		});
 	}
+
+	useEffect(() => {
+
+        // Check if page is already loaded
+        if (document.readyState === "complete") {
+            window.dispatchEvent(new Event('loaded'));
+        } else {
+            // Add an event listener for page load
+            window.addEventListener('load', handlePageLoad);
+        }
+
+        // Clean up event listener when component unmounts
+        return () => window.removeEventListener('load', handlePageLoad);
+	}, []);
+
 
 	return (
 		<div className="Loading" style={{
@@ -56,7 +87,7 @@ function Loading() {
 			<video 
 				autoPlay loop muted 
 				className="Loading__animation"
-				onEnded={ onAnimationEnded }
+				onEnded={ collapseLoadingScreen }
 
 				style={{
 					width: "4rem",
@@ -140,39 +171,10 @@ export default function App() {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// Function to handle page load
-        function handlePageLoad() {
-			// Stopping the loading animation
-			$$(".Loading__animation").removeAttribute("loop");
-			console.log("Page loaded");
-
-			// Adding an event listener for the end of the loading animation
-			window.addEventListener("loadingAnimationEnded", collapseLoadingScreen);
-        };
-
-		// Function to collapse the loading screen
-		function collapseLoadingScreen() {
-			console.log("Loading animation ended");
-			// Hide the loading screen
-			gsap.to(".Loading", {
-				opacity: 0,
-				duration: 1,
-				onComplete: () => {
-					setLoading(false); // Set loading to false when page is fully loaded
-				}
-			});
-		}
-
-        // Check if page is already loaded
-        if (document.readyState === "complete") {
-            setLoading(false);
-        } else {
-            // Add an event listener for page load
-            window.addEventListener('load', handlePageLoad);
-        }
-
-        // Clean up event listener when component unmounts
-        return () => window.removeEventListener('load', handlePageLoad);
+		// Adding an event listener for the end of the loading animation
+		window.addEventListener("loaded", () => {
+			setLoading(false);
+		});
 	}, []);
 
 	return (
