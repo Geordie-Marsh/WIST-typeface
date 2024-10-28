@@ -1,6 +1,6 @@
 // Imports
 	// Import React
-	import React, { useEffect, useState } from 'react';
+	import React, { useEffect, useState, Suspense } from 'react';
 
 	// Importing the Routes and Route components
 	import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
@@ -16,25 +16,58 @@
 
 	// Importing styles
 	import './styles/main.scss';
+	
+	// Importing assets
+	import Animation from './assets/loading-animation.webm';
 
-	// Importing pages
-	import Base from './pages/Base';
-	import Home from './pages/Home';
-	import ModeBase from './pages/ModeBase';
+	// Importing pages using lazy loading
+	const Base = React.lazy(() => import('./pages/Base'));
+	const Home = React.lazy(() => import('./pages/Home'));
+	const ModeBase = React.lazy(() => import('./pages/ModeBase'));
 	// Importing mode pages
-	import IndividualLetter from './pages/modes/IndividualLetter';
-	import Sentences from './pages/modes/Sentences';
-	import WordSnake from './pages/modes/WordSnake';
-	import Tessellation from './pages/modes/Tessellation';
-	import Departures from './pages/modes/Departures';
-	import Perfume from './pages/modes/Perfume';
-	import PerfumeTv from './pages/modes/PerfumeTv';
-	import DeparturesLogic from './pages/modes/DeparturesLogic';
-	import PerfumeLogic from './pages/modes/PerfumeLogic';
-	import Temp from './pages/modes/Temp';
+	const IndividualLetter = React.lazy(() => import('./pages/modes/IndividualLetter'));
+	const Sentences = React.lazy(() => import('./pages/modes/Sentences'));
+	const WordSnake = React.lazy(() => import('./pages/modes/WordSnake'));
+	const Tessellation = React.lazy(() => import('./pages/modes/Tessellation'));
+	const Departures = React.lazy(() => import('./pages/modes/Departures'));
+	const Perfume = React.lazy(() => import('./pages/modes/Perfume'));
+	const PerfumeTv = React.lazy(() => import('./pages/modes/PerfumeTv'));
+	const DeparturesLogic = React.lazy(() => import('./pages/modes/DeparturesLogic'));
+	const PerfumeLogic = React.lazy(() => import('./pages/modes/PerfumeLogic'));
+	const Temp = React.lazy(() => import('./pages/modes/Temp'));
 
-	// Importing components
-	import Loading from "./components/Loading";
+
+
+// Loading screen component
+function Loading() {
+	function onAnimationEnded() {
+		window.dispatchEvent(new Event("loadingAnimationEnded"));
+	}
+
+	return (
+		<div className="Loading screen-width screen-height p-abs d-flex jc-c ai-c" style={{
+			top: "0",
+			left: "0",
+			background: "#eeeeee"
+		}}>
+			<video 
+				autoPlay loop muted 
+				className="Loading__animation"
+				onEnded={ onAnimationEnded }
+
+				style={{
+					width: "4rem",
+					transform: "scale(1.01)",
+					clipPath: "fill-box",
+					borderRadius: "0.01px"
+				}}
+			>
+				<source src={ Animation } type="video/webm" />
+			</video>
+			{/* <img src={ Animation } alt="Loading animation" className="Loading__animation" /> */}
+		</div>
+	)
+}
 	
 
 
@@ -74,25 +107,27 @@ function AnimatedRoutes() {
 
 	return (
 		<AnimatePresence mode='wait'>
-			<Routes key={ location.pathname } location={ location }>
-				<Route path='/' element={ <Base /> }>
-					<Route index element={<PageWrapper><Home /></PageWrapper>} />
-					<Route path='playground'>
-						<Route path='individual-letter'  element={ <PageWrapper><ModeBase page={"individual-letter"}><IndividualLetter /></ModeBase> </PageWrapper>} />
-						<Route path='sentences'          element={ <PageWrapper><ModeBase page={"sentences"}><Sentences /></ModeBase> </PageWrapper>} />
-						<Route path='word-snake'         element={ <PageWrapper><ModeBase page={"word-snake"}><WordSnake /></ModeBase> </PageWrapper>} />
-						<Route path='tessellation'       element={ <PageWrapper><ModeBase page={"tessellation"}><Tessellation /></ModeBase> </PageWrapper>} />
+			<Suspense fallback={ <Loading /> }>
+				<Routes key={ location.pathname } location={ location }>
+					<Route path='/' element={ <Base /> }>
+						<Route index element={<PageWrapper><Home /></PageWrapper>} />
+						<Route path='playground'>
+							<Route path='individual-letter'  element={ <PageWrapper><ModeBase page={"individual-letter"}><IndividualLetter /></ModeBase> </PageWrapper>} />
+							<Route path='sentences'          element={ <PageWrapper><ModeBase page={"sentences"}><Sentences /></ModeBase> </PageWrapper>} />
+							<Route path='word-snake'         element={ <PageWrapper><ModeBase page={"word-snake"}><WordSnake /></ModeBase> </PageWrapper>} />
+							<Route path='tessellation'       element={ <PageWrapper><ModeBase page={"tessellation"}><Tessellation /></ModeBase> </PageWrapper>} />
+						</Route>
+						<Route path='mock-up'>
+							<Route path='departures-board'   element={ <PageWrapper><ModeBase page={"depeartures-board"}><Departures /></ModeBase> </PageWrapper>} />
+							<Route path='perfume-digital-ad'   element={ <PageWrapper><ModeBase page={"perfume-digital-ad"}><Perfume /></ModeBase> </PageWrapper>} />
+							<Route path='perfume-tv-ad'   element={ <PageWrapper><ModeBase page={"perfume-tv-ad"}><PerfumeTv /></ModeBase> </PageWrapper>} />
+						</Route>
+						<Route path='departures-logic' element={<DeparturesLogic />} />
+						<Route path='perfume-logic' element={<PerfumeLogic />} />
+						<Route path='temp' element={<Temp />} />
 					</Route>
-					<Route path='mock-up'>
-						<Route path='departures-board'   element={ <PageWrapper><ModeBase page={"depeartures-board"}><Departures /></ModeBase> </PageWrapper>} />
-						<Route path='perfume-digital-ad'   element={ <PageWrapper><ModeBase page={"perfume-digital-ad"}><Perfume /></ModeBase> </PageWrapper>} />
-						<Route path='perfume-tv-ad'   element={ <PageWrapper><ModeBase page={"perfume-tv-ad"}><PerfumeTv /></ModeBase> </PageWrapper>} />
-					</Route>
-					<Route path='departures-logic' element={<DeparturesLogic />} />
-					<Route path='perfume-logic' element={<PerfumeLogic />} />
-					<Route path='temp' element={<Temp />} />
-				</Route>
-			</Routes>
+				</Routes>
+			</Suspense>
 		</AnimatePresence>
 	);
 }
