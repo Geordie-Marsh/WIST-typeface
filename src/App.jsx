@@ -42,7 +42,13 @@ function Loading() {
 	}
 
 	return (
-		<div className="Loading screen-width screen-height p-abs d-flex jc-c ai-c" style={{
+		<div className="Loading" style={{
+			width: "100vw",
+			height: "100vh",
+			position: "fixed",
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
 			top: "0",
 			left: "0",
 			background: "#eeeeee"
@@ -138,6 +144,7 @@ export default function App() {
         function handlePageLoad() {
 			// Stopping the loading animation
 			$$(".Loading__animation").removeAttribute("loop");
+			console.log("Page loaded");
 
 			// Adding an event listener for the end of the loading animation
 			window.addEventListener("loadingAnimationEnded", collapseLoadingScreen);
@@ -145,6 +152,7 @@ export default function App() {
 
 		// Function to collapse the loading screen
 		function collapseLoadingScreen() {
+			console.log("Loading animation ended");
 			// Hide the loading screen
 			gsap.to(".Loading", {
 				opacity: 0,
