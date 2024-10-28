@@ -176,6 +176,12 @@ export default function App() {
 		window.addEventListener("loaded", () => {
 			setLoading(false);
 		});
+
+		// Add an event listener for page load
+		window.addEventListener('load', () => {
+			console.log("set false");
+			setLoading(false);
+		});
 	}, []);
 
 	return (
