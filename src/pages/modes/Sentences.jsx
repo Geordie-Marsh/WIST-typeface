@@ -17,7 +17,6 @@
 
 	// Importing constants
 	import { TRANSITION_DURATION } from '../../constants.js';
-import { div } from 'framer-motion/client';
 
 
 
@@ -119,7 +118,7 @@ export default function Sentences({ demo = false, alreadyShown = false }) {
 	const noOfDisplayedLetters = useRef(7);
 
 	// The duration of an entire instance (in seconds)
-	const instanceDuration = 2;
+	const instanceDuration = 2.5;
 
 	// The variable to store the letter elements
 	let letterElements = [];
@@ -383,6 +382,9 @@ export default function Sentences({ demo = false, alreadyShown = false }) {
 
 			// Removing the event listener for the settingsClicked event
 			window.removeEventListener("settingsClicked--sentences", initSettings);
+
+			// Clearing the interval
+			clearInterval(interval.current);
 		};
 	}, []);
 

@@ -47,6 +47,7 @@ export default function About() {
 			}
 		} else {
 			setSlide(0);
+			slideModules();
 		}
 
 	}
@@ -80,14 +81,14 @@ export default function About() {
 					(slide === 1) &&
 					<>
 						<h1>Grid</h1>
-						<p>These modules are used to built this grid. By showing or hiding certain segments from this grid, we can make legible letters.</p>
+						<p>These modules are used to build this grid. By showing or hiding certain segments of this grid, we can make legible letters.</p>
 					</>
 				}
 				{
 					(slide === 2) &&
 					<>
 						<h1>Letters</h1>
-						<p>Due to the nature of the grid, most letters can have many permutation, like a corner being pointed or rounded. </p>
+						<p>Due to the nature of the grid, most letters can have many permutations; for example, a corner could be rounded or pointed without affecting the letter's legibility. </p>
 					</>
 				}
 				{

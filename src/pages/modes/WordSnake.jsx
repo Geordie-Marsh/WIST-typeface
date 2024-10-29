@@ -92,7 +92,7 @@ export default function WordSnake({ demo = false, alreadyShown = false }) {
 	const wordSnakeInitialised = useRef(false);
 
 	// Setting up the movement animation
-	const tl = gsap.timeline({ repeat: -1, paused: true });
+	const tl = useRef(gsap.timeline({ repeat: -1, paused: true }));
 
 
 
@@ -135,8 +135,8 @@ export default function WordSnake({ demo = false, alreadyShown = false }) {
 			});
 
 			// Ensuring the letter conts are visible
-			$$(".WorkSnake .letters-cont").style.opacity = 1;
-			$$(".WorkSnake .duplicate-letters-cont").style.opacity = 1;
+			$$(".WordSnake .letters-cont").style.opacity = 1;
+			$$(".WordSnake .duplicate-letters-cont").style.opacity = 1;
 
 			// Broadcasting that the settings are now inactive
 			window.dispatchEvent(new CustomEvent('settingsInactive'));
@@ -163,7 +163,9 @@ export default function WordSnake({ demo = false, alreadyShown = false }) {
 		moveDur = dur * wordArray.length;
 		
 		// Setting up the interval
-		interval.current = setInterval(wordSnakeEngine, dur * 1000);
+		setTimeout(() => {
+			interval.current = setInterval(wordSnakeEngine, dur * 1000);
+		}, 200);
 
 		// Creating the letter elements
 		let paddingClass = (radioGap === "small") ? "pad--small" : (radioGap === "large") ? "pad--large" : "";
@@ -181,29 +183,28 @@ export default function WordSnake({ demo = false, alreadyShown = false }) {
 		}
 		setLetters(letterElements);
 
-		tl.to('.word-snake-letters-cont', {
+		tl.current.to('.word-snake-letters-cont', {
 			x: '-=100%',
 			duration: moveDur,
 			ease: 'none',
 			onComplete: () => {
 				gsap.set('.word-snake-letters-cont', { x: '100%' });
-				tl.addLabel("halfway");
 			}
 		}, 0);
-		tl.to('.word-snake-duplicate-letters-cont', {
+		tl.current.to('.word-snake-duplicate-letters-cont', {
 			x: '-=200%',
 			duration: moveDur * 2,
 			ease: 'none',
 		}, 0);
-		tl.to('.word-snake-letters-cont', {
+		tl.current.to('.word-snake-letters-cont', {
 			x: '-=100%',
 			duration: moveDur,
 			ease: 'none',
 		}, moveDur);
 
 		setTimeout(() => {
-			tl.play();
-		}, dur * 1000 * 1.9);
+			tl.current.play();
+		}, dur * 1000 * 2.1);
 	}
 
 	function initSettings() {
@@ -217,7 +218,11 @@ export default function WordSnake({ demo = false, alreadyShown = false }) {
 		window.dispatchEvent(new CustomEvent('settingsActive'));
 
 		// Hiding the items
-		gsap.to(".letters-cont, .duplicate-letters-cont", {
+		gsap.to(".letters-cont", {
+			opacity: 0,
+			duration: TRANSITION_DURATION
+		});
+		gsap.to(".duplicate-letters-cont", {
 			opacity: 0,
 			duration: TRANSITION_DURATION
 		});
@@ -233,8 +238,10 @@ export default function WordSnake({ demo = false, alreadyShown = false }) {
 			letterElements = [];
 
 			// Resetting the timeline
-			tl.pause(0);
-			tl.clear();
+			tl.current.pause(0);
+			tl.current.clear(true);
+			gsap.set('.word-snake-letters-cont', { x: 0 });
+			gsap.set('.word-snake-duplicate-letters-cont', { x: 0 });
 		}, TRANSITION_DURATION * 1000);
 
 		// Showing the options
