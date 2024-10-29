@@ -17,9 +17,10 @@
 		transition: stroke-dashoffset 0.75s ease;
 	}
 
-	.pages-cont {
+	.pages-cont,
+	.about-cont {
 		.link {
-			&:not(.demos) {
+			&:not(.demos, .about) {
 				margin-left: 1.5 * $unit;
 			}
 
@@ -29,6 +30,16 @@
 
 			&:hover p {
 				font-weight: 550;
+			}
+		}
+	}
+
+	.about-cont {
+		.link {
+			padding-right: 1.5rem;
+
+			&:hover p {
+				font-weight: 650;
 			}
 		}
 	}
@@ -301,6 +312,100 @@
 					stroke-dashoffset: 101;
 				}
 			}
+
+			&.style--about {
+				// .CircleSe,
+				// .CircleSw,
+				// .CircleNe,
+				// .CircleNw,
+				.ArcSeB,
+				.ArcSeT,
+				.ArcSwB,
+				.ArcSwT,
+				.ArcNeB,
+				.ArcNeT,
+				.ArcNwB,
+				.ArcNwT,
+				.DiagSwE,
+				.DiagSwN,
+				.DiagNwE,
+				.DiagNwS,
+				.DiagNeW,
+				.DiagNeS,
+				.DiagSeW,
+				.DiagSeN,
+				.HorizontalB,
+				.HorizontalC,
+				.HorizontalT,
+				.VerticalL,
+				.VerticalC,
+				.VerticalR
+				{
+					stroke-dashoffset: 101;
+				}
+			}
+			// &.style--why {
+			// 	.CircleSe,
+			// 	.CircleSw,
+			// 	.CircleNe,
+			// 	.CircleNw,
+			// 	.ArcSeB,
+			// 	.ArcSeT,
+			// 	// .ArcSwB,
+			// 	.ArcSwT,
+			// 	// .ArcNeB,
+			// 	.ArcNeT,
+			// 	// .ArcNwB,
+			// 	// .ArcNwT,
+			// 	.DiagSwE,
+			// 	.DiagSwN,
+			// 	.DiagNwE,
+			// 	.DiagNwS,
+			// 	.DiagNeW,
+			// 	.DiagNeS,
+			// 	.DiagSeW,
+			// 	.DiagSeN,
+			// 	.HorizontalB,
+			// 	.HorizontalC,
+			// 	.HorizontalT,
+			// 	.VerticalL,
+			// 	.VerticalC,
+			// 	.VerticalR
+			// 	{
+			// 		stroke-dashoffset: 101;
+			// 	}
+			// }
+			// &.style--how {
+			// 	.CircleSe,
+			// 	.CircleSw,
+			// 	.CircleNe,
+			// 	.CircleNw,
+			// 	.ArcSeB,
+			// 	.ArcSeT,
+			// 	// .ArcSwB,
+			// 	.ArcSwT,
+			// 	// .ArcNeB,
+			// 	// .ArcNeT,
+			// 	// .ArcNwB,
+			// 	.ArcNwT,
+			// 	.DiagSwE,
+			// 	.DiagSwN,
+			// 	.DiagNwE,
+			// 	.DiagNwS,
+			// 	.DiagNeW,
+			// 	.DiagNeS,
+			// 	.DiagSeW,
+			// 	.DiagSeN,
+			// 	.HorizontalB,
+			// 	.HorizontalC,
+			// 	.HorizontalT,
+			// 	.VerticalL,
+			// 	.VerticalC,
+			// 	.VerticalR
+			// 	{
+			// 		stroke-dashoffset: 101;
+			// 	}
+			// }
 		}
 	}
 }

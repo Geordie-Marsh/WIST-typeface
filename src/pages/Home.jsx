@@ -93,10 +93,14 @@ export default function Home() {
 						onMouseLeave={ handleMouseLeave }
 					><p>Perfume TV ad</p></Link>
 				</div>
-				<div className='about-cont d-flex flex-h jc-start gap--sm'>
-					<Link to="/what"><p>What?</p></Link>
-					<Link to="/why"><p>Why?</p></Link>
-					<Link to="/how"><p>How?</p></Link>
+				<div className='about-cont d-flex flex-h jc-start'>
+					<Link 
+						className='link about' 
+						to="/about"
+						onMouseEnter={ () => handleMouseEnter('about') }
+						onMouseLeave={ handleMouseLeave }
+					><p>What? Why? How?</p></Link>
+					
 				</div>
 			</section>
 			<section className='panel--artwork cont-height'>

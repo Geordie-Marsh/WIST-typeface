@@ -72,9 +72,9 @@ export default function ModeBase({ page, children }) {
 				/>
 			</div>
 			<div className='ModeBase__actions d-flex flex-v jc-btwn gap--sm' onMouseLeave={ handleMouseLeave }>
-				{page === "individual-letter" && !settingsActive &&
+				{/* {page === "individual-letter" && !settingsActive &&
 					<div onClick={ handleHistoryClick }><Icons.History /></div>
-				}
+				} */}
 				<Link to="/"><Icons.House /></Link>
 				{((page === "tessellation" || page === "individual-letter" || page === "word-snake" || page === "sentences") && !settingsActive) && 
 					<div onClick={ handleSettingClick }><Icons.Settings /></div>

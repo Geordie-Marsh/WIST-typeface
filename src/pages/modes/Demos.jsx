@@ -8,7 +8,7 @@
 	import Sentences from './Sentences';
 	import WordSnake from './WordSnake';
 	import DeparturesBoard from './Departures';
-	import Perfume from './PerfumeTv';
+	import PerfumeDemo from './PerfumeDemo';
 
 	// Importing components
 	import Pagination from '../../components/Pagination';
@@ -20,10 +20,10 @@ export default function Demos() {
 	const [currentDemo, setCurrentDemo] = useState("tessellation");
 	const demoOptions = [ // Options
 		{ name: "tessellation", label: "Tessellation" },
+		{ name: "perfume-tv-ad", label: "Perfume TV ad" },
 		{ name: "sentences", label: "Sentences" },
 		{ name: "word-snake", label: "Word snake" },
 		{ name: "departures-board", label: "Departures board" },
-		{ name: "perfume-tv-ad", label: "Perfume TV ad" },
 	];
 	const handleDemoChange = (name) => {
 		setCurrentDemo(name);
@@ -50,7 +50,7 @@ export default function Demos() {
 				shownPages.current.filter(page => page === "sentences").length > 1
 			} /> }
 			{ currentDemo === "departures-board" && <DeparturesBoard /> }
-			{ currentDemo === "perfume-tv-ad" && <Perfume /> }
+			{ currentDemo === "perfume-tv-ad" && <PerfumeDemo /> }
 			
 
 			<div className='title-cont d-flex flex-h jc-c ai-c'>
@@ -76,7 +76,7 @@ export default function Demos() {
 					(currentDemo === "word-snake" && "/playground/word-snake") ||
 					(currentDemo === "departures-board" && "/mock-up/departures-board") ||
 					(currentDemo === "perfume-tv-ad" && "/mock-up/perfume-tv-ad")
-				}><p>Explore <Icons.ForwardArrow /></p></Link>
+				}><p>Explore this <Icons.ForwardArrow /></p></Link>
 			</div>
 		</div>
 	)

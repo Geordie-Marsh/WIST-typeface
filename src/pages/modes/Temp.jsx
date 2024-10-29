@@ -619,7 +619,7 @@ export default function Temp() {
 				<LetterGrid mode='set' initialLetter="H" />
 			</div> */}
 			{/* The letters should read: FINALFOLIOGEORDIEMARSH */}
-			<div className='letters-cont cover-page'>
+			{/* <div className='letters-cont cover-page'>
 				<LetterGrid mode='set' initialLetter="F" />
 				<LetterGrid mode='set' initialLetter="I" />
 				<LetterGrid mode='set' initialLetter="N" />
@@ -928,7 +928,7 @@ export default function Temp() {
 				<LetterGrid mode='set' initialLetter="R" />
 				<LetterGrid mode='set' initialLetter="S" />
 				<LetterGrid mode='set' initialLetter="H" />
-			</div>
+			</div> */}
 			{/* <div className='letters-cont brief1'>
 				<LetterGrid mode='set' initialLetter="B" />
 				<LetterGrid mode='set' initialLetter="R" />
@@ -970,6 +970,11 @@ export default function Temp() {
 				<LetterGrid mode='set' initialLetter="A" />
 				<LetterGrid mode='set' initialLetter="R" />
 			</div> */}
+			<div className='letters-cont brief1'>
+				<LetterGrid mode='set' initialLetter="R" />
+				<LetterGrid mode='set' initialLetter="&" />
+				<LetterGrid mode='set' initialLetter="D" />
+			</div>
 		</div>
 	);
 }

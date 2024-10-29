@@ -1746,6 +1746,53 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 					);
 
 					break;
+				case "modules":
+					// This is to show the modules
+
+					newPerm.push(
+						"iNwV",
+						"oNeArc",
+						"SeDiag"
+					);
+
+					break;
+				case "full":
+					// This is to show the full grid
+
+					newPerm.push(
+						"oNwV",
+						"oNwH",
+						"oNwArc",
+						"oNV",
+						"oNeV",
+						"oNeH",
+						"oNeArc",
+						"iNwV",
+						"iNwArc",
+						"iNV",
+						"iNeV",
+						"iNeArc",
+						"NwDiag",
+						"NeDiag",
+						"iWH",
+						"iEH",
+						"SwDiag",
+						"SeDiag",
+						"iSwV",
+						"iSwArc",
+						"iSV",
+						"iSeV",
+						"iSeArc",
+						"oSwV",
+						"oSwH",
+						"oSwArc",
+						"oSV",
+						"oSeV",
+						"oSeH",
+						"oSeArc"
+					);
+
+					break;
 				default:
 					// (For now) the default option is to clear the grid
 

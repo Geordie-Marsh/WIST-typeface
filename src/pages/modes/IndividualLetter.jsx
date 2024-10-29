@@ -131,6 +131,7 @@ export default function IndividualLetter() {
 
 			<div className='options-cont d-flex flex-v ai-c gap--md'>
 				<h1>Individual letter options</h1>
+				<p><i>Type a letter and see it in the typeface</i></p>
 
 				<div className='d-flex flex-v ai-c gap--sm'>
 					<h2>Colour</h2>

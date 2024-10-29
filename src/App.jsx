@@ -33,6 +33,7 @@
 	const PerfumeLogic = React.lazy(() => import('./pages/modes/PerfumeLogic'));
 	const Temp = React.lazy(() => import('./pages/modes/Temp'));
 	const Demos = React.lazy(() => import('./pages/modes/Demos'));
+	const About = React.lazy(() => import('./pages/About'));
 
 
 
@@ -127,6 +128,8 @@ function AnimatedRoutes() {
 						<Route path='departures-logic' element={<DeparturesLogic />} />
 						<Route path='perfume-logic' element={<PerfumeLogic />} />
 						<Route path='temp' element={<Temp />} />
+
+						<Route path='about' element={<PageWrapper><ModeBase page={"about"}><About /></ModeBase> </PageWrapper>} />
 					</Route>
 				</Routes>
 			</Suspense>

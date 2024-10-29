@@ -4,6 +4,13 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	
+	.options-cont {
+		> p {
+			margin-top: -1.5rem;
+			margin-bottom: 0.5rem;
+		}
+	}
 
 	.letter {
 		position: absolute;
