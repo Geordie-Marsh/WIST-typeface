@@ -1,10 +1,11 @@
 {
   "files": {
-    "main.js": "/WIST-typeface/static/js/main.15e14c53.js",
-    "static/css/921.8629dcb8.chunk.css": "/WIST-typeface/static/css/921.8629dcb8.chunk.css",
+    "main.js": "/WIST-typeface/static/js/main.383b11eb.js",
+    "static/css/921.c1ea3eff.chunk.css": "/WIST-typeface/static/css/921.c1ea3eff.chunk.css",
     "static/js/921.59005317.chunk.js": "/WIST-typeface/static/js/921.59005317.chunk.js",
     "static/js/357.b0bfe498.chunk.js": "/WIST-typeface/static/js/357.b0bfe498.chunk.js",
     "static/js/703.439c9505.chunk.js": "/WIST-typeface/static/js/703.439c9505.chunk.js",
+    "static/js/479.3cd33024.chunk.js": "/WIST-typeface/static/js/479.3cd33024.chunk.js",
     "static/js/979.0bee6512.chunk.js": "/WIST-typeface/static/js/979.0bee6512.chunk.js",
     "static/js/206.36a3c2cf.chunk.js": "/WIST-typeface/static/js/206.36a3c2cf.chunk.js",
     "static/js/164.4d25bac4.chunk.js": "/WIST-typeface/static/js/164.4d25bac4.chunk.js",
@@ -29,11 +30,12 @@
     "static/media/loading-animation.webm": "/WIST-typeface/static/media/loading-animation.402745c52ea333ddf733.webm",
     "static/media/airline-qantas.png": "/WIST-typeface/static/media/airline-qantas.a017abc7e2a16c4367b4.png",
     "index.html": "/WIST-typeface/index.html",
-    "main.15e14c53.js.map": "/WIST-typeface/static/js/main.15e14c53.js.map",
-    "921.8629dcb8.chunk.css.map": "/WIST-typeface/static/css/921.8629dcb8.chunk.css.map",
+    "main.383b11eb.js.map": "/WIST-typeface/static/js/main.383b11eb.js.map",
+    "921.c1ea3eff.chunk.css.map": "/WIST-typeface/static/css/921.c1ea3eff.chunk.css.map",
     "921.59005317.chunk.js.map": "/WIST-typeface/static/js/921.59005317.chunk.js.map",
     "357.b0bfe498.chunk.js.map": "/WIST-typeface/static/js/357.b0bfe498.chunk.js.map",
     "703.439c9505.chunk.js.map": "/WIST-typeface/static/js/703.439c9505.chunk.js.map",
+    "479.3cd33024.chunk.js.map": "/WIST-typeface/static/js/479.3cd33024.chunk.js.map",
     "979.0bee6512.chunk.js.map": "/WIST-typeface/static/js/979.0bee6512.chunk.js.map",
     "206.36a3c2cf.chunk.js.map": "/WIST-typeface/static/js/206.36a3c2cf.chunk.js.map",
     "164.4d25bac4.chunk.js.map": "/WIST-typeface/static/js/164.4d25bac4.chunk.js.map",
@@ -50,6 +52,6 @@
     "359.5553395a.chunk.js.map": "/WIST-typeface/static/js/359.5553395a.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.15e14c53.js"
+    "static/js/main.383b11eb.js"
   ]
 }
