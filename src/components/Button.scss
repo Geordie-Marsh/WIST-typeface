@@ -36,6 +36,10 @@
 	&.Minor {
 		background-color: $white;
 		padding: (0.7 * $unit) (1.3 * $unit);
+
+		&.dark {
+			background-color: $white-secondary;
+		}
 	
 		&:hover {
 			background-color: $grey;

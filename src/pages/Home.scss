@@ -19,7 +19,9 @@
 
 	.pages-cont {
 		.link {
-			margin-left: 1.5 * $unit;
+			&:not(.demos) {
+				margin-left: 1.5 * $unit;
+			}
 
 			p {
 				transition: font-weight 0.3s ease;
@@ -50,7 +52,7 @@
 				transition: stroke-dashoffset 0.75s ease;
 			}
 
-			&.style--individual-letter {
+			&.style--demos {
 				.CircleSe,
 				.CircleSw,
 				.CircleNe,
@@ -77,6 +79,37 @@
 				.VerticalL,
 				.VerticalC,
 				.VerticalR 
+				{
+					stroke-dashoffset: 101;
+				}
+			}
+			&.style--individual-letter {
+				.CircleSe,
+				.CircleSw,
+				.CircleNe,
+				.CircleNw,
+				.ArcSeB,
+				.ArcSeT,
+				.ArcSwB,
+				.ArcSwT,
+				.ArcNeB,
+				.ArcNeT,
+				.ArcNwB,
+				.ArcNwT,
+				.DiagSwE,
+				.DiagSwN,
+				.DiagNwE,
+				.DiagNwS,
+				.DiagNeW,
+				.DiagNeS,
+				.DiagSeW,
+				.DiagSeN,
+				// .HorizontalB,
+				.HorizontalC,
+				// .HorizontalT,
+				// .VerticalL,
+				.VerticalC
+				// .VerticalR 
 				{
 					stroke-dashoffset: 101;
 				}

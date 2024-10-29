@@ -2506,7 +2506,7 @@ export default function LetterGrid({reference = null, mode = "singleLetter", sta
 				changeToLetter(letter);
 			};
 
-			window.addEventListener(("letterChange" + reference), handleLetterChange);
+			window.addEventListener(("letterChange" + mode + reference), handleLetterChange);
 		}
 		if (mode === "tessellation") {
 			// Start the program

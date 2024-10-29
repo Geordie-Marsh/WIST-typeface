@@ -9,6 +9,7 @@
 @import '../pages/Home';
 @import '../pages/ModeBase';
 // Importing mode page stylesheets
+@import '../pages/modes/Demos';
 @import '../pages/modes/IndividualLetter';
 @import '../pages/modes/Sentences';
 @import '../pages/modes/WordSnake';
@@ -22,6 +23,7 @@
 
 // Importing component stylesheets
 @import '../components/Radio';
+@import '../components/Pagination';
 @import '../components/Button';
 @import '../components/Input';
 @import '../components/Icons';

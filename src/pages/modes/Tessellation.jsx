@@ -19,7 +19,7 @@
 
 
 
-export default function Tessellation() {
+export default function Tessellation({ demo = false }) {
 	const location = useLocation();
 
 	// Radio functionality
@@ -278,6 +278,12 @@ export default function Tessellation() {
 
 	// Adding event listeners
 	useEffect(() => {
+		// If it's a demo, initialise the tessellation with pre-set values
+		if (demo) {
+			updateGrid();
+		}
+
+
 		// Adding the event listener for the resize event
 		window.addEventListener("resize", handleResize);
 
@@ -308,32 +314,34 @@ export default function Tessellation() {
 			{/* The grid of letters */}
 			{ items }
 			
-			<div className='options-cont d-flex flex-v ai-c gap--md'>
-				<h1>Tessellation options</h1>
+			{ demo === false && 
+				<div className='options-cont d-flex flex-v ai-c gap--md'>
+					<h1>Tessellation options</h1>
 
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Density</h2>
-					<Radio
-						options={ densityOptions }
-						selectedValue={ radioDensity }
-						onChange={ handleDensityChange }
-					/>
-					{
-						// If the high density is selected, show a warning
-						(radioDensity === "high") ? <p className='densityWarning'><i>(Warning:  high density may cause performance issues)</i></p> : ''
-					}
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Density</h2>
+						<Radio
+							options={ densityOptions }
+							selectedValue={ radioDensity }
+							onChange={ handleDensityChange }
+						/>
+						{
+							// If the high density is selected, show a warning
+							(radioDensity === "high") ? <p className='densityWarning'><i>(Warning:  high density may cause performance issues)</i></p> : ''
+						}
+					</div>
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Colour</h2>
+						<Radio
+							options={ colourOptions }
+							selectedValue={ radioColour }
+							onChange={ handleColourChange }
+						/>
+					</div>
+					
+					<Button.Major onClick={initTessellation}>Tessellate!</Button.Major>
 				</div>
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Colour</h2>
-					<Radio
-						options={ colourOptions }
-						selectedValue={ radioColour }
-						onChange={ handleColourChange }
-					/>
-				</div>
-				
-				<Button.Major onClick={initTessellation}>Tessellate!</Button.Major>
-			</div>
+			}
 		</div>
 	);
 }

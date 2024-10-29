@@ -40,6 +40,13 @@ export default function Home() {
 					<h2>By Geordie Marsh</h2>
 				</div>
 				<div className='pages-cont d-flex flex-v jc-btwn gap--sm'>
+					<Link 
+						className='link demos'
+						to="/demos"
+						onMouseEnter={ () => handleMouseEnter('demos') }
+						onMouseLeave={ handleMouseLeave }
+					><p>Demos</p></Link>
+					<p></p>
 					<h2>Playgrounds</h2>
 					<Link 
 						className='link' 

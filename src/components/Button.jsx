@@ -6,9 +6,9 @@ export function Major({ children, onClick }) {
 	);
 }
 
-export function Minor ({ children, onClick }) {
+export function Minor ({ children, dark = false, onClick }) {
 	return (
-		<button className='Button Minor' onClick={onClick}>
+		<button className={'Button Minor ' + (dark === true ? "dark" : "")} onClick={onClick}>
 			<p>{ children }</p>
 		</button>
 	);

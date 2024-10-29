@@ -3,7 +3,7 @@
 	import { useEffect, useState } from 'react';
 
 	// Importing components
-	import { Link } from 'react-router-dom';
+	import { Link, Outlet } from 'react-router-dom';
 
 	// Importing defs
 	import { $$, classAdd, classRemove } from '../defs';
@@ -64,7 +64,7 @@ export default function ModeBase({ page, children }) {
 
 
 	return (
-		<div className="ModeBase">
+		<div className={"ModeBase " + (page === "demos" ? "demos" : "")}>
 			<div className='ModeBase__actions-activator d-flex jc-c ai-c' onMouseEnter={ handleMouseEnter }>
 				<Icons.ThreeDots 
 					className={ "Icon--small" } 

@@ -1,6 +1,10 @@
 .Base {
 	transition: background 0.3s ease;
 
+	&.style--demos {
+		background: #b9e8f4;
+	}
+
 	&.style--individual-letter {
 		background: #f4b9b9;
 	}

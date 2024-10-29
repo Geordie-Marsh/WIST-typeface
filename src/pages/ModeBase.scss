@@ -9,6 +9,11 @@
 	overflow: hidden;
 	transition: padding 0.28s 0.03s ease;
 
+	&.demos {
+		padding-top: 3.6rem;
+		padding-bottom: 3.6rem;
+	}
+
 	&.activated {
 		padding-left: 3.6rem;
 	}
@@ -61,6 +66,10 @@
 
 			&:hover {
 				transform: scale(1.1);
+			}
+
+			&:active {
+				transform: scale(0.95);
 			}
 		}
 	}

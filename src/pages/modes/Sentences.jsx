@@ -21,7 +21,7 @@ import { div } from 'framer-motion/client';
 
 
 
-export default function Sentences() {
+export default function Sentences({ demo = false, alreadyShown = false }) {
 	const location = useLocation();
 
 	// Input functionality
@@ -38,7 +38,9 @@ export default function Sentences() {
 	const minNumber = 7;
 	const maxNumber = 11;
 
-	const [inputSentence, setInputSentence] = useState(""); // Default value
+	const [inputSentence, setInputSentence] = useState(
+		( demo === true ) ? "Letters are to words. And words are to sentences. And sentences are to ideas. And ideas are to being human." : ""
+	); // Default value
 	const handleSentenceChange = (newValue) => {
 		setInputSentence(newValue);
 	};
@@ -64,7 +66,9 @@ export default function Sentences() {
 
 	// Radio functionality
 	// Colour radio
-	const [radioColour, setRadioColour] = useState("rainbow"); // Default value
+	const [radioColour, setRadioColour] = useState(
+		( demo === true ) ? "morning" : "rainbow"
+	); // Default value
 	const colourOptions = [ // Options
 		{ name: "black", label: "Black" },
 		{ name: "rainbow", label: "Rainbow" },
@@ -77,7 +81,9 @@ export default function Sentences() {
 		setRadioColour(name);
 	};
 	// Gap radio
-	const [radioGap, setRadioGap] = useState("small"); // Default value
+	const [radioGap, setRadioGap] = useState(
+		( demo === true ) ? "none" : "small"
+	); // Default value
 	const gapOptions = [ // Options
 		{ name: "none", label: "None" },
 		{ name: "small", label: "Small" },
@@ -123,14 +129,32 @@ export default function Sentences() {
 
 
 
-	function sentencesEngine() {
-
-	}
-
-
-
 	// Function to initialise the mode
 	function init() {
+		if (!demo) {
+			// Pushing the history state
+			window.history.pushState({}, "", "#" + location.pathname);
+
+			gsap.to(".options-cont", {
+				opacity: 0,
+				duration: TRANSITION_DURATION,
+				onComplete: () => {
+					$$(".options-cont").style.display = "none";
+
+					$$(".letters-cont").style.display = "flex";
+				}
+			});
+
+			// Ensuring the letter cont is visible
+			$$(".letters-cont").style.opacity = 1;
+
+			// Broadcasting that the settings are now inactive
+			window.dispatchEvent(new CustomEvent('settingsInactive'));
+		} else {
+			$$(".letters-cont").style.display = "flex";
+		}
+
+		
 		// Checking if the number is valid
 		if (inputNumber < minNumber || inputNumber > maxNumber) {
 			setValidNumber(false);
@@ -144,26 +168,6 @@ export default function Sentences() {
 
 		// Setting the initialised flag
 		initialised.current = true;
-
-		// Pushing the history state
-		window.history.pushState({}, "", "#" + location.pathname);
-
-		gsap.to(".options-cont", {
-			opacity: 0,
-			duration: TRANSITION_DURATION,
-			onComplete: () => {
-				$$(".options-cont").style.display = "none";
-
-				$$(".letters-cont").style.display = "flex";
-			}
-		});
-
-		// Ensuring the letter cont is visible
-		$$(".letters-cont").style.opacity = 1;
-
-		// Broadcasting that the settings are now inactive
-		window.dispatchEvent(new CustomEvent('settingsInactive'));
-
 
 		// Getting the sentence
 		sentence.current = inputSentence;
@@ -250,48 +254,49 @@ export default function Sentences() {
 			// Adding the instance to the program
 			program.current.push(instance);
 		}
-		console.log(program.current);
 
 		// Setting the items
 		setItems(letterElements);
 
-		// Setting up the interval
-		interval.current = setInterval(() => {
-			// Checking if the pause flag is set
-			if (pause.current) {
-				pause.current = false;
-				return;
-			}
+		if (!alreadyShown) {
+			// Setting up the interval
+			interval.current = setInterval(() => {
+				// Checking if the pause flag is set
+				if (pause.current) {
+					pause.current = false;
+					return;
+				}
 
-			// Getting the current instance
-			let instance = program.current[instanceIndex.current];
+				// Getting the current instance
+				let instance = program.current[instanceIndex.current];
 
-			// Setting the letter
-			// Broadcast the letter to the LetterGrid component
-			window.dispatchEvent(
-				new CustomEvent(('letterChangeletter' + letterIndex.current), {
-					detail: instance[letterIndex.current]
-				})
-			);
+				// Setting the letter
+				// Broadcast the letter to the LetterGrid component
+				window.dispatchEvent(
+					new CustomEvent(('letterChangesentencesletter' + letterIndex.current), {
+						detail: instance[letterIndex.current]
+					})
+				);
 
-			// Incrementing the letter index
-			letterIndex.current++;
+				// Incrementing the letter index
+				letterIndex.current++;
 
-			// Resetting the letter index if it goes over the number of letters in the instance
-			if (letterIndex.current >= noOfDisplayedLetters.current) {
-				letterIndex.current = 0;
+				// Resetting the letter index if it goes over the number of letters in the instance
+				if (letterIndex.current >= noOfDisplayedLetters.current) {
+					letterIndex.current = 0;
 
-				// Incrementing the instance index
-				instanceIndex.current++;
+					// Incrementing the instance index
+					instanceIndex.current++;
 
-				// Pausing the interval for one round
-				pause.current = true;
-			}
-			// Resetting the instance index if it goes over the number of instances
-			if (instanceIndex.current >= program.current.length) {
-				instanceIndex.current = 0;
-			}
-		}, instanceDuration * 1000 / noOfDisplayedLetters.current);
+					// Pausing the interval for one round
+					pause.current = true;
+				}
+				// Resetting the instance index if it goes over the number of instances
+				if (instanceIndex.current >= program.current.length) {
+					instanceIndex.current = 0;
+				}
+			}, instanceDuration * 1000 / noOfDisplayedLetters.current);
+		}
 	}	
 
 	function initSettings() {
@@ -358,6 +363,13 @@ export default function Sentences() {
 
 
 	useEffect(() => {
+		// If the demo is active, initialise the mode
+		if (demo === true) {
+			console.log(alreadyShown);
+			init();
+		}
+
+
 		// Adding the event lister for the popstate event
 		window.addEventListener("popstate", handlePopstate);
 
@@ -382,61 +394,63 @@ export default function Sentences() {
 				{ items }
 			</div>
 
-			<div className='options-cont d-flex flex-v ai-c gap--md'>
-				<h1>Sentences options</h1>
+			{ demo === false && 
+				<div className='options-cont d-flex flex-v ai-c gap--md'>
+					<h1>Sentences options</h1>
 
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Number of letters displayed</h2>
-					<Input.Number 
-						placeholder="7"
-						value={ inputNumber }
-						onChange={ handleNumberChange }
-						min={ minNumber }
-						max={ maxNumber }
-					/>
-					{
-						// If the number is too long or too short, show an error message
-						((inputNumber < minNumber || inputNumber > maxNumber) && !validNumber) ? <p className='numberInputError'>(Number must be between {minNumber} and {maxNumber})</p> : ''
-					}
-				</div>
-				
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Sentence to print</h2>
-					<div className='sentence-input-cont d-flex flex-h jc-btwn ai-c gap--sm'>
-						<Input.TextArea 
-							placeholder="Type here..."
-							value={ inputSentence }
-							onChange={ handleSentenceChange }
-							minLength={ minSentence }
-							maxLength={ maxSentence }
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Number of letters displayed</h2>
+						<Input.Number 
+							placeholder="7"
+							value={ inputNumber }
+							onChange={ handleNumberChange }
+							min={ minNumber }
+							max={ maxNumber }
 						/>
-						<Button.Minor onClick={ initPresets }>Cycle presets</Button.Minor>
+						{
+							// If the number is too long or too short, show an error message
+							((inputNumber < minNumber || inputNumber > maxNumber) && !validNumber) ? <p className='numberInputError'>(Number must be between {minNumber} and {maxNumber})</p> : ''
+						}
 					</div>
-					{
-						// If the sentence is too long or too short, show an error message
-						((inputSentence.length < minSentence || inputSentence.length > maxSentence) && !validSentence) ? <p className='sentenceInputError'>(The sentence must be {minSentence}-{maxSentence} characters long)</p> : ''
-					}
-				</div>
+					
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Sentence to print</h2>
+						<div className='sentence-input-cont d-flex flex-h jc-btwn ai-c gap--sm'>
+							<Input.TextArea 
+								placeholder="Type here..."
+								value={ inputSentence }
+								onChange={ handleSentenceChange }
+								minLength={ minSentence }
+								maxLength={ maxSentence }
+							/>
+							<Button.Minor onClick={ initPresets }>Cycle presets</Button.Minor>
+						</div>
+						{
+							// If the sentence is too long or too short, show an error message
+							((inputSentence.length < minSentence || inputSentence.length > maxSentence) && !validSentence) ? <p className='sentenceInputError'>(The sentence must be {minSentence}-{maxSentence} characters long)</p> : ''
+						}
+					</div>
 
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Colour</h2>
-					<Radio
-						options={ colourOptions }
-						selectedValue={ radioColour }
-						onChange={ handleColourChange }
-					/>
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Colour</h2>
+						<Radio
+							options={ colourOptions }
+							selectedValue={ radioColour }
+							onChange={ handleColourChange }
+						/>
+					</div>
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Gap between letters</h2>
+						<Radio
+							options={ gapOptions }
+							selectedValue={ radioGap }
+							onChange={ handleGapChange }
+						/>
+					</div>
+					
+					<Button.Major onClick={init}>Start!</Button.Major>
 				</div>
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Gap between letters</h2>
-					<Radio
-						options={ gapOptions }
-						selectedValue={ radioGap }
-						onChange={ handleGapChange }
-					/>
-				</div>
-				
-				<Button.Major onClick={init}>Start!</Button.Major>
-			</div>
+			}
 		</div>
 	);
 }

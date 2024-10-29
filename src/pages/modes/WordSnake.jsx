@@ -22,7 +22,7 @@
 
 
 
-export default function WordSnake(WordSnake) {
+export default function WordSnake({ demo = false, alreadyShown = false }) {
 	const location = useLocation();
 
 	const [letters, setLetters] = useState([]);
@@ -40,7 +40,9 @@ export default function WordSnake(WordSnake) {
 
 	// Radio functionality
 	// Colour radio
-	const [radioColour, setRadioColour] = useState("black"); // Default value
+	const [radioColour, setRadioColour] = useState(
+		(demo) ? "sunset" : "black"
+	); // Default value
 	const colourOptions = [ // Options
 		{ name: "black", label: "Black" },
 		{ name: "rainbow", label: "Rainbow" },
@@ -105,13 +107,8 @@ export default function WordSnake(WordSnake) {
 
 		// Updating the letters -- this is done by broadcasting a custom event for each letter
 		for (let i = 0; i < currentPerm.length; i++) {
-			console.log("Word snake engine running, ", currentPerm[i]);
-			// document.getElementById(letters[i]).dispatchEvent(new CustomEvent(('letterChangeletter' + (i + 1)), { detail: currentPerm[i] }));
-			// console.log(".LetterGridletter" + (i + 1))
-			// console.log(currentPerm);
-
 			window.dispatchEvent(
-				new CustomEvent(("letterChangeletter" + (i)), {
+				new CustomEvent(("letterChangewordSnakeletter" + i), {
 					detail: currentPerm[i]
 					// For now, return a random letter
 					// detail: randomlyChoose('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
@@ -123,7 +120,33 @@ export default function WordSnake(WordSnake) {
 
 
 	// Init function
-	function InitWordSnake() {
+	function init() {
+		if (!demo) {
+			// Pushing the history state
+			window.history.pushState({}, "", "#" + location.pathname);
+
+			// Hiding the options
+			gsap.to(".options-cont", {
+				opacity: 0,
+				duration: TRANSITION_DURATION,
+				onComplete: () => {
+					$$(".options-cont").style.display = "none";
+				}
+			});
+
+			// Ensuring the letter conts are visible
+			$$(".WorkSnake .letters-cont").style.opacity = 1;
+			$$(".WorkSnake .duplicate-letters-cont").style.opacity = 1;
+
+			// Broadcasting that the settings are now inactive
+			window.dispatchEvent(new CustomEvent('settingsInactive'));
+		}
+
+		// Checking if the word snake has been initialised
+		if (wordSnakeInitialised.current) {
+			return;
+		}
+
 		if (inputWord.length < 4 || inputWord.length > 8) {
 			setValidWord(false);
 			return;
@@ -131,25 +154,6 @@ export default function WordSnake(WordSnake) {
 		
 		// Setting the word snake initialised flag
 		wordSnakeInitialised.current = true;
-
-		// Pushing the history state
-		window.history.pushState({}, "", "#" + location.pathname);
-
-		// Hiding the options
-		gsap.to(".options-cont", {
-			opacity: 0,
-			duration: TRANSITION_DURATION,
-			onComplete: () => {
-				$$(".options-cont").style.display = "none";
-			}
-		});
-
-		// Ensuring the letter conts are visible
-		$$(".letters-cont").style.opacity = 1;
-		$$(".duplicate-letters-cont").style.opacity = 1;
-
-		// Broadcasting that the settings are now inactive
-		window.dispatchEvent(new CustomEvent('settingsInactive'));
 		
 		// Getting the word
 		word.current = inputWord;
@@ -160,7 +164,6 @@ export default function WordSnake(WordSnake) {
 		
 		// Setting up the interval
 		interval.current = setInterval(wordSnakeEngine, dur * 1000);
-		console.log(word, wordArray, moveDur, interval.current);
 
 		// Creating the letter elements
 		let paddingClass = (radioGap === "small") ? "pad--small" : (radioGap === "large") ? "pad--large" : "";
@@ -178,21 +181,21 @@ export default function WordSnake(WordSnake) {
 		}
 		setLetters(letterElements);
 
-		tl.to('.letters-cont', {
+		tl.to('.word-snake-letters-cont', {
 			x: '-=100%',
 			duration: moveDur,
 			ease: 'none',
 			onComplete: () => {
-				gsap.set('.letters-cont', { x: '100%' });
+				gsap.set('.word-snake-letters-cont', { x: '100%' });
 				tl.addLabel("halfway");
 			}
 		}, 0);
-		tl.to('.duplicate-letters-cont', {
+		tl.to('.word-snake-duplicate-letters-cont', {
 			x: '-=200%',
 			duration: moveDur * 2,
 			ease: 'none',
 		}, 0);
-		tl.to('.letters-cont', {
+		tl.to('.word-snake-letters-cont', {
 			x: '-=100%',
 			duration: moveDur,
 			ease: 'none',
@@ -255,6 +258,12 @@ export default function WordSnake(WordSnake) {
 
 
 	useEffect(() => {
+		// If the demo is active, start the word snake
+		if (demo) {
+			init();
+		}
+
+
 		// Adding the event lister for the popstate event
 		window.addEventListener("popstate", handlePopstate);
 
@@ -277,49 +286,51 @@ export default function WordSnake(WordSnake) {
 
 	return (
 		<div className='WordSnake mode-cont'>
-			<div className='letters-cont'>
+			<div className='letters-cont word-snake-letters-cont'>
 				{ letters }
 			</div>
-			<div className='duplicate-letters-cont'>
+			<div className='duplicate-letters-cont word-snake-duplicate-letters-cont'>
 				{ letters }
 			</div>
 			
-			<div className='options-cont d-flex flex-v ai-c gap--md'>
-				<h1>Word snake options</h1>
+			{ demo === false &&
+				<div className='options-cont d-flex flex-v ai-c gap--md'>
+					<h1>Word snake options</h1>
 
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Word</h2>
-					<Input.Text 
-						placeholder="Enter a word..."
-						value={ inputWord }
-						onChange={ handleWordChange }
-						minLength={ 4 }
-						maxLength={ 8 }
-					/>
-					{
-						// If the word is too long or too short, show an error message
-						((inputWord.length < 4 || inputWord.length > 8) && !validWord) ? <p className='wordInputError'>(Word must be between 4-8 characters long)</p> : ''
-					}
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Word</h2>
+						<Input.Text 
+							placeholder="Enter a word..."
+							value={ inputWord }
+							onChange={ handleWordChange }
+							minLength={ 4 }
+							maxLength={ 8 }
+						/>
+						{
+							// If the word is too long or too short, show an error message
+							((inputWord.length < 4 || inputWord.length > 8) && !validWord) ? <p className='wordInputError'>(Word must be between 4-8 characters long)</p> : ''
+						}
+					</div>
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Colour</h2>
+						<Radio
+							options={ colourOptions }
+							selectedValue={ radioColour }
+							onChange={ handleColourChange }
+						/>
+					</div>
+					<div className='d-flex flex-v ai-c gap--sm'>
+						<h2>Gap between letters</h2>
+						<Radio
+							options={ gapOptions }
+							selectedValue={ radioGap }
+							onChange={ handleGapChange }
+						/>
+					</div>
+					
+					<Button.Major onClick={init}>Start word snake</Button.Major>
 				</div>
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Colour</h2>
-					<Radio
-						options={ colourOptions }
-						selectedValue={ radioColour }
-						onChange={ handleColourChange }
-					/>
-				</div>
-				<div className='d-flex flex-v ai-c gap--sm'>
-					<h2>Gap between letters</h2>
-					<Radio
-						options={ gapOptions }
-						selectedValue={ radioGap }
-						onChange={ handleGapChange }
-					/>
-				</div>
-				
-				<Button.Major onClick={InitWordSnake}>Start word snake</Button.Major>
-			</div>
+			}
 		</div>
 	);
 }

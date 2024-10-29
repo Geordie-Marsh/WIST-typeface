@@ -18,10 +18,10 @@ export default function FontName() {
 
 
 	
-	function makeAnimation(timeline, offset) {
+	function makeAnimation(timeline, offset, duration = animDur) {
 		timeline.to(".casc", {
 			strokeDashoffset: offset,
-			duration: animDur * 2,
+			duration: duration * 2,
 			ease: "power2.in",
 			onComplete: () => {
 				if (offset === -101) {
@@ -32,124 +32,124 @@ export default function FontName() {
 		
 		timeline.to(".a1-centre", {
 			strokeDashoffset: offset,
-			duration: animDur * 0.6,
+			duration: duration * 0.6,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.a1-centre', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 1.5);
+		}, duration * 1.5);
 		
 		timeline.to(".s-top", {
 			strokeDashoffset: offset,
-			duration: animDur,
+			duration: duration,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.s-top', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 1.9);
+		}, duration * 1.9);
 		
 		timeline.to(".cade", {
 			strokeDashoffset: offset,
-			duration: animDur * 1.8,
+			duration: duration * 1.8,
 			ease: "power1.inOut",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.cade', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 1.75);
+		}, duration * 1.75);
 		
 		timeline.to(".a2-centre", {
 			strokeDashoffset: offset,
-			duration: animDur * 0.6,
+			duration: duration * 0.6,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.a2-centre', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 2.5);
+		}, duration * 2.5);
 		
 		timeline.to(".d-top", {
 			strokeDashoffset: offset,
-			duration: animDur * 0.8,
+			duration: duration * 0.8,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.d-top', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 3);
+		}, duration * 3);
 		
 		timeline.to(".e1-centre", {
 			strokeDashoffset: offset,
-			duration: animDur * 0.4,
+			duration: duration * 0.4,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.e1-centre', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 2.8);
+		}, duration * 2.8);
 		
 		timeline.to(".enc", {
 			strokeDashoffset: offset,
-			duration: animDur * 1.5,
+			duration: duration * 1.5,
 			ease: "power1.inOut",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.enc', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 2.9);
+		}, duration * 2.9);
 		
 		timeline.to(".n-top", {
 			strokeDashoffset: offset,
-			duration: animDur * 0.4,
+			duration: duration * 0.4,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.n-top', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 4);
+		}, duration * 4);
 		
 		timeline.to(".ce", {
 			strokeDashoffset: offset,
-			duration: animDur * 1.2,
+			duration: duration * 1.2,
 			ease: "power1.inOut",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.ce', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 3.8);
+		}, duration * 3.8);
 		
 		timeline.to(".e2-top", {
 			strokeDashoffset: offset,
-			duration: animDur * 1.3,
+			duration: duration * 1.3,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.e2-top', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 4.4);
+		}, duration * 4.4);
 		
 		timeline.to(".e2-centre", {
 			strokeDashoffset: offset,
-			duration: animDur * 0.4,
+			duration: duration * 0.4,
 			ease: "power2.out",
 			onComplete: () => {
 				if (offset === -101) {
 					gsap.set('.e2-centre', { strokeDashoffset: 101 });
 				}
 			}
-		}, animDur * 4.8);
+		}, duration * 4.8);
 	}
 
 
@@ -157,17 +157,19 @@ export default function FontName() {
 	function handleMouseEnter() {
 		if (isPlaying) return;
 
+		let newDur = 0.38;
+
 		setIsPlaying(true);
 
 		const tl2 = gsap.timeline();
-		makeAnimation(tl2, -101);
+		makeAnimation(tl2, -101, newDur);
 
-		const tl3 = gsap.timeline({ delay: animDur * 5.2 });
-		makeAnimation(tl3, 0);
+		const tl3 = gsap.timeline({ delay: newDur * 3 });
+		makeAnimation(tl3, 0, newDur);
 
 		setTimeout(() => {
 			setIsPlaying(false);
-		}, animDur * 5.2 * 1500);
+		}, newDur * 5.2 * 1200);
 	}
 	
 	
@@ -181,7 +183,7 @@ export default function FontName() {
 			setTimeout(() => {
 				setIsPlaying(false);
 			}, animDur * 5.2 * 1000);
-		}, 1000);
+		}, 800);
 	
 	// // Animating through the letters
 		// setTimeout(() => {
