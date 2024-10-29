@@ -1,0 +1,18 @@
+.Error {
+	width: 100vw;
+	height: 100vh;
+
+	.error404 {
+		height: 10rem;
+
+		.LetterGrid {
+			height: 100%;
+			display: block;
+		}
+	}
+
+	> p {
+		text-align: center;
+		margin-top: 4rem;
+	}
+}

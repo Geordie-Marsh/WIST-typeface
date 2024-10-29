@@ -21,6 +21,7 @@
 	const Base = React.lazy(() => import('./pages/Base'));
 	const Home = React.lazy(() => import('./pages/Home'));
 	const ModeBase = React.lazy(() => import('./pages/ModeBase'));
+	const Error = React.lazy(() => import('./pages/Error'));
 	// Importing mode pages
 	const IndividualLetter = React.lazy(() => import('./pages/modes/IndividualLetter'));
 	const Sentences = React.lazy(() => import('./pages/modes/Sentences'));
@@ -130,6 +131,8 @@ function AnimatedRoutes() {
 						<Route path='temp' element={<Temp />} />
 
 						<Route path='about' element={<PageWrapper><ModeBase page={"about"}><About /></ModeBase> </PageWrapper>} />
+						
+						<Route path='*' element={<PageWrapper><Error /></PageWrapper>} />
 					</Route>
 				</Routes>
 			</Suspense>
