@@ -47,7 +47,7 @@ export default function Demos() {
 			} /> }
 			{ currentDemo === "word-snake" && <WordSnake demo={ true } alreadyShown={
 				// If "sentences" is in shownPages at least twice
-				shownPages.current.filter(page => page === "sentences").length > 1
+				shownPages.current.filter(page => page === "word-snake").length > 1
 			} /> }
 			{ currentDemo === "departures-board" && <DeparturesBoard /> }
 			{ currentDemo === "perfume-tv-ad" && <PerfumeDemo /> }

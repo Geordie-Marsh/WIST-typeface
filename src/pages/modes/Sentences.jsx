@@ -130,6 +130,18 @@ export default function Sentences({ demo = false, alreadyShown = false }) {
 
 	// Function to initialise the mode
 	function init() {
+		// Checking if the number is valid
+		if (inputNumber < minNumber || inputNumber > maxNumber) {
+			setValidNumber(false);
+			return;
+		}
+		// Checking if the sentence is valid
+		if (!(inputSentence.length >= minSentence && inputSentence.length <= maxSentence)) {
+			setValidSentence(false);
+			return;
+		}
+		
+		
 		if (!demo) {
 			// Pushing the history state
 			window.history.pushState({}, "", "#" + location.pathname);
@@ -151,18 +163,6 @@ export default function Sentences({ demo = false, alreadyShown = false }) {
 			window.dispatchEvent(new CustomEvent('settingsInactive'));
 		} else {
 			$$(".letters-cont").style.display = "flex";
-		}
-
-		
-		// Checking if the number is valid
-		if (inputNumber < minNumber || inputNumber > maxNumber) {
-			setValidNumber(false);
-			return;
-		}
-		// Checking if the sentence is valid
-		if (inputSentence.length < minSentence || inputSentence.length > maxSentence) {
-			setValidSentence(false);
-			return;
 		}
 
 		// Setting the initialised flag
@@ -257,7 +257,7 @@ export default function Sentences({ demo = false, alreadyShown = false }) {
 		// Setting the items
 		setItems(letterElements);
 
-		if (!alreadyShown) {
+		// if (!alreadyShown) {
 			// Setting up the interval
 			interval.current = setInterval(() => {
 				// Checking if the pause flag is set
@@ -295,7 +295,7 @@ export default function Sentences({ demo = false, alreadyShown = false }) {
 					instanceIndex.current = 0;
 				}
 			}, instanceDuration * 1000 / noOfDisplayedLetters.current);
-		}
+		// }
 	}	
 
 	function initSettings() {
